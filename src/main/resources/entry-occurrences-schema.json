@@ -1,0 +1,22 @@
+{
+"$schema": "http://json-schema.org/draft-04/schema#",
+"title": "EventOccurrence",
+"type": "object",
+"required": [ "message"],
+"properties": {
+
+  "message": {
+    "type": "string",
+    "description": "Event occurrence message"
+  },
+  "type_id": {
+    "type": "number",
+    "minimum": 0
+  },
+  "date":{
+          "type":"string",
+        "format": "date-time"
+  }
+}
+
+}

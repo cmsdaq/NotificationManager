@@ -1,0 +1,1061 @@
+#LyX 1.6.10 created this file. For more info see http://www.lyx.org/
+\lyxformat 345
+\begin_document
+\begin_header
+\textclass article
+\use_default_options true
+\language english
+\inputencoding auto
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\paperfontsize default
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_amsmath 1
+\use_esint 1
+\cite_engine basic
+\use_bibtopic false
+\paperorientation portrait
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\defskip medskip
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\author "" 
+\author "" 
+\end_header
+
+\begin_body
+
+\begin_layout Title
+Notification Manager
+\end_layout
+
+\begin_layout Date
+04/11/2016
+\end_layout
+
+\begin_layout Author
+Maciej Gladki (maciej.szymon.gladki@cern.ch)
+\end_layout
+
+\begin_layout Description
+Development
+\begin_inset space ~
+\end_inset
+
+instance https://dvbu-pcintelsz.cern.ch/nm-1.0.ALPHA
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset toc
+LatexCommand tableofcontents
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Introduction
+\end_layout
+
+\begin_layout Subsection
+Purpose of document
+\end_layout
+
+\begin_layout Standard
+This document summarizes the design of the Notification Manager.
+\end_layout
+
+\begin_layout Subsection
+Audience
+\end_layout
+
+\begin_layout Standard
+This document is written for those who want to deploy, maintain or improve
+ the project.
+ If you only need to deploy the project see the section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sec:Configuration"
+
+\end_inset
+
+.
+ If you want to maintain or improve the project knowledge about thechologies
+ listed in next section will be useful.
+\end_layout
+
+\begin_layout Subsection
+Dependencies
+\end_layout
+
+\begin_layout Standard
+Following technologies/projects/libraries are used to implement the system
+ frontend:
+\end_layout
+
+\begin_layout Itemize
+JSP
+\end_layout
+
+\begin_layout Itemize
+JSTL
+\end_layout
+
+\begin_layout Itemize
+bootstrap
+\end_layout
+
+\begin_layout Standard
+Following technologies/projects/libraries are used to implement the system
+ backend:
+\end_layout
+
+\begin_layout Itemize
+JPA
+\end_layout
+
+\begin_layout Itemize
+Hibernate
+\end_layout
+
+\begin_layout Standard
+Following technologies/projects/libraries are used to configure and deploy
+ the system:
+\end_layout
+
+\begin_layout Itemize
+SAML
+\end_layout
+
+\begin_layout Itemize
+SSO
+\end_layout
+
+\begin_layout Itemize
+Mellon
+\end_layout
+
+\begin_layout Itemize
+Apache
+\end_layout
+
+\begin_layout Itemize
+Tomcat
+\end_layout
+
+\begin_layout Section
+Main concepts
+\end_layout
+
+\begin_layout Standard
+Notification Manager is a web application for users who are interested in
+ immediate notifications about events in CMS DAQ systems.
+ Users may configure their preferences in terms of how and in what conditions
+ notifications should be delivered.
+\end_layout
+
+\begin_layout Subsection
+Basic assumptions
+\end_layout
+
+\begin_layout Standard
+For better understanding:
+\end_layout
+
+\begin_layout Description
+Event any interesting occurrence that happens in monitored or related systems
+\end_layout
+
+\begin_layout Description
+Event
+\begin_inset space ~
+\end_inset
+
+type there is predefined set of event types (see section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Processing"
+
+\end_inset
+
+), each event will have its type, all Notification Manager configuration
+ is event
+\begin_inset space ~
+\end_inset
+
+type based
+\end_layout
+
+\begin_layout Description
+Importance
+\begin_inset space ~
+\end_inset
+
+condition there is predefined set of importance conditions (see section
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Processing"
+
+\end_inset
+
+), users use this conditions to state their interest preferences for receiving
+ notifications
+\end_layout
+
+\begin_layout Description
+Time
+\begin_inset space ~
+\end_inset
+
+condition there is predefined set of time conditions (see section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Processing"
+
+\end_inset
+
+), users use this conditions to state their time preferences for receiving
+ notifications
+\end_layout
+
+\begin_layout Description
+Channel how user wants to be notified, there is predefined set of possible
+ channels (see section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Processing"
+
+\end_inset
+
+)
+\end_layout
+
+\begin_layout Description
+Notification information from system send to user 
+\end_layout
+
+\begin_layout Description
+Match situation when event is of such event type that all usr importance
+ and time conditions are satisfied and system will send notification
+\end_layout
+
+\begin_layout Description
+Preference
+\begin_inset space ~
+\end_inset
+
+entry basic element of describing user preferences, consists of at least
+ one event type, at least one importance condition, at least one time condition
+ and at least one channel
+\end_layout
+
+\begin_layout Description
+System the Notification Manager web application
+\end_layout
+
+\begin_layout Subsection
+Use cases
+\end_layout
+
+\begin_layout Standard
+There are four main use cases for the system.
+\end_layout
+
+\begin_layout Subsubsection
+Configuring user notification preferences
+\end_layout
+
+\begin_layout Standard
+User may configure his notification preferences with set of preference entries.
+ He may state:
+\end_layout
+
+\begin_layout Itemize
+his interest in given event types,
+\end_layout
+
+\begin_layout Itemize
+at which coditions they are important for him (importance condition),
+\end_layout
+
+\begin_layout Itemize
+at what time he wants to be notified (time condition),
+\end_layout
+
+\begin_layout Itemize
+how he wants to be notified (channel).
+\end_layout
+
+\begin_layout Subsubsection
+Searching history of events
+\end_layout
+
+\begin_layout Standard
+User may browse the history of events.
+ There are two modes:
+\end_layout
+
+\begin_layout Itemize
+autoupdate, used for monitoring recent events,
+\end_layout
+
+\begin_layout Itemize
+archive, used for seaching events.
+\end_layout
+
+\begin_layout Standard
+User may filter events by type and find in specified date ranges.
+\end_layout
+
+\begin_layout Subsubsection
+Browsing delivery reports
+\end_layout
+
+\begin_layout Standard
+User can browse delivery reports.
+ System persists each matches and its statuses.
+ In case of any problem (e.g.
+ user didn't get notification which he expected) user can find the root
+ cause of this problem (i.e.
+ wrong phone number).
+\end_layout
+
+\begin_layout Subsubsection
+Configuring user settings
+\end_layout
+
+\begin_layout Standard
+User attributes (email, phone number) are loaded from his CERN account.
+ It will be used for notification actions.
+ In case user want to change his settings only for Notification Manager
+ it is possible without changin CERN account.
+\end_layout
+
+\begin_layout Standard
+User may also define his understanding of daytime by adjusting at which
+ hour his day start and ends.
+ This configuration will be used with time condition 'daytime'.
+\end_layout
+
+\begin_layout Standard
+Shift information is taken from INT2R database.
+ By default shift starts and ends at noon but user may adjust it to his
+ preferences.
+\end_layout
+
+\begin_layout Subsection
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Processing"
+
+\end_inset
+
+Processing
+\end_layout
+
+\begin_layout Standard
+Processing in Notification Manager is presented in figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Processing-in-Notification"
+
+\end_inset
+
+.
+ Each event entering the system is tested with importance and time conditions
+ defined in users' configurations.
+ It there is a match system takes action - given user is notified.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename cms-daq-msg-init.png
+	width 100text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Processing-in-Notification"
+
+\end_inset
+
+Processing in Notification Manager
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Please note that there is conjunction between importance conditions and
+ time conditions and alternative between each type conditions (i.e.
+ importance conditions AND time conditions must be met but inside this blocks
+ at least one condition must be meet meaning OR).
+\end_layout
+
+\begin_layout Standard
+There is following set of event types:
+\end_layout
+
+\begin_layout Itemize
+LHC state change, 
+\end_layout
+
+\begin_layout Itemize
+DAQ state change, 
+\end_layout
+
+\begin_layout Itemize
+DAQ problem, 
+\end_layout
+
+\begin_layout Itemize
+DAQ subsystem problem, etc.
+ 
+\end_layout
+
+\begin_layout Standard
+There is following set of importance conditions:
+\end_layout
+
+\begin_layout Itemize
+adjust
+\end_layout
+
+\begin_layout Itemize
+beam dump
+\end_layout
+
+\begin_layout Itemize
+cycling
+\end_layout
+
+\begin_layout Itemize
+flat top
+\end_layout
+
+\begin_layout Itemize
+injection physics beam
+\end_layout
+
+\begin_layout Itemize
+injection probe beam
+\end_layout
+
+\begin_layout Itemize
+prepare ramp
+\end_layout
+
+\begin_layout Itemize
+ramp
+\end_layout
+
+\begin_layout Itemize
+ramp down
+\end_layout
+
+\begin_layout Itemize
+stup
+\end_layout
+
+\begin_layout Itemize
+squeeze
+\end_layout
+
+\begin_layout Itemize
+stable beams
+\end_layout
+
+\begin_layout Standard
+Time conditions consists of following set:
+\end_layout
+
+\begin_layout Itemize
+shift preferences
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+during my shift
+\end_layout
+
+\begin_layout Itemize
+always
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+time conditions
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+daytime
+\end_layout
+
+\begin_layout Itemize
+nightime
+\end_layout
+
+\end_deeper
+\begin_layout Standard
+Action is to send notification via following channels:
+\end_layout
+
+\begin_layout Itemize
+e-mail
+\end_layout
+
+\begin_layout Itemize
+push
+\end_layout
+
+\begin_layout Itemize
+SMS
+\end_layout
+
+\begin_layout Subsubsection*
+Discussion
+\end_layout
+
+\begin_layout Standard
+List of event types is only proposition.
+ The list will be closed in next versions.
+\end_layout
+
+\begin_layout Standard
+Importance condition list consists of many elements so it may be redefined
+ in next versions to improving ease of use.
+\end_layout
+
+\begin_layout Standard
+Separation of time conditions into shift and time preferences may change
+ in next versions depending on feedback.
+\end_layout
+
+\begin_layout Subsection
+Database
+\end_layout
+
+\begin_layout Standard
+There are two databases system works with.
+ There is local database and external shift database.
+\end_layout
+
+\begin_layout Subsubsection
+Local database
+\end_layout
+
+\begin_layout Standard
+Design of local database is presented in figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Database-structure"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename cms-daq-msg-diagram.png
+	width 100text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Database-structure"
+
+\end_inset
+
+Database structure
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+External database
+\end_layout
+
+\begin_layout Standard
+System accesses (read only) external INT2R database for shift data.
+\end_layout
+
+\begin_layout Description
+url jdbc:oracle:thin:@int2r1-v.cern.ch:10121/int2r_lb.cern.ch
+\end_layout
+
+\begin_layout Description
+username cms_test_runinfo_r
+\end_layout
+
+\begin_layout Subsection
+Interfaces
+\end_layout
+
+\begin_layout Standard
+There are following interfaces:
+\end_layout
+
+\begin_layout Itemize
+configuration
+\end_layout
+
+\begin_layout Itemize
+notification browser
+\end_layout
+
+\begin_layout Itemize
+event browser
+\end_layout
+
+\begin_layout Itemize
+settings page
+\end_layout
+
+\begin_layout Itemize
+login page
+\end_layout
+
+\begin_layout Subsection
+API
+\end_layout
+
+\begin_layout Standard
+There is entry point for inserting events into Notification Manager.
+ It is implemented as RESTful API and can be accessed depending on deployment
+ under following address:
+\end_layout
+
+\begin_layout Quote
+[host]/[release-version]/rest/events
+\end_layout
+
+\begin_layout Quote
+For development instance it is:
+\end_layout
+
+\begin_layout Quote
+https://dvbu-pcintelsz.cern.ch/nm-1.0.ALPHA/rest/events
+\end_layout
+
+\begin_layout Quote
+POST requests need to hava contentType header 
+\begin_inset Quotes eld
+\end_inset
+
+application/json
+\begin_inset Quotes erd
+\end_inset
+
+ and body must meed following format:
+\end_layout
+
+\begin_layout Quote
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset listings
+lstparams "basicstyle={\ttfamily},language=Java"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\begin_layout Plain Layout
+
+  "$schema": "http://json-schema.org/draft-04/schema#",
+\end_layout
+
+\begin_layout Plain Layout
+
+  "title": "EventOccurrence",
+\end_layout
+
+\begin_layout Plain Layout
+
+  "type": "object",
+\end_layout
+
+\begin_layout Plain Layout
+
+  "required": [ "message"],
+\end_layout
+
+\begin_layout Plain Layout
+
+  "properties": {
+\end_layout
+
+\begin_layout Plain Layout
+
+    "message": {
+\end_layout
+
+\begin_layout Plain Layout
+
+      "type": "string",
+\end_layout
+
+\begin_layout Plain Layout
+
+      "description": "Event occurrence message"
+\end_layout
+
+\begin_layout Plain Layout
+
+    },
+\end_layout
+
+\begin_layout Plain Layout
+
+    "type_id": {
+\end_layout
+
+\begin_layout Plain Layout
+
+      "type": "number",
+\end_layout
+
+\begin_layout Plain Layout
+
+      "minimum": 0
+\end_layout
+
+\begin_layout Plain Layout
+
+    },
+\end_layout
+
+\begin_layout Plain Layout
+
+    "date":{
+\end_layout
+
+\begin_layout Plain Layout
+
+      "type":"string",
+\end_layout
+
+\begin_layout Plain Layout
+
+      "format": "date-time"
+\end_layout
+
+\begin_layout Plain Layout
+
+    }
+\end_layout
+
+\begin_layout Plain Layout
+
+  }
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+API Schema
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset listings
+lstparams "basicstyle={\ttfamily},language=Java"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+{ 
+\end_layout
+
+\begin_layout Plain Layout
+
+  "type_id": 1,
+\end_layout
+
+\begin_layout Plain Layout
+
+  "date":"2015-12-02T03:50:40",
+\end_layout
+
+\begin_layout Plain Layout
+
+  "message":"changed state from Configured to Running"
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Example POST request
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Output
+\end_layout
+
+\begin_layout Standard
+For sending emails following SMTP host is used: ?.
+ For sending SMSs following server is used: ?.
+\end_layout
+
+\begin_layout Standard
+how sms is send
+\end_layout
+
+\begin_layout Standard
+how mail is send
+\end_layout
+
+\begin_layout Standard
+what is stored
+\end_layout
+
+\begin_layout Standard
+what about success or not
+\end_layout
+
+\begin_layout Subsection
+Other
+\end_layout
+
+\begin_layout Standard
+Further assumptions
+\end_layout
+
+\begin_layout Itemize
+predefined initial settings are provided for each to make life easier 
+\end_layout
+
+\begin_layout Itemize
+one event set or event type set, for DaqDoctor and notification
+\end_layout
+
+\begin_layout Itemize
+alerts are not important for now
+\end_layout
+
+\begin_layout Itemize
+configuration also depends on shifts - eg.
+ 2 hours before, 5 hours after, some events i want to know always etc.
+ 
+\end_layout
+
+\begin_layout Itemize
+DAQDoctor -> Notification Manager protocol: JSON based, initialized by DaqDoctor
+ 
+\end_layout
+
+\begin_layout Itemize
+authenticate: ldap or webservice can be used (no need for authentication
+ when application on certain web server) 
+\end_layout
+
+\begin_layout Standard
+The module will communicate with existing components in DAQ system.
+ The module will get data about identified events from expert system (DaqDoctor)
+ and send notifications (messages and alerts) via different channels.
+ The module will be developed as web application.
+\end_layout
+
+\begin_layout Section
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:Configuration"
+
+\end_inset
+
+Configuration
+\end_layout
+
+\begin_layout Subsection
+Tomcat servlet container
+\end_layout
+
+\begin_layout Standard
+Notification Manager application is compiled into *.war file.
+ Deployment on Tomcat servlet container is as easy as copying this file
+ to webapp folder.
+ To meet SSO requirements server configuration must be changed according
+ to listing X.
+ It includes changing the port for connection with apache via AJP protocol
+ and deactivating Tomcat's authorization for Mellon configuration.
+\end_layout
+
+\begin_layout Subsection
+Apache http server
+\end_layout
+
+\begin_layout Subsubsection
+JK connector
+\end_layout
+
+\begin_layout Standard
+mod_jk
+\end_layout
+
+\begin_layout Standard
+in file httpd.conf :
+\end_layout
+
+\begin_layout Standard
+Include conf/mod-jk.conf 
+\end_layout
+
+\begin_layout Subsection
+SSO
+\end_layout
+
+\begin_layout Standard
+Authentication using SSO SAML 2.0 and mod_melon follow: http://linux.web.cern.ch/lin
+ux/scientific6/docs/mod_auth_mellon.shtml
+\end_layout
+
+\begin_layout Standard
+Registration
+\end_layout
+
+\begin_layout Standard
+Application Name: Notification Manager
+\end_layout
+
+\begin_layout Standard
+Service Provider type: SAML2 for mod_auth_mellon with online metadata
+\end_layout
+
+\begin_layout Standard
+Application Metadata Uri: https://dvbu-pcintelsz.cern.ch/mellon/metadata
+\end_layout
+
+\begin_layout Standard
+Application Homepage: https://dvbu-pcintelsz.cern.ch/nm-1.0.ALPHA/
+\end_layout
+
+\begin_layout Standard
+Application description: Application notifies users about events in DAQ
+ system based on their preferences.
+ 
+\end_layout
+
+\begin_layout Standard
+There is a problem with mod_auth_mellon_cern
+\end_layout
+
+\end_body
+\end_document
