@@ -1,0 +1,18 @@
+.pointable {
+    cursor: pointer;
+}
+
+.pointable:hover {
+	color: #555555;
+	transform: rotate(360deg);
+	transition: all ease-in-out 200ms;
+}
+
+.navigation-bar .pagination {
+	margin: 0;
+}
+
+.disabledbutton {
+    pointer-events: none;
+    opacity: 0.4;
+}

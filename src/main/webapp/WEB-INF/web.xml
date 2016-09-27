@@ -1,0 +1,143 @@
+<!DOCTYPE web-app PUBLIC
+ "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+ "http://java.sun.com/dtd/web-app_2_3.dtd" >
+
+<web-app>
+
+	<display-name>Notification Manager Application</display-name>
+
+
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>/WEB-INF/APIServlet-servlet.xml</param-value>
+	</context-param>
+
+	<listener>
+		<listener-class>
+			org.springframework.web.context.ContextLoaderListener
+		</listener-class>
+	</listener>
+
+	<listener>
+		<listener-class>cern.cms.daq.nm.servlet.ServletListener</listener-class>
+	</listener>
+
+	<servlet>
+		<servlet-name>EventsServlet</servlet-name>
+		<servlet-class>cern.cms.daq.nm.servlet.EventsServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>EventOccurrencesServlet</servlet-name>
+		<servlet-class>cern.cms.daq.nm.servlet.EventOccurrencesServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>EventOccurrencesAPIServlet</servlet-name>
+		<servlet-class>cern.cms.daq.nm.servlet.EventOccurrencesAPIServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>ConfigurationServlet</servlet-name>
+		<servlet-class>cern.cms.daq.nm.servlet.ConfigurationServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>ReportServlet</servlet-name>
+		<servlet-class>cern.cms.daq.nm.servlet.ReportServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>LogoutServlet</servlet-name>
+		<servlet-class>cern.cms.daq.nm.servlet.LogoutServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>SettingsServlet</servlet-name>
+		<servlet-class>cern.cms.daq.nm.servlet.SettingsServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>DashboardServlet</servlet-name>
+		<servlet-class>cern.cms.daq.nm.servlet.DashboardServlet</servlet-class>
+	</servlet>
+
+	<servlet>
+		<servlet-name>EventOccurrencesUpdateAPIServlet</servlet-name>
+		<servlet-class>cern.cms.daq.nm.servlet.EventOccurrencesUpdateAPIServlet</servlet-class>
+	</servlet>
+	
+	<servlet>
+		<servlet-name>APIServlet</servlet-name>
+		<servlet-class>
+			org.springframework.web.servlet.DispatcherServlet
+		</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+
+
+
+	<servlet-mapping>
+		<servlet-name>APIServlet</servlet-name>
+		<url-pattern>/rest/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>EventsServlet</servlet-name>
+		<url-pattern>/events</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>EventOccurrencesServlet</servlet-name>
+		<url-pattern>/event_occurrences</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>EventOccurrencesAPIServlet</servlet-name>
+		<url-pattern>/event_occurrences_api</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>ConfigurationServlet</servlet-name>
+		<url-pattern>/confs</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>ReportServlet</servlet-name>
+		<url-pattern>/reports</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>LogoutServlet</servlet-name>
+		<url-pattern>/logout</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>SettingsServlet</servlet-name>
+		<url-pattern>/settings</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>DashboardServlet</servlet-name>
+		<url-pattern>/dashboard</url-pattern>
+	</servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>EventOccurrencesUpdateAPIServlet</servlet-name>
+		<url-pattern>/event_occurrences_update_api</url-pattern>
+	</servlet-mapping>
+
+
+	<!-- <servlet-mapping> <servlet-name>mvc-dispatcher</servlet-name> <url-pattern>/rest/*</url-pattern> 
+		</servlet-mapping> -->
+
+
+
+
+
+
+	<login-config>
+		<auth-method>FORM</auth-method>
+		<form-login-config>
+			<form-login-page>/login.jsp</form-login-page>
+			<form-error-page>/login.jsp?Retry=True</form-error-page>
+		</form-login-config>
+
+	</login-config>
+
+</web-app>
+
+
