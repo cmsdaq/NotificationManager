@@ -14,6 +14,7 @@ public class EventCloseResource {
 	@NotNull
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "CET")
 	private Date date;
+	
 
 	public Long getId() {
 		return id;

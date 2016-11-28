@@ -1,5 +1,6 @@
 package cern.cms.daq.nm.task;
 
+import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.Queue;
 import java.util.TimerTask;
@@ -13,6 +14,8 @@ import org.hibernate.Session;
 
 import cern.cms.daq.nm.EventOccurrenceResource;
 import cern.cms.daq.nm.persistence.EventOccurrence;
+import cern.cms.daq.nm.sound.Sound;
+import cern.cms.daq.nm.sound.SoundSystemManager;
 
 /**
  * 
@@ -32,6 +35,9 @@ import cern.cms.daq.nm.persistence.EventOccurrence;
 public class ReceiverTask extends TimerTask {
 
 	private static final Logger logger = Logger.getLogger(ReceiverTask.class);
+	
+	
+	private final SoundSystemManager soundSystemManager;
 
 	/**
 	 * Outcoming buffer
@@ -50,6 +56,7 @@ public class ReceiverTask extends TimerTask {
 		this.emf = emf;
 		this.eventBuffer = eventBuffer;
 		this.eventResourceBuffer = eventResourceBuffer;
+		this.soundSystemManager = new SoundSystemManager("http://dvbu-pcintelsz", 50505);
 	}
 
 	@Override
@@ -70,6 +77,16 @@ public class ReceiverTask extends TimerTask {
 				EventOccurrenceResource current = eventResourceBuffer.poll();
 				logger.info("Received: " + current);
 				EventOccurrence eventOccurrence = current.asEventOccurrence(session);
+				
+				if(eventOccurrence.isPlay()){
+					try {
+						logger.info("Dispatching to Sound system");
+						soundSystemManager.play(Sound.DROP);
+						soundSystemManager.sayAndListen(eventOccurrence.getMessage());
+					} catch (IOException e) {
+						logger.error(e);
+					}
+				}
 
 				em.persist(eventOccurrence);
 

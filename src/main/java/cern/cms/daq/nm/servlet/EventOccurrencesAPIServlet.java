@@ -58,6 +58,7 @@ public class EventOccurrencesAPIServlet extends HttpServlet {
 		String entriesParameter = request.getParameter("entries");
 		String pageParameter = request.getParameter("page");
 		String lastEntryParameter = request.getParameter("last");
+		String dashboardParameter = request.getParameter("dashboard");
 
 		List<Long> eventTypeIds = new ArrayList<>();
 		if (request.getParameter("eventTypes[]") != null) {
@@ -72,7 +73,7 @@ public class EventOccurrencesAPIServlet extends HttpServlet {
 						logger.warn("Wrong event type id '" + eventTypes + "'");
 					}
 		} else {
-			logger.info("No event type parameters");
+			logger.debug("No event type parameters");
 		}
 
 		try {
@@ -93,15 +94,16 @@ public class EventOccurrencesAPIServlet extends HttpServlet {
 				elementsCriteria.setMaxResults(entries);
 			}
 
-			/*
-			 * process event type
-			 */
-
+			/* Filter event type */
 			Disjunction disjunction = Restrictions.disjunction();
 			for (Long id : eventTypeIds) {
-				logger.info("restric to id : " + id);
+				logger.info("restric to type id : " + id);
 				Criterion cur = Restrictions.eq("eventType.id", id);
 				disjunction.add(cur);
+			}
+			
+			if(dashboardParameter != null && Boolean.parseBoolean(dashboardParameter)){
+				disjunction.add(Restrictions.eq("display", true));
 			}
 			
 			elementsCriteria.add(disjunction);

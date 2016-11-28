@@ -45,6 +45,12 @@ public class EventOccurrence {
 
 	@Column(nullable = true)
     private long duration;
+	
+	/** Flag indicating if this notification should be displayed */
+	private boolean display;
+
+	/** Flag indicating if this notification should be played */
+	private boolean play;
     
 	public EventType getEventType() {
 		return eventType;
@@ -106,5 +112,21 @@ public class EventOccurrence {
 
 	public void setActionSteps(List<String> actionSteps) {
 		this.actionSteps = actionSteps;
+	}
+
+	public boolean isDisplay() {
+		return display;
+	}
+
+	public void setDisplay(boolean display) {
+		this.display = display;
+	}
+
+	public boolean isPlay() {
+		return play;
+	}
+
+	public void setPlay(boolean play) {
+		this.play = play;
 	}
 }
