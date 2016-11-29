@@ -12,6 +12,7 @@ import cern.cms.daq.nm.EventOccurrenceResource;
 import cern.cms.daq.nm.NotificationException;
 import cern.cms.daq.nm.persistence.EventOccurrence;
 import cern.cms.daq.nm.persistence.NotificationOccurrence;
+import cern.cms.daq.nm.sound.SoundSystemManager;
 
 public class TaskManager {
 
@@ -31,17 +32,21 @@ public class TaskManager {
 	private final TimerTask generatorTask;
 	@SuppressWarnings("unused")
 	private final TimerTask monitoringTask;
+	
+
+	private final SoundSystemManager soundSystemManager;
 
 	private TaskManager(EntityManagerFactory notificationEMF, EntityManagerFactory shiftEMF) {
 		eventResourceBuffer = new ConcurrentLinkedQueue<EventOccurrenceResource>();
 		eventBuffer = new ConcurrentLinkedQueue<EventOccurrence>();
 		notificationBuffer = new ConcurrentLinkedQueue<NotificationOccurrence>();
 		expertIdToNmId = new ConcurrentHashMap<>();
+		this.soundSystemManager = new SoundSystemManager("http://dvbu-pcintelsz", 50505);
 
 		/*
 		 * initialize main tasks
 		 */
-		receiverTask = new ReceiverTask(notificationEMF, eventResourceBuffer, eventBuffer);
+		receiverTask = new ReceiverTask(notificationEMF, eventResourceBuffer, eventBuffer,soundSystemManager);
 		dispatcherTask = new DispatcherTask(notificationEMF, shiftEMF, eventBuffer, notificationBuffer);
 		notificationTask = new NotificationTask(notificationEMF, notificationBuffer);
 
@@ -95,6 +100,10 @@ public class TaskManager {
 
 	public ConcurrentMap<Long,Long> getExpertIdToNmId() {
 		return expertIdToNmId;
+	}
+
+	public SoundSystemManager getSoundSystemManager() {
+		return soundSystemManager;
 	}
 
 }

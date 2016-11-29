@@ -68,6 +68,7 @@
 								parameters = {};
 								parameters['entries'] = maxEvents + "";
 								parameters['page'] = 1 + "";
+								parameters['dashboard'] = true;
 								if (last_entry != null)
 									parameters['last'] = last_entry;
 								$

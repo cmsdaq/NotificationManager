@@ -3,11 +3,7 @@ package cern.cms.daq.nm;
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.CollectionTable;
-import javax.persistence.Column;
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
 import javax.validation.constraints.NotNull;
 
 import org.apache.log4j.Logger;
@@ -39,6 +35,15 @@ public class EventOccurrenceResource {
 	@NotNull
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "CET")
 	private Date date;
+
+	/** Flag indicating if this notification should be displayed */
+	private boolean display;
+
+	/** Flag indicating if this notification should be played */
+	private boolean play;
+
+	private int soundId;
+	private boolean closeable;
 
 	public Long getType_id() {
 		return type_id;
@@ -95,6 +100,10 @@ public class EventOccurrenceResource {
 		eventOccurrence.setStatus(EventStatus.Received);
 		eventOccurrence.setDate(this.date);
 		eventOccurrence.setActionSteps(this.getAction());
+		eventOccurrence.setDisplay(this.display);
+		eventOccurrence.setPlay(this.play);
+		eventOccurrence.setSoundId(this.soundId);
+		eventOccurrence.setCloseable(this.closeable);
 		return eventOccurrence;
 	}
 
@@ -118,6 +127,38 @@ public class EventOccurrenceResource {
 	public String toString() {
 		return "EventOccurrenceResource [type_id=" + type_id + ", id=" + id + ", message=" + message + ", actionSteps="
 				+ action + ", date=" + date + "]";
+	}
+
+	public boolean isDisplay() {
+		return display;
+	}
+
+	public void setDisplay(boolean display) {
+		this.display = display;
+	}
+
+	public boolean isPlay() {
+		return play;
+	}
+
+	public void setPlay(boolean play) {
+		this.play = play;
+	}
+
+	public int getSoundId() {
+		return soundId;
+	}
+
+	public void setSoundId(int soundId) {
+		this.soundId = soundId;
+	}
+
+	public boolean isCloseable() {
+		return closeable;
+	}
+
+	public void setCloseable(boolean closeable) {
+		this.closeable = closeable;
 	}
 
 }
