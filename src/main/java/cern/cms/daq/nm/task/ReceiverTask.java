@@ -62,7 +62,7 @@ public class ReceiverTask extends TimerTask {
 
 		if (!eventResourceBuffer.isEmpty()) {
 			int size = eventResourceBuffer.size();
-			logger.info("Run receiver task " + size + " on queue");
+			logger.debug("Run receiver task " + size + " on queue");
 			int i = 0;
 
 			EntityManager em = emf.createEntityManager();
@@ -73,14 +73,14 @@ public class ReceiverTask extends TimerTask {
 			while (!eventResourceBuffer.isEmpty() && i < size) {
 				i++;
 				EventOccurrenceResource current = eventResourceBuffer.poll();
-				logger.info("Received: " + current);
+				logger.debug("Received: " + current);
 				EventOccurrence eventOccurrence = current.asEventOccurrence(session);
 
 				em.persist(eventOccurrence);
 
 				if (eventOccurrence.isPlay()) {
 					try {
-						logger.info("Dispatching to Sound system");
+						logger.debug("Dispatching to Sound system");
 						Sound sound = Sound.DEFAULT;
 						if (eventOccurrence.getSoundId() != 0
 								&& Sound.values().length >= eventOccurrence.getSoundId()) {
@@ -93,11 +93,11 @@ public class ReceiverTask extends TimerTask {
 					}
 				}
 
-				logger.info("Persisted: " + eventOccurrence);
+				logger.debug("Persisted: " + eventOccurrence);
 				if (current.getId() != null) {
 					em.flush();
 					Long nmId = eventOccurrence.getId();
-					logger.info("Mapping this id: " + nmId);
+					logger.debug("Mapping this id: " + nmId);
 					TaskManager.get().getExpertIdToNmId().put(current.getId(), nmId);
 				}
 
