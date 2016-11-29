@@ -46,21 +46,39 @@ public class CloseEventAPIController {
 		try {
 
 			EventOccurrence notification = em.find(EventOccurrence.class, id);
-			logger.info("Found object with given id: " + notification);
+			logger.debug("Found object with given id: " + notification);
+			
+			int retry = 5;
+			while (notification == null && retry > 0) {
+				notification = em.find(EventOccurrence.class, id);
+				logger.debug("Could not find the object in db, retries left: " + retry);
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				retry--;
+			}
 
-			long duration = 0;
-			if (notification.getDuration() == 0) {
-				em.getTransaction().begin();
-				long start = notification.getDate().getTime();
-				long end = endDate.getTime();
-				duration = end - start;
-				notification.setDuration(duration);
-				em.persist(notification);
-				em.getTransaction().commit();
-				logger.info("Successfully updated, event duration: " + duration + " ms");
-				return "Successfully updated, event duration: " + duration + " ms";
+			if (notification == null) {
+				logger.warn("Problem finding notification with id = " + id + " is it not in DB?");
+				return "Successful mapping of expert to nm id, but problem retrieving from db";
 			} else {
-				return "Event with this id has been already closed";
+
+				long duration = 0;
+				if (notification.getDuration() == 0) {
+					em.getTransaction().begin();
+					long start = notification.getDate().getTime();
+					long end = endDate.getTime();
+					duration = end - start;
+					notification.setDuration(duration);
+					em.persist(notification);
+					em.getTransaction().commit();
+					logger.info("Successfully updated, event duration: " + duration + " ms");
+					return "Successfully updated, event duration: " + duration + " ms";
+				} else {
+					return "Event with this id has been already closed";
+				}
 			}
 
 		} finally {
@@ -77,12 +95,13 @@ public class CloseEventAPIController {
 		long expertId = eventOccurrenceResource.getId();
 		Date endDate = eventOccurrenceResource.getDate();
 
-		// TODO: add end notification to queue. DO NOT use Manager directly as notifications will have race condition
+		// TODO: add end notification to queue. DO NOT use Manager directly as
+		// notifications will have race condition
 
 		ConcurrentMap<Long, Long> map = TaskManager.get().getExpertIdToNmId();
 		int retry = 5;
 		while (!map.containsKey(expertId) && retry > 0) {
-			logger.warn("Could not find the task, waiting, retries left: " + retry);
+			logger.debug("Could not find the task, waiting, retries left: " + retry);
 			try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {
@@ -96,7 +115,7 @@ public class CloseEventAPIController {
 			long id = map.get(expertId);
 			map.remove(expertId);
 
-			logger.info("Update event with expertId: " + expertId + ", nmId: " + id + ", end date: " + endDate);
+			logger.debug("Update event with expertId: " + expertId + ", nmId: " + id + ", end date: " + endDate);
 			return process(endDate, id);
 		} else {
 			logger.warn("Cannot find entry with given id within timeout");
