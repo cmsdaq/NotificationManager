@@ -1,5 +1,6 @@
 package cern.cms.daq.nm.servlet;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.concurrent.ConcurrentMap;
 
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import cern.cms.daq.nm.EventCloseResource;
 import cern.cms.daq.nm.persistence.EventOccurrence;
+import cern.cms.daq.nm.sound.Sound;
 import cern.cms.daq.nm.task.TaskManager;
 
 @RestController
@@ -74,6 +76,9 @@ public class CloseEventAPIController {
 
 		long expertId = eventOccurrenceResource.getId();
 		Date endDate = eventOccurrenceResource.getDate();
+
+		// TODO: add end notification to queue. DO NOT use Manager directly as notifications will have race condition
+
 		ConcurrentMap<Long, Long> map = TaskManager.get().getExpertIdToNmId();
 		int retry = 5;
 		while (!map.containsKey(expertId) && retry > 0) {

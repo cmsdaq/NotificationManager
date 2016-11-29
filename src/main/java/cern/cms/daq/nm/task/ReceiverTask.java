@@ -35,10 +35,8 @@ import cern.cms.daq.nm.sound.SoundSystemManager;
 public class ReceiverTask extends TimerTask {
 
 	private static final Logger logger = Logger.getLogger(ReceiverTask.class);
-	
-	
-	private final SoundSystemManager soundSystemManager;
 
+	private final SoundSystemManager soundSystemManager;
 	/**
 	 * Outcoming buffer
 	 */
@@ -52,11 +50,11 @@ public class ReceiverTask extends TimerTask {
 	private EntityManagerFactory emf;
 
 	public ReceiverTask(EntityManagerFactory emf, ConcurrentLinkedQueue<EventOccurrenceResource> eventResourceBuffer,
-			ConcurrentLinkedQueue<EventOccurrence> eventBuffer) {
+			ConcurrentLinkedQueue<EventOccurrence> eventBuffer, SoundSystemManager soundSystemManager) {
 		this.emf = emf;
 		this.eventBuffer = eventBuffer;
 		this.eventResourceBuffer = eventResourceBuffer;
-		this.soundSystemManager = new SoundSystemManager("http://dvbu-pcintelsz", 50505);
+		this.soundSystemManager = soundSystemManager;
 	}
 
 	@Override
@@ -77,18 +75,23 @@ public class ReceiverTask extends TimerTask {
 				EventOccurrenceResource current = eventResourceBuffer.poll();
 				logger.info("Received: " + current);
 				EventOccurrence eventOccurrence = current.asEventOccurrence(session);
-				
-				if(eventOccurrence.isPlay()){
+
+				em.persist(eventOccurrence);
+
+				if (eventOccurrence.isPlay()) {
 					try {
 						logger.info("Dispatching to Sound system");
-						soundSystemManager.play(Sound.DROP);
+						Sound sound = Sound.DEFAULT;
+						if (eventOccurrence.getSoundId() != 0
+								&& Sound.values().length >= eventOccurrence.getSoundId()) {
+							sound = Sound.values()[eventOccurrence.getSoundId()];
+						}
+						soundSystemManager.play(sound);
 						soundSystemManager.sayAndListen(eventOccurrence.getMessage());
 					} catch (IOException e) {
 						logger.error(e);
 					}
 				}
-
-				em.persist(eventOccurrence);
 
 				logger.info("Persisted: " + eventOccurrence);
 				if (current.getId() != null) {

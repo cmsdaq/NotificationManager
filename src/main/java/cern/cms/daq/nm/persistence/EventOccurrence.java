@@ -15,6 +15,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 @Entity
 public class EventOccurrence {
@@ -51,6 +52,9 @@ public class EventOccurrence {
 
 	/** Flag indicating if this notification should be played */
 	private boolean play;
+	
+	@Transient
+	private int soundId;
     
 	public EventType getEventType() {
 		return eventType;
@@ -128,5 +132,13 @@ public class EventOccurrence {
 
 	public void setPlay(boolean play) {
 		this.play = play;
+	}
+
+	public int getSoundId() {
+		return soundId;
+	}
+
+	public void setSoundId(int soundId) {
+		this.soundId = soundId;
 	}
 }

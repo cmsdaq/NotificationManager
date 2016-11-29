@@ -41,6 +41,8 @@ public class EventOccurrenceResource {
 
 	/** Flag indicating if this notification should be played */
 	private boolean play;
+	
+	private int soundId;
 
 	public Long getType_id() {
 		return type_id;
@@ -99,6 +101,7 @@ public class EventOccurrenceResource {
 		eventOccurrence.setActionSteps(this.getAction());
 		eventOccurrence.setDisplay(this.display);
 		eventOccurrence.setPlay(this.play);
+		eventOccurrence.setSoundId(this.soundId);
 		return eventOccurrence;
 	}
 
@@ -138,6 +141,14 @@ public class EventOccurrenceResource {
 
 	public void setPlay(boolean play) {
 		this.play = play;
+	}
+
+	public int getSoundId() {
+		return soundId;
+	}
+
+	public void setSoundId(int soundId) {
+		this.soundId = soundId;
 	}
 
 }
