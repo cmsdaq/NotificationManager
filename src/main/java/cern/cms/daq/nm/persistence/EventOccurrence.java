@@ -15,6 +15,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 @Entity
 public class EventOccurrence {
@@ -45,6 +46,17 @@ public class EventOccurrence {
 
 	@Column(nullable = true)
     private long duration;
+	
+	/** Flag indicating if this notification should be displayed */
+	private boolean display;
+
+	/** Flag indicating if this notification should be played */
+	private boolean play;
+	
+	@Transient
+	private int soundId;
+
+	private boolean closeable;
     
 	public EventType getEventType() {
 		return eventType;
@@ -106,5 +118,37 @@ public class EventOccurrence {
 
 	public void setActionSteps(List<String> actionSteps) {
 		this.actionSteps = actionSteps;
+	}
+
+	public boolean isDisplay() {
+		return display;
+	}
+
+	public void setDisplay(boolean display) {
+		this.display = display;
+	}
+
+	public boolean isPlay() {
+		return play;
+	}
+
+	public void setPlay(boolean play) {
+		this.play = play;
+	}
+
+	public int getSoundId() {
+		return soundId;
+	}
+
+	public void setSoundId(int soundId) {
+		this.soundId = soundId;
+	}
+
+	public boolean isCloseable() {
+		return closeable;
+	}
+
+	public void setCloseable(boolean closeable) {
+		this.closeable = closeable;
 	}
 }

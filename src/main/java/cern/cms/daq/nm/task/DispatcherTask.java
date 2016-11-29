@@ -61,7 +61,7 @@ public class DispatcherTask extends TimerTask {
 		if (!eventBuffer.isEmpty()) {
 			final int bufferSize = eventBuffer.size();
 			final Long startTime = System.currentTimeMillis();
-			logger.info(new StringBuilder("Run dispatcher task, ").append(bufferSize).append(" events on queue"));
+			logger.debug(new StringBuilder("Run dispatcher task, ").append(bufferSize).append(" events on queue"));
 
 			int i = 0;
 

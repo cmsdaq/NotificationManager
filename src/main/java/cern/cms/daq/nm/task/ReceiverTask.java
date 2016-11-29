@@ -1,5 +1,6 @@
 package cern.cms.daq.nm.task;
 
+import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.Queue;
 import java.util.TimerTask;
@@ -13,6 +14,8 @@ import org.hibernate.Session;
 
 import cern.cms.daq.nm.EventOccurrenceResource;
 import cern.cms.daq.nm.persistence.EventOccurrence;
+import cern.cms.daq.nm.sound.Sound;
+import cern.cms.daq.nm.sound.SoundSystemManager;
 
 /**
  * 
@@ -33,6 +36,7 @@ public class ReceiverTask extends TimerTask {
 
 	private static final Logger logger = Logger.getLogger(ReceiverTask.class);
 
+	private final SoundSystemManager soundSystemManager;
 	/**
 	 * Outcoming buffer
 	 */
@@ -46,10 +50,11 @@ public class ReceiverTask extends TimerTask {
 	private EntityManagerFactory emf;
 
 	public ReceiverTask(EntityManagerFactory emf, ConcurrentLinkedQueue<EventOccurrenceResource> eventResourceBuffer,
-			ConcurrentLinkedQueue<EventOccurrence> eventBuffer) {
+			ConcurrentLinkedQueue<EventOccurrence> eventBuffer, SoundSystemManager soundSystemManager) {
 		this.emf = emf;
 		this.eventBuffer = eventBuffer;
 		this.eventResourceBuffer = eventResourceBuffer;
+		this.soundSystemManager = soundSystemManager;
 	}
 
 	@Override
@@ -57,7 +62,7 @@ public class ReceiverTask extends TimerTask {
 
 		if (!eventResourceBuffer.isEmpty()) {
 			int size = eventResourceBuffer.size();
-			logger.info("Run receiver task " + size + " on queue");
+			logger.debug("Run receiver task " + size + " on queue");
 			int i = 0;
 
 			EntityManager em = emf.createEntityManager();
@@ -68,16 +73,31 @@ public class ReceiverTask extends TimerTask {
 			while (!eventResourceBuffer.isEmpty() && i < size) {
 				i++;
 				EventOccurrenceResource current = eventResourceBuffer.poll();
-				logger.info("Received: " + current);
+				logger.debug("Received: " + current);
 				EventOccurrence eventOccurrence = current.asEventOccurrence(session);
 
 				em.persist(eventOccurrence);
 
-				logger.info("Persisted: " + eventOccurrence);
+				if (eventOccurrence.isPlay()) {
+					try {
+						logger.debug("Dispatching to Sound system");
+						Sound sound = Sound.DEFAULT;
+						if (eventOccurrence.getSoundId() != 0
+								&& Sound.values().length >= eventOccurrence.getSoundId()) {
+							sound = Sound.values()[eventOccurrence.getSoundId()];
+						}
+						soundSystemManager.play(sound);
+						soundSystemManager.sayAndListen(eventOccurrence.getMessage());
+					} catch (IOException e) {
+						logger.error(e);
+					}
+				}
+
+				logger.debug("Persisted: " + eventOccurrence);
 				if (current.getId() != null) {
 					em.flush();
 					Long nmId = eventOccurrence.getId();
-					logger.info("Mapping this id: " + nmId);
+					logger.debug("Mapping this id: " + nmId);
 					TaskManager.get().getExpertIdToNmId().put(current.getId(), nmId);
 				}
 
