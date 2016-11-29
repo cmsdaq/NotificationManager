@@ -48,6 +48,10 @@ public class EventOccurrencesUpdateAPIServlet extends HttpServlet {
 				Long currentId = Long.parseLong(idString);
 
 				EventOccurrence eventOccurrence = em.find(EventOccurrence.class, currentId);
+				
+				if(eventOccurrence == null){
+					logger.warn("Error retrieving event occurrence with id " + currentId);
+				}
 
 				Long duration = eventOccurrence.getDuration();
 				map.put(currentId, duration);

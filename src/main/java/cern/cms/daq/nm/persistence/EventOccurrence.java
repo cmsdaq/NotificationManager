@@ -55,6 +55,8 @@ public class EventOccurrence {
 	
 	@Transient
 	private int soundId;
+
+	private boolean closeable;
     
 	public EventType getEventType() {
 		return eventType;
@@ -140,5 +142,13 @@ public class EventOccurrence {
 
 	public void setSoundId(int soundId) {
 		this.soundId = soundId;
+	}
+
+	public boolean isCloseable() {
+		return closeable;
+	}
+
+	public void setCloseable(boolean closeable) {
+		this.closeable = closeable;
 	}
 }

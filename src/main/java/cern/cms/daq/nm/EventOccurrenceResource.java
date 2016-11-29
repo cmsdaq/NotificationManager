@@ -41,8 +41,9 @@ public class EventOccurrenceResource {
 
 	/** Flag indicating if this notification should be played */
 	private boolean play;
-	
+
 	private int soundId;
+	private boolean closeable;
 
 	public Long getType_id() {
 		return type_id;
@@ -102,6 +103,7 @@ public class EventOccurrenceResource {
 		eventOccurrence.setDisplay(this.display);
 		eventOccurrence.setPlay(this.play);
 		eventOccurrence.setSoundId(this.soundId);
+		eventOccurrence.setCloseable(this.closeable);
 		return eventOccurrence;
 	}
 
@@ -149,6 +151,14 @@ public class EventOccurrenceResource {
 
 	public void setSoundId(int soundId) {
 		this.soundId = soundId;
+	}
+
+	public boolean isCloseable() {
+		return closeable;
+	}
+
+	public void setCloseable(boolean closeable) {
+		this.closeable = closeable;
 	}
 
 }
