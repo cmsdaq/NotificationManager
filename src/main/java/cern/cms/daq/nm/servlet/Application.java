@@ -9,6 +9,9 @@ public class Application {
 
 	public static final String EXPERT_BROWSER = "expert.url";
 	public static final String LANDING = "landing";
+	public static final String SOUND_URL = "sound.url";
+	public static final String SOUND_PORT = "sound.port";
+	public static final String SOUND_ENABLED = "sound.enabled";
 
 	private final Properties prop;
 
@@ -26,6 +29,12 @@ public class Application {
 			throw new RuntimeException(message + EXPERT_BROWSER);
 		if (!instance.prop.containsKey(LANDING))
 			throw new RuntimeException(message + LANDING);
+		if (!instance.prop.containsKey(SOUND_URL))
+			throw new RuntimeException(message + SOUND_URL);
+		if (!instance.prop.containsKey(SOUND_PORT))
+			throw new RuntimeException(message + SOUND_PORT);
+		if (!instance.prop.containsKey(SOUND_ENABLED))
+			throw new RuntimeException(message + SOUND_ENABLED);
 	}
 
 	private Application(String propertiesFile) {
