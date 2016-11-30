@@ -8,10 +8,13 @@ import java.util.concurrent.ConcurrentMap;
 
 import javax.persistence.EntityManagerFactory;
 
+import org.apache.log4j.Logger;
+
 import cern.cms.daq.nm.EventOccurrenceResource;
 import cern.cms.daq.nm.NotificationException;
 import cern.cms.daq.nm.persistence.EventOccurrence;
 import cern.cms.daq.nm.persistence.NotificationOccurrence;
+import cern.cms.daq.nm.servlet.Application;
 import cern.cms.daq.nm.sound.SoundSystemManager;
 
 public class TaskManager {
@@ -22,7 +25,7 @@ public class TaskManager {
 	private final ConcurrentLinkedQueue<EventOccurrence> eventBuffer;
 	private final ConcurrentLinkedQueue<NotificationOccurrence> notificationBuffer;
 
-	private final ConcurrentMap<Long,Long> expertIdToNmId;
+	private final ConcurrentMap<Long, Long> expertIdToNmId;
 
 	private final TimerTask notificationTask;
 	private final TimerTask dispatcherTask;
@@ -32,21 +35,55 @@ public class TaskManager {
 	private final TimerTask generatorTask;
 	@SuppressWarnings("unused")
 	private final TimerTask monitoringTask;
-	
 
 	private final SoundSystemManager soundSystemManager;
+
+	private final Logger logger = Logger.getLogger(TaskManager.class);
 
 	private TaskManager(EntityManagerFactory notificationEMF, EntityManagerFactory shiftEMF) {
 		eventResourceBuffer = new ConcurrentLinkedQueue<EventOccurrenceResource>();
 		eventBuffer = new ConcurrentLinkedQueue<EventOccurrence>();
 		notificationBuffer = new ConcurrentLinkedQueue<NotificationOccurrence>();
 		expertIdToNmId = new ConcurrentHashMap<>();
-		this.soundSystemManager = new SoundSystemManager("http://dvbu-pcintelsz", 50505);
+
+		boolean soundEnabled = false;
+		String soundUrl = "";
+		int soundPort = 0;
+		String soundEnabledProp = (String) Application.get().getProp().get(Application.SOUND_ENABLED);
+
+		try {
+			soundEnabled = Boolean.parseBoolean(soundEnabledProp);
+		} catch (NumberFormatException e) {
+			logger.error("Cannot parse sound port", e);
+		}
+
+		if (soundEnabled) {
+
+			logger.info("Sound enabled, parsing url and port");
+			String soundProp = (String) Application.get().getProp().get(Application.SOUND_URL);
+			String soundPortProp = (String) Application.get().getProp().get(Application.SOUND_PORT);
+			try {
+				soundPort = Integer.parseInt(soundPortProp);
+			} catch (NumberFormatException e) {
+				logger.error("Cannot parse sound port", e);
+			}
+
+			if (soundProp != "" && soundPort != 0) {
+				soundUrl = soundProp;
+			}
+
+			logger.info("Initializing sound system with url: " + soundUrl + ":" + soundPort);
+			this.soundSystemManager = new SoundSystemManager(soundUrl, soundPort);
+		} else {
+			logger.info("Sound system is disabled");
+			this.soundSystemManager = null;
+		}
 
 		/*
 		 * initialize main tasks
 		 */
-		receiverTask = new ReceiverTask(notificationEMF, eventResourceBuffer, eventBuffer,soundSystemManager);
+		receiverTask = new ReceiverTask(notificationEMF, eventResourceBuffer, eventBuffer, soundSystemManager,
+				soundEnabled);
 		dispatcherTask = new DispatcherTask(notificationEMF, shiftEMF, eventBuffer, notificationBuffer);
 		notificationTask = new NotificationTask(notificationEMF, notificationBuffer);
 
@@ -98,7 +135,7 @@ public class TaskManager {
 		return eventResourceBuffer;
 	}
 
-	public ConcurrentMap<Long,Long> getExpertIdToNmId() {
+	public ConcurrentMap<Long, Long> getExpertIdToNmId() {
 		return expertIdToNmId;
 	}
 

@@ -49,12 +49,16 @@ public class ReceiverTask extends TimerTask {
 
 	private EntityManagerFactory emf;
 
+	private final boolean dispatchToSoundSystem;
+
 	public ReceiverTask(EntityManagerFactory emf, ConcurrentLinkedQueue<EventOccurrenceResource> eventResourceBuffer,
-			ConcurrentLinkedQueue<EventOccurrence> eventBuffer, SoundSystemManager soundSystemManager) {
+			ConcurrentLinkedQueue<EventOccurrence> eventBuffer, SoundSystemManager soundSystemManager,
+			boolean dispatchToSoundSystem) {
 		this.emf = emf;
 		this.eventBuffer = eventBuffer;
 		this.eventResourceBuffer = eventResourceBuffer;
 		this.soundSystemManager = soundSystemManager;
+		this.dispatchToSoundSystem = dispatchToSoundSystem;
 	}
 
 	@Override
@@ -78,7 +82,7 @@ public class ReceiverTask extends TimerTask {
 
 				em.persist(eventOccurrence);
 
-				if (eventOccurrence.isPlay()) {
+				if (dispatchToSoundSystem && eventOccurrence.isPlay()) {
 					try {
 						logger.debug("Dispatching to Sound system");
 						Sound sound = Sound.DEFAULT;
@@ -86,8 +90,12 @@ public class ReceiverTask extends TimerTask {
 								&& Sound.values().length >= eventOccurrence.getSoundId()) {
 							sound = Sound.values()[eventOccurrence.getSoundId()];
 						}
-						soundSystemManager.play(sound);
-						soundSystemManager.sayAndListen(eventOccurrence.getMessage());
+						String r = soundSystemManager.play(sound);
+						logger.debug("Result of sending play command: " + r);
+						String r2 = soundSystemManager.sayAndListen(eventOccurrence.getMessage());
+						logger.debug("Result of sending speak command: " + r2);
+					} catch (RuntimeException e) {
+						logger.error(e);
 					} catch (IOException e) {
 						logger.error(e);
 					}
