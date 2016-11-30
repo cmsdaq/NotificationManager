@@ -74,6 +74,8 @@
             <th>Type</th>
             <th>Message</th>
             <th>Status</th>
+            <th>Display</th>
+            <th>Play</th>
             <th>Duration</th>
             <th>Link</th>
          </tr>
@@ -253,6 +255,8 @@
   					.append($("<td>").text(eventOcc.eventType.name))
   					.append($("<td>").text(eventOcc.message))
   					.append($("<td>").text(eventOcc.status))
+  					.append($("<td>").text(eventOcc.display))
+  					.append($("<td>").text(eventOcc.play))
   					.append($("<td class='text-right'>").text(printableDuration))
   					.append($("<td>").append($("<a href='" +link + "'>").text("inspect")));
   				
