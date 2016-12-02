@@ -18,28 +18,34 @@
 			<!-- <property name="hibernate.generate_statistics" value="true" /> -->
 
 			
-			<!--  PRODUCTION DB from P5--> <!-- FIXME cms_rcms.cern.ch -->
+			<!--  P5 PRO DB--> <!-- FIXME cms_rcms.cern.ch -->
 			<!-- 
 			<property name="hibernate.connection.driver_class" value="oracle.jdbc.driver.OracleDriver" />
-			<property name="hibernate.connection.url" value="" />
-			<property name="hibernate.connection.username" value="" />
+			<property name="hibernate.connection.url" value="jdbc:oracle:thin:@cmsrac31-v.cms:10121/cms_omds_tunnel.cern.ch" />
+			<property name="hibernate.connection.username" value="cms_daq_expert" />
 			<property name="hibernate.connection.password" value="" /> -->
 			
-			<!--  PRODUCTION DB with tunnel to P5-->
+			<!--  P5 PRO DB via tunnel -->
 			<!-- 
 			<property name="hibernate.connection.driver_class" value="oracle.jdbc.driver.OracleDriver" />
-			<property name="hibernate.connection.url" value="" />
-			<property name="hibernate.connection.username" value="" />
+			<property name="hibernate.connection.url" value="jdbc:oracle:thin:@localhost:10121/cms_omds_tunnel.cern.ch" />
+			<property name="hibernate.connection.username" value="cms_daq_expert" />
 			<property name="hibernate.connection.password" value="" /> -->
 			
+
+			<!-- P5 DEV DB -->
+			<property name="hibernate.connection.driver_class" value="oracle.jdbc.driver.OracleDriver" />
+			<property name="hibernate.connection.url" value="jdbc:oracle:thin:@int2r1-v.cern.ch:10121/int2r_lb.cern.ch" />
+			<property name="hibernate.connection.username" value="cms_test_daq_expert" />
+			<property name="hibernate.connection.password" value="" />
 			
 
 			
-			<!--  DEV oracle DB -->
-			<property name="hibernate.connection.driver_class" value="oracle.jdbc.driver.OracleDriver" />
+			<!--  LOCAL DB -->
+			<!-- <property name="hibernate.connection.driver_class" value="oracle.jdbc.driver.OracleDriver" />
 			<property name="hibernate.connection.url" value="jdbc:oracle:thin:@localhost:1521/xe" />
-			<property name="hibernate.connection.username" value="" />
-			<property name="hibernate.connection.password" value="" />
+			<property name="hibernate.connection.username" value="nm" />
+			<property name="hibernate.connection.password" value="nm" /> -->
 			
 			<property name="hibernate.show_sql" value="false" />
 			<property name="hibernate.format_sql" value="true" />
