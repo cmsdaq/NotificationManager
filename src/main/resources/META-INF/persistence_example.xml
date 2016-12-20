@@ -18,41 +18,28 @@
 			<!-- <property name="hibernate.generate_statistics" value="true" /> -->
 
 			
-			<!--  P5 PRO DB--> <!-- FIXME cms_rcms.cern.ch -->
-			<!-- 
-			<property name="hibernate.connection.driver_class" value="oracle.jdbc.driver.OracleDriver" />
-			<property name="hibernate.connection.url" value="jdbc:oracle:thin:@cmsrac31-v.cms:10121/cms_omds_tunnel.cern.ch" />
+			<!--  P5 PRO DB-->
+			<!-- <property name="hibernate.connection.driver_class" value="oracle.jdbc.driver.OracleDriver" />
+			<property name="hibernate.connection.url" value="jdbc:oracle:thin:@cmsonr1-v.cern.ch:10121/cms_rcms.cern.ch" />
 			<property name="hibernate.connection.username" value="cms_daq_expert" />
 			<property name="hibernate.connection.password" value="" /> -->
 			
-			<!--  P5 PRO DB via tunnel -->
-			<!-- 
-			<property name="hibernate.connection.driver_class" value="oracle.jdbc.driver.OracleDriver" />
-			<property name="hibernate.connection.url" value="jdbc:oracle:thin:@localhost:10121/cms_omds_tunnel.cern.ch" />
-			<property name="hibernate.connection.username" value="cms_daq_expert" />
-			<property name="hibernate.connection.password" value="" /> -->
-			
-
 			<!-- P5 DEV DB -->
-			<property name="hibernate.connection.driver_class" value="oracle.jdbc.driver.OracleDriver" />
+			<!-- <property name="hibernate.connection.driver_class" value="oracle.jdbc.driver.OracleDriver" />
 			<property name="hibernate.connection.url" value="jdbc:oracle:thin:@int2r1-v.cern.ch:10121/int2r_lb.cern.ch" />
 			<property name="hibernate.connection.username" value="cms_test_daq_expert" />
-			<property name="hibernate.connection.password" value="" />
-			
-
+			<property name="hibernate.connection.password" value="" /> -->
 			
 			<!--  LOCAL DB -->
-			<!-- <property name="hibernate.connection.driver_class" value="oracle.jdbc.driver.OracleDriver" />
+			<property name="hibernate.connection.driver_class" value="oracle.jdbc.driver.OracleDriver" />
 			<property name="hibernate.connection.url" value="jdbc:oracle:thin:@localhost:1521/xe" />
 			<property name="hibernate.connection.username" value="nm" />
-			<property name="hibernate.connection.password" value="nm" /> -->
+			<property name="hibernate.connection.password" value="nm" />
 			
 			<property name="hibernate.show_sql" value="false" />
 			<property name="hibernate.format_sql" value="true" />
-			<property name="hibernate.hbm2ddl.auto" value="update" /> <!-- update -->
-			<property name="hibernate.ddl-generation" value="drop-and-create-tables" />
-			<!-- <property name="hibernate.dialect" value="org.hibernate.dialect.Oracle10gDialect" 
-				/> -->
+			<property name="hibernate.hbm2ddl.auto" value="validate" />
+			<!-- <property name="hibernate.ddl-generation" value="drop-and-create-tables" /> -->
 
 			<!-- Configuring Connection Pool -->
 			<property name="hibernate.c3p0.min_size" value="5" />
