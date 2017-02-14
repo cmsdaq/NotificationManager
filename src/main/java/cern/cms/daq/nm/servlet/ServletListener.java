@@ -10,7 +10,6 @@ import org.apache.log4j.Logger;
 import cern.cms.daq.nm.Initializer;
 import cern.cms.daq.nm.Setting;
 import cern.cms.daq.nm.sound.ExternalSoundReceiver;
-import cern.cms.daq.nm.sound.SoundSystemManager;
 import cern.cms.daq.nm.task.TaskManager;
 
 public class ServletListener implements ServletContextListener {
@@ -29,11 +28,15 @@ public class ServletListener implements ServletContextListener {
 		try {
 			Application.initialize(propertyFilePath);
 
+			logger.info("Database mode: " + Application.get().getProp().getProperty(Setting.DATABASE_MODE.getCode()));
+			logger.info("Database url : " + Application.get().getProp().getProperty(Setting.DATABASE_URL.getCode()));
+
 			final int externalNotificationPort = Integer
 					.parseInt(Application.get().getProp().getProperty(Setting.EXTERNAL_NOTIFICATION_PORT.getCode()));
 			// EntityManagerFactory emf2 =
 			// Persistence.createEntityManagerFactory("shifts");
-			EntityManagerFactory emf = Persistence.createEntityManagerFactory("notifications");
+			EntityManagerFactory emf = Persistence.createEntityManagerFactory("notifications",
+					Application.get().getProp());
 
 			e.getServletContext().setAttribute("emf", emf);
 			// e.getServletContext().setAttribute("emf-shifters", emf2);
@@ -52,7 +55,7 @@ public class ServletListener implements ServletContextListener {
 		} catch (RuntimeException ex) {
 			logger.fatal("Could not start NotificationManager due to: ", ex);
 			ex.printStackTrace();
-			
+
 		}
 	}
 

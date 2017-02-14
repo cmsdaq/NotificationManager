@@ -7,7 +7,14 @@ public enum Setting {
 	SOUND_URL("sound.url"),
 	SOUND_PORT("sound.port"),
 	SOUND_ENABLED("sound.enabled"),
-	EXTERNAL_NOTIFICATION_PORT("external.notification.port");
+	EXTERNAL_NOTIFICATION_PORT("external.notification.port"),
+	
+	DATABASE_USER("hibernate.connection.username"),
+	DATABASE_PASSWORD("hibernate.connection.password"),
+	DATABASE_URL("hibernate.connection.url"),
+	DATABASE_DRIVER("hibernate.connection.driver_class"),
+	DATABASE_MODE("hibernate.hbm2ddl.auto"),
+	;
 
 	private final String code;
 
