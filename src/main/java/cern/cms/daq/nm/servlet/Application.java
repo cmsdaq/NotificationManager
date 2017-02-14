@@ -5,13 +5,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Properties;
 
-public class Application {
+import cern.cms.daq.nm.Setting;
 
-	public static final String EXPERT_BROWSER = "expert.url";
-	public static final String LANDING = "landing";
-	public static final String SOUND_URL = "sound.url";
-	public static final String SOUND_PORT = "sound.port";
-	public static final String SOUND_ENABLED = "sound.enabled";
+public class Application {
 
 	private final Properties prop;
 
@@ -23,18 +19,15 @@ public class Application {
 	}
 
 	public static void initialize(String propertiesFile) {
-		String message = "Required property missing ";
+
 		instance = new Application(propertiesFile);
-		if (!instance.prop.containsKey(EXPERT_BROWSER))
-			throw new RuntimeException(message + EXPERT_BROWSER);
-		if (!instance.prop.containsKey(LANDING))
-			throw new RuntimeException(message + LANDING);
-		if (!instance.prop.containsKey(SOUND_URL))
-			throw new RuntimeException(message + SOUND_URL);
-		if (!instance.prop.containsKey(SOUND_PORT))
-			throw new RuntimeException(message + SOUND_PORT);
-		if (!instance.prop.containsKey(SOUND_ENABLED))
-			throw new RuntimeException(message + SOUND_ENABLED);
+
+		for (Setting setting : Setting.values()) {
+			if (!instance.prop.containsKey(setting.getCode())) {
+				throw new RuntimeException("Required property missing " + setting.getCode());
+			}
+		}
+
 	}
 
 	private Application(String propertiesFile) {
@@ -63,4 +56,5 @@ public class Application {
 	public Properties getProp() {
 		return prop;
 	}
+	
 }

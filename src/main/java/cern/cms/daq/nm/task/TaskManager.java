@@ -12,6 +12,7 @@ import org.apache.log4j.Logger;
 
 import cern.cms.daq.nm.EventOccurrenceResource;
 import cern.cms.daq.nm.NotificationException;
+import cern.cms.daq.nm.Setting;
 import cern.cms.daq.nm.persistence.EventOccurrence;
 import cern.cms.daq.nm.persistence.NotificationOccurrence;
 import cern.cms.daq.nm.servlet.Application;
@@ -49,7 +50,7 @@ public class TaskManager {
 		boolean soundEnabled = false;
 		String soundUrl = "";
 		int soundPort = 0;
-		String soundEnabledProp = (String) Application.get().getProp().get(Application.SOUND_ENABLED);
+		String soundEnabledProp = (String) Application.get().getProp().get(Setting.SOUND_ENABLED.getCode());
 
 		try {
 			soundEnabled = Boolean.parseBoolean(soundEnabledProp);
@@ -60,8 +61,8 @@ public class TaskManager {
 		if (soundEnabled) {
 
 			logger.info("Sound enabled, parsing url and port");
-			String soundProp = (String) Application.get().getProp().get(Application.SOUND_URL);
-			String soundPortProp = (String) Application.get().getProp().get(Application.SOUND_PORT);
+			String soundProp = (String) Application.get().getProp().get(Setting.SOUND_URL.getCode());
+			String soundPortProp = (String) Application.get().getProp().get(Setting.SOUND_PORT.getCode());
 			try {
 				soundPort = Integer.parseInt(soundPortProp);
 			} catch (NumberFormatException e) {
