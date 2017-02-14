@@ -8,6 +8,9 @@ import javax.servlet.ServletContextListener;
 import org.apache.log4j.Logger;
 
 import cern.cms.daq.nm.Initializer;
+import cern.cms.daq.nm.Setting;
+import cern.cms.daq.nm.sound.ExternalSoundReceiver;
+import cern.cms.daq.nm.sound.SoundSystemManager;
 import cern.cms.daq.nm.task.TaskManager;
 
 public class ServletListener implements ServletContextListener {
@@ -23,26 +26,42 @@ public class ServletListener implements ServletContextListener {
 			throw new RuntimeException("NM_CONF variable is empty");
 		}
 
-		Application.initialize(propertyFilePath);
+		try {
+			Application.initialize(propertyFilePath);
 
-		//EntityManagerFactory emf2 = Persistence.createEntityManagerFactory("shifts");
-		EntityManagerFactory emf = Persistence.createEntityManagerFactory("notifications");
+			final int externalNotificationPort = Integer
+					.parseInt(Application.get().getProp().getProperty(Setting.EXTERNAL_NOTIFICATION_PORT.getCode()));
+			// EntityManagerFactory emf2 =
+			// Persistence.createEntityManagerFactory("shifts");
+			EntityManagerFactory emf = Persistence.createEntityManagerFactory("notifications");
 
-		
-		
-		e.getServletContext().setAttribute("emf", emf);
-		//e.getServletContext().setAttribute("emf-shifters", emf2);
-		Initializer.initDefaults(emf);
-		TaskManager.initialize(emf, null);
-		TaskManager.get().schedule();
+			e.getServletContext().setAttribute("emf", emf);
+			// e.getServletContext().setAttribute("emf-shifters", emf2);
+			Initializer.initDefaults(emf);
+			TaskManager.initialize(emf, null);
+			TaskManager.get().schedule();
+			(new Thread() {
+				public void run() {
+					try {
+						ExternalSoundReceiver.startSoundReceiver(externalNotificationPort);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+			}).start();
+		} catch (RuntimeException ex) {
+			logger.fatal("Could not start NotificationManager due to: ", ex);
+			ex.printStackTrace();
+			
+		}
 	}
 
 	public void contextDestroyed(ServletContextEvent e) {
 		EntityManagerFactory emf = (EntityManagerFactory) e.getServletContext().getAttribute("emf");
-		//EntityManagerFactory emf2 = (EntityManagerFactory) e.getServletContext().getAttribute("emf-shifters");
+		// EntityManagerFactory emf2 = (EntityManagerFactory)
+		// e.getServletContext().getAttribute("emf-shifters");
 		emf.close();
-		//emf2.close();
+		// emf2.close();
 	}
-
 
 }
