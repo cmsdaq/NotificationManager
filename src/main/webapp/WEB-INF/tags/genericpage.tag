@@ -64,6 +64,7 @@
 <body>
 
 	<%@  tag import="cern.cms.daq.nm.servlet.Application"%>
+	<%@  tag import="cern.cms.daq.nm.Setting"%>
 
 	<nav class="navbar navbar-default">
 		<div class="container-fluid">
@@ -81,7 +82,7 @@
 				</button>
 
 				<a class="navbar-brand"
-					href="<%out.println(Application.get().getProp().getProperty(Application.LANDING));%>"><b>DAQ</b>
+					href="<%out.println(Application.get().getProp().getProperty(Setting.LANDING.getCode()));%>"><b>DAQ</b>
 					Expert</a>
 			</div>
 
@@ -93,7 +94,7 @@
 
 					<!-- EXPERT BROWSER -->
 					<li><a id="expertLink"
-						href="<%out.println(Application.get().getProp().getProperty(Application.EXPERT_BROWSER));%>"><i
+						href="<%out.println(Application.get().getProp().getProperty(Setting.EXPERT_BROWSER.getCode()));%>"><i
 							class="glyphicon glyphicon-tasks"></i> Browser</a></li>
 
 					<!-- NM DASHBOARD -->
