@@ -35,17 +35,19 @@ public class ExternalSoundReceiver implements Runnable {
 	public void run() {
 		try {
 			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(csocket.getInputStream()));
-			char[] buffer = new char[200];
-			int count = bufferedReader.read(buffer, 0, 200);
+			char[] buffer = new char[4000];
+			int count = bufferedReader.read(buffer, 0, 4000);
 			String externalNotification = new String(buffer, 0, count);
+			ActionMarshaller am = new ActionMarshaller();
+			Alarm alarm = am.parseInput(externalNotification);
 
 			EventOccurrenceResource eventOccurrenceResource = new EventOccurrenceResource();
-			eventOccurrenceResource.setMessage(externalNotification);
+			eventOccurrenceResource.setMessage(alarm.toString());
 			eventOccurrenceResource.setDate(new Date());
 			eventOccurrenceResource.setPlay(true);
 			eventOccurrenceResource.setDisplay(false);
 			// eventOccurrenceResource.setId(1L);
-			eventOccurrenceResource.setCloseable(true);
+			eventOccurrenceResource.setCloseable(false);
 			eventOccurrenceResource.setType_id(1L);
 			TaskManager.get().getEventResourceBuffer().add(eventOccurrenceResource);
 
