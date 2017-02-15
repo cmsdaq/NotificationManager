@@ -3,6 +3,8 @@ package cern.cms.daq.nm.sound;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Date;
@@ -60,6 +62,10 @@ public class ExternalSoundReceiver implements Runnable {
 				eventOccurrenceResource.setType_id(1L);
 				TaskManager.get().getEventResourceBuffer().add(eventOccurrenceResource);
 				logger.info("Request successfully processed.");
+				
+				PrintWriter printWriter = new PrintWriter(new OutputStreamWriter(csocket.getOutputStream()));
+				printWriter.print("All ok\n");
+				printWriter.flush();
 			} else {
 				logger.error("External notification could not be parsed");
 			}
