@@ -26,7 +26,7 @@ public class ExternalSoundReceiver implements Runnable {
 
 		while (true) {
 			Socket sock = ssock.accept();
-			logger.info("External client connected");
+			logger.info("External client connected " + sock.getRemoteSocketAddress());
 			new Thread(new ExternalSoundReceiver(sock)).start();
 		}
 
@@ -41,19 +41,30 @@ public class ExternalSoundReceiver implements Runnable {
 			ActionMarshaller am = new ActionMarshaller();
 			Alarm alarm = am.parseInput(externalNotification);
 
-			EventOccurrenceResource eventOccurrenceResource = new EventOccurrenceResource();
-			eventOccurrenceResource.setMessage(alarm.toString());
-			eventOccurrenceResource.setDate(new Date());
-			eventOccurrenceResource.setPlay(true);
-			eventOccurrenceResource.setDisplay(false);
-			// eventOccurrenceResource.setId(1L);
-			eventOccurrenceResource.setCloseable(false);
-			eventOccurrenceResource.setType_id(1L);
-			TaskManager.get().getEventResourceBuffer().add(eventOccurrenceResource);
+			if (alarm != null) {
 
-			csocket.close();
+				EventOccurrenceResource eventOccurrenceResource = new EventOccurrenceResource();
+				eventOccurrenceResource.setMessage(alarm.toString());
+				eventOccurrenceResource.setDate(new Date());
+				eventOccurrenceResource.setPlay(true);
+				eventOccurrenceResource.setDisplay(false);
+				// eventOccurrenceResource.setId(1L);
+				eventOccurrenceResource.setCloseable(false);
+				eventOccurrenceResource.setType_id(1L);
+				TaskManager.get().getEventResourceBuffer().add(eventOccurrenceResource);
+				logger.info("Request successfully processed.");
+			} else {
+				logger.error("External notification could not be parsed");
+			}
+
 		} catch (IOException e) {
 			logger.error(e);
+		} finally {
+			try {
+				csocket.close();
+			} catch (IOException e) {
+				logger.info("Problem closing socket");
+			}
 		}
 	}
 }

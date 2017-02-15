@@ -1,7 +1,6 @@
 package cern.cms.daq.nm.sound;
 
 import java.io.ByteArrayInputStream;
-import java.io.FileInputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
@@ -25,6 +24,8 @@ public class ActionMarshaller {
 	 * @TODO: handle case when there is not sender
 	 */
 	public Alarm parseInput(String input) {
+
+		logger.info("Message to parse: " + input);
 
 		JAXBContext jaxbContext;
 		try {
