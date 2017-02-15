@@ -1,6 +1,3 @@
-# ignore properties file (credentials)
-*persistence.xml
-
 .classpath
 .project
 .settings

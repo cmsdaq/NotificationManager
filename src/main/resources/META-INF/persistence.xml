@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd"
+	version="1.0">
+
+
+
+	<persistence-unit name="notifications" transaction-type="RESOURCE_LOCAL">
+		<provider>org.hibernate.ejb.HibernatePersistence</provider>
+		<class>cern.cms.daq.nm.persistence.Configuration</class>
+		<class>cern.cms.daq.nm.persistence.DummyUser</class>
+		<class>cern.cms.daq.nm.persistence.EventType</class>
+		<class>cern.cms.daq.nm.persistence.EventOccurrence</class>
+		<class>cern.cms.daq.nm.persistence.NotificationOccurrence</class>
+		<exclude-unlisted-classes>true</exclude-unlisted-classes>
+		<properties>
+
+			<property name="hibernate.show_sql" value="false" />
+			<property name="hibernate.format_sql" value="true" />
+
+			<!-- Configuring Connection Pool -->
+			<property name="hibernate.c3p0.min_size" value="5" />
+			<property name="hibernate.c3p0.max_size" value="20" />
+			<property name="hibernate.c3p0.timeout" value="500" />
+			<property name="hibernate.c3p0.max_statements" value="50" />
+			<property name="hibernate.c3p0.idle_test_period" value="2000" />
+		</properties>
+	</persistence-unit>
+
+</persistence>

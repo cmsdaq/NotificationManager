@@ -25,6 +25,7 @@ public class SoundSystemManager {
 
 	public String sayAndListen(String statement) throws IOException {
 
+		logger.info("Speak statement: " + statement);
 		setUpConnection(url, port);
 		say("<talk>" + statement + "</talk>");
 		return listen();
