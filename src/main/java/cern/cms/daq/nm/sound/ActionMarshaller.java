@@ -43,4 +43,22 @@ public class ActionMarshaller {
 
 	}
 
+	public Alarm parseInput2(String input) {
+		logger.info("Message to parse again: " + input);
+
+		JAXBContext jaxbContext;
+		try {
+			jaxbContext = JAXBContext.newInstance(CommandSequence.class);
+			Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+			InputStream stream = new ByteArrayInputStream(input.getBytes(StandardCharsets.UTF_8));
+			CommandSequence commandSequence = (CommandSequence) jaxbUnmarshaller.unmarshal(stream);
+			Alarm alarm = commandSequence.getAlarm();
+			logger.info("Alarm sucessfully parsed: " + alarm);
+			return alarm;
+		} catch (JAXBException e) {
+			logger.error("Problem parsing xml", e);
+		}
+
+		return null;
+	}
 }

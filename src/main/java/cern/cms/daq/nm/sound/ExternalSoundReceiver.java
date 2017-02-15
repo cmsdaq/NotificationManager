@@ -39,7 +39,14 @@ public class ExternalSoundReceiver implements Runnable {
 			int count = bufferedReader.read(buffer, 0, 4000);
 			String externalNotification = new String(buffer, 0, count);
 			ActionMarshaller am = new ActionMarshaller();
-			Alarm alarm = am.parseInput(externalNotification);
+			Alarm alarm = am.parseInput2(externalNotification);
+
+			if (alarm == null) {
+				logger.info("Parsing with command sequence wrapper unsucessful. Will add fake wrapper.");
+				String fakeWrapper = "<CommandSequence>" + externalNotification + "</CommandSequence>";
+
+				alarm = am.parseInput2(fakeWrapper);
+			}
 
 			if (alarm != null) {
 
