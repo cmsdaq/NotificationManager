@@ -8,9 +8,9 @@ public class ActionMarshallerTest {
 	@Test
 	public void test() {
 
-		String source = "<alarm sender=\"WBM\" sound=\"mysound.wav\" talk=\"a text to play\">a text to display</alarm>";
+		String source = "<CommandSequence><alarm sender=\"WBM\" sound=\"mysound.wav\" talk=\"a text to play\">a text to display</alarm></CommandSequence>";
 		ActionMarshaller instance = new ActionMarshaller();
-		Alarm a = instance.parseInput(source);
+		Alarm a = instance.parseInput2(source);
 
 		Assert.assertNotNull(a);
 		Assert.assertEquals("a text to play", a.getTalk());

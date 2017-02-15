@@ -23,7 +23,8 @@ public class ActionMarshaller {
 	 * 
 	 * @TODO: handle case when there is not sender
 	 */
-	public Alarm parseInput(String input) {
+	@Deprecated
+	private Alarm parseInput(String input) {
 
 		logger.info("Message to parse: " + input);
 
