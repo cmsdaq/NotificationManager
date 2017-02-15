@@ -54,7 +54,7 @@ public class ExternalSoundReceiver implements Runnable {
 					eventOccurrenceResource.setDisplay(false);
 					// eventOccurrenceResource.setId(1L);
 					eventOccurrenceResource.setCloseable(false);
-					eventOccurrenceResource.setType_id(1L);
+					eventOccurrenceResource.setType_id(0L);
 					TaskManager.get().getEventResourceBuffer().add(eventOccurrenceResource);
 				}
 
