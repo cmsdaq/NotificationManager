@@ -1,20 +1,22 @@
 package cern.cms.daq.nm.sound;
 
+import java.util.List;
+
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "CommandSequence")
 public class CommandSequence {
 
-	private Alarm alarm;
+	private List<Alarm> alarm;
 
-	public Alarm getAlarm() {
+	public List<Alarm> getAlarm() {
 		return alarm;
 	}
 
-	@XmlElement
-	public void setAlarm(Alarm alarm) {
+	public void setAlarm(List<Alarm> alarm) {
 		this.alarm = alarm;
 	}
+
 
 }

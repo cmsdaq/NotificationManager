@@ -3,6 +3,7 @@ package cern.cms.daq.nm.sound;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -10,56 +11,66 @@ import javax.xml.bind.Unmarshaller;
 
 import org.apache.log4j.Logger;
 
+/**
+ * Parses external system notifications
+ * 
+ * @author Maciej Gladki (maciej.szymon.gladki@cern.ch)
+ *
+ */
 public class ActionMarshaller {
 
 	private static final Logger logger = Logger.getLogger(ActionMarshaller.class);
 
 	/**
-	 * Parse external notification
+	 * Parses input from external system. The method accepts both cases with
+	 * <commandSequence> wrapper and without it.
 	 * 
 	 * @param input
-	 *            xml input from external source
-	 * @return Alarm object representing the request
-	 * 
-	 * @TODO: handle case when there is not sender
+	 *            raw message from external system
+	 * @return list of Action objects parsed from input message
 	 */
-	@Deprecated
-	private Alarm parseInput(String input) {
-
+	public List<Alarm> parseInput(String input) {
 		logger.info("Message to parse: " + input);
-
-		JAXBContext jaxbContext;
+		List<Alarm> alarms;
 		try {
-			jaxbContext = JAXBContext.newInstance(Alarm.class);
-			Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-			InputStream stream = new ByteArrayInputStream(input.getBytes(StandardCharsets.UTF_8));
-			Alarm alarm = (Alarm) jaxbUnmarshaller.unmarshal(stream);
-			logger.info("Alarm sucessfully parsed: " + alarm);
-			return alarm;
+			alarms = parse(input);
+			return alarms;
 		} catch (JAXBException e) {
-			logger.error("Problem parsing xml", e);
-		}
+			logger.warn("Parsing with command sequence wrapper unsucessful. Will add fake wrapper.");
+			logger.warn(e);
+			String fakeWrapper = "<CommandSequence>" + input + "</CommandSequence>";
 
-		return null;
+			try {
+				alarms = parse(fakeWrapper);
+				return alarms;
+			} catch (JAXBException e1) {
+
+				logger.error(e1);
+				return null;
+			}
+		}
 
 	}
 
-	public Alarm parseInput2(String input) {
-		logger.info("Message to parse again: " + input);
+	/**
+	 * Parses the input
+	 * 
+	 * @param input
+	 *            raw message from external system
+	 * @return list of Action objects parsed from input message
+	 * @throws JAXBException
+	 *             exception in case parsing problem occures
+	 */
+	private List<Alarm> parse(String input) throws JAXBException {
 
 		JAXBContext jaxbContext;
-		try {
-			jaxbContext = JAXBContext.newInstance(CommandSequence.class);
-			Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-			InputStream stream = new ByteArrayInputStream(input.getBytes(StandardCharsets.UTF_8));
-			CommandSequence commandSequence = (CommandSequence) jaxbUnmarshaller.unmarshal(stream);
-			Alarm alarm = commandSequence.getAlarm();
-			logger.info("Alarm sucessfully parsed: " + alarm);
-			return alarm;
-		} catch (JAXBException e) {
-			logger.error("Problem parsing xml", e);
-		}
+		jaxbContext = JAXBContext.newInstance(CommandSequence.class);
+		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+		InputStream stream = new ByteArrayInputStream(input.getBytes(StandardCharsets.UTF_8));
+		CommandSequence commandSequence = (CommandSequence) jaxbUnmarshaller.unmarshal(stream);
+		List<Alarm> alarm = commandSequence.getAlarm();
+		logger.info("Alarm sucessfully parsed: " + alarm);
+		return alarm;
 
-		return null;
 	}
 }

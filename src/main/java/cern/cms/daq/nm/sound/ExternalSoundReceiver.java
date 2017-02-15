@@ -8,6 +8,7 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Date;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 
@@ -41,28 +42,23 @@ public class ExternalSoundReceiver implements Runnable {
 			int count = bufferedReader.read(buffer, 0, 4000);
 			String externalNotification = new String(buffer, 0, count);
 			ActionMarshaller am = new ActionMarshaller();
-			Alarm alarm = am.parseInput2(externalNotification);
+			List<Alarm> alarms = am.parseInput(externalNotification);
 
-			if (alarm == null) {
-				logger.info("Parsing with command sequence wrapper unsucessful. Will add fake wrapper.");
-				String fakeWrapper = "<CommandSequence>" + externalNotification + "</CommandSequence>";
+			if (alarms != null) {
 
-				alarm = am.parseInput2(fakeWrapper);
-			}
+				for (Alarm alarm : alarms) {
+					EventOccurrenceResource eventOccurrenceResource = new EventOccurrenceResource();
+					eventOccurrenceResource.setMessage(alarm.toString());
+					eventOccurrenceResource.setDate(new Date());
+					eventOccurrenceResource.setPlay(true);
+					eventOccurrenceResource.setDisplay(false);
+					// eventOccurrenceResource.setId(1L);
+					eventOccurrenceResource.setCloseable(false);
+					eventOccurrenceResource.setType_id(1L);
+					TaskManager.get().getEventResourceBuffer().add(eventOccurrenceResource);
+				}
 
-			if (alarm != null) {
-
-				EventOccurrenceResource eventOccurrenceResource = new EventOccurrenceResource();
-				eventOccurrenceResource.setMessage(alarm.toString());
-				eventOccurrenceResource.setDate(new Date());
-				eventOccurrenceResource.setPlay(true);
-				eventOccurrenceResource.setDisplay(false);
-				// eventOccurrenceResource.setId(1L);
-				eventOccurrenceResource.setCloseable(false);
-				eventOccurrenceResource.setType_id(1L);
-				TaskManager.get().getEventResourceBuffer().add(eventOccurrenceResource);
 				logger.info("Request successfully processed.");
-				
 				PrintWriter printWriter = new PrintWriter(new OutputStreamWriter(csocket.getOutputStream()));
 				printWriter.print("All ok\n");
 				printWriter.flush();
