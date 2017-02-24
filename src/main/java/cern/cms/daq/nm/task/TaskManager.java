@@ -13,7 +13,7 @@ import org.apache.log4j.Logger;
 import cern.cms.daq.nm.EventOccurrenceResource;
 import cern.cms.daq.nm.NotificationException;
 import cern.cms.daq.nm.Setting;
-import cern.cms.daq.nm.persistence.EventOccurrence;
+import cern.cms.daq.nm.persistence.Event;
 import cern.cms.daq.nm.persistence.NotificationOccurrence;
 import cern.cms.daq.nm.servlet.Application;
 import cern.cms.daq.nm.sound.SoundSystemManager;
@@ -23,7 +23,7 @@ public class TaskManager {
 	private static TaskManager instance;
 
 	private final ConcurrentLinkedQueue<EventOccurrenceResource> eventResourceBuffer;
-	private final ConcurrentLinkedQueue<EventOccurrence> eventBuffer;
+	private final ConcurrentLinkedQueue<Event> eventBuffer;
 	private final ConcurrentLinkedQueue<NotificationOccurrence> notificationBuffer;
 
 	private final ConcurrentMap<Long, Long> expertIdToNmId;
@@ -43,7 +43,7 @@ public class TaskManager {
 
 	private TaskManager(EntityManagerFactory notificationEMF, EntityManagerFactory shiftEMF) {
 		eventResourceBuffer = new ConcurrentLinkedQueue<EventOccurrenceResource>();
-		eventBuffer = new ConcurrentLinkedQueue<EventOccurrence>();
+		eventBuffer = new ConcurrentLinkedQueue<Event>();
 		notificationBuffer = new ConcurrentLinkedQueue<NotificationOccurrence>();
 		expertIdToNmId = new ConcurrentHashMap<>();
 
@@ -128,7 +128,7 @@ public class TaskManager {
 		return notificationBuffer;
 	}
 
-	public ConcurrentLinkedQueue<EventOccurrence> getEventBuffer() {
+	public ConcurrentLinkedQueue<Event> getEventBuffer() {
 		return eventBuffer;
 	}
 

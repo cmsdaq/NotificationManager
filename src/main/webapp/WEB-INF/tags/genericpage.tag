@@ -102,7 +102,7 @@
 							class="glyphicon glyphicon-bell"></i> Dashboard</a></li>
 
 					<!-- NM NOTIFICATIONS -->
-					<li id="event_occurrences"><a href="event_occurrences"><i
+					<li id="event_occurrences"><a href=archive><i
 							class="glyphicon glyphicon-calendar"></i> Notifications</a></li>
 
 

@@ -25,14 +25,14 @@ import org.hibernate.criterion.Restrictions;
 
 import com.google.gson.Gson;
 
-import cern.cms.daq.nm.persistence.EventOccurrence;
+import cern.cms.daq.nm.persistence.Event;
 
 /**
  * Event occurrences servlet API, used for async requests in autoupdate mode.
  * 
  * This API is used by main servlet for event occurrences view.
  * 
- * @see EventOccurrencesServlet
+ * @see EventArchiveServlet
  * 
  * @author Maciej Gladki (maciej.szymon.gladki@cern.ch)
  *
@@ -78,8 +78,8 @@ public class EventOccurrencesAPIServlet extends HttpServlet {
 
 		try {
 
-			Criteria elementsCriteria = session.createCriteria(EventOccurrence.class);
-			Criteria elementsCountCriteria = session.createCriteria(EventOccurrence.class);
+			Criteria elementsCriteria = session.createCriteria(Event.class);
+			Criteria elementsCountCriteria = session.createCriteria(Event.class);
 
 			elementsCriteria.addOrder(Order.desc("date"));
 			elementsCriteria.addOrder(Order.desc("id"));
@@ -144,7 +144,7 @@ public class EventOccurrencesAPIServlet extends HttpServlet {
 			}
 
 			@SuppressWarnings("unchecked")
-			List<EventOccurrence> eventList = elementsCriteria.list();
+			List<Event> eventList = elementsCriteria.list();
 
 			elementsCountCriteria.setProjection(Projections.rowCount());
 			elementsCountCriteria.setFirstResult(0);

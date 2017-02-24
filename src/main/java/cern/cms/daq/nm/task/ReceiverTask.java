@@ -13,7 +13,9 @@ import org.apache.log4j.Logger;
 import org.hibernate.Session;
 
 import cern.cms.daq.nm.EventOccurrenceResource;
-import cern.cms.daq.nm.persistence.EventOccurrence;
+import cern.cms.daq.nm.persistence.Event;
+import cern.cms.daq.nm.persistence.EventSenderType;
+import cern.cms.daq.nm.persistence.EventType;
 import cern.cms.daq.nm.sound.Sound;
 import cern.cms.daq.nm.sound.SoundSystemManager;
 
@@ -24,7 +26,7 @@ import cern.cms.daq.nm.sound.SoundSystemManager;
  * <ol>
  * <li>take event occurrence resource ({@link EventOccurrenceResource} objects)
  * from API buffer</li>
- * <li>convert into event occurrences ({@link EventOccurrence} objects)</li>
+ * <li>convert into event occurrences ({@link Event} objects)</li>
  * <li>persist converted object to database</li>
  * <li>pass converted object to dispatcher buffer</li>
  * </ol>
@@ -40,7 +42,7 @@ public class ReceiverTask extends TimerTask {
 	/**
 	 * Outcoming buffer
 	 */
-	private final ConcurrentLinkedQueue<EventOccurrence> eventBuffer;
+	private final ConcurrentLinkedQueue<Event> eventBuffer;
 
 	/**
 	 * Incoming buffer
@@ -52,7 +54,7 @@ public class ReceiverTask extends TimerTask {
 	private final boolean dispatchToSoundSystem;
 
 	public ReceiverTask(EntityManagerFactory emf, ConcurrentLinkedQueue<EventOccurrenceResource> eventResourceBuffer,
-			ConcurrentLinkedQueue<EventOccurrence> eventBuffer, SoundSystemManager soundSystemManager,
+			ConcurrentLinkedQueue<Event> eventBuffer, SoundSystemManager soundSystemManager,
 			boolean dispatchToSoundSystem) {
 		this.emf = emf;
 		this.eventBuffer = eventBuffer;
@@ -70,7 +72,7 @@ public class ReceiverTask extends TimerTask {
 			int i = 0;
 
 			EntityManager em = emf.createEntityManager();
-			Queue<EventOccurrence> tmpReceiverBuffer = new ArrayDeque<>();
+			Queue<Event> tmpReceiverBuffer = new ArrayDeque<>();
 			em.getTransaction().begin();
 			Session session = em.unwrap(Session.class);
 
@@ -78,8 +80,11 @@ public class ReceiverTask extends TimerTask {
 				i++;
 				EventOccurrenceResource current = eventResourceBuffer.poll();
 				logger.debug("Received: " + current);
-				EventOccurrence eventOccurrence = current.asEventOccurrence(session);
-
+				Event eventOccurrence = current.asEventOccurrence(session);
+				eventOccurrence.setEventType(EventType.Single);
+				eventOccurrence.setEventSenderType(EventSenderType.External);
+				
+				
 				em.persist(eventOccurrence);
 
 				if (dispatchToSoundSystem && eventOccurrence.isPlay()) {

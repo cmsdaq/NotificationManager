@@ -1,40 +1,27 @@
 package cern.cms.daq.nm.persistence;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+public enum EventType {
 
-@Entity
-public class EventType {
-	@Id
-	@GeneratedValue(strategy = GenerationType.TABLE)
-	private Long id;
-	private String name;
-	private String description;
+	Single("Single", "Single independent event"),
+	ConditionStart("Start", "Event indicating start of the condition"),
+	ConditionUpdate("Update", "Event indicating update of the condition"),
+	ConditionEnd("End", "Event indicating end of the condition");
 
-	public Long getId() {
-		return id;
-	}
+	private final String description;
 
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
+	private final String name;
 
 	public String getDescription() {
 		return description;
 	}
 
-	public void setDescription(String description) {
+	private EventType(String name, String description) {
+		this.name = name;
 		this.description = description;
+	}
+
+	public String getName() {
+		return name;
 	}
 
 }

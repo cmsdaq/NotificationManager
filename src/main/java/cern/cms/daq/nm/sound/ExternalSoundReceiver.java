@@ -48,13 +48,16 @@ public class ExternalSoundReceiver implements Runnable {
 
 				for (Alarm alarm : alarms) {
 					EventOccurrenceResource eventOccurrenceResource = new EventOccurrenceResource();
-					eventOccurrenceResource.setMessage(alarm.toString());
+					eventOccurrenceResource.setMessage(alarm.getText());
+					eventOccurrenceResource.setTextToSpeech(alarm.getTalk());
+					eventOccurrenceResource.setSender(alarm.getSender());
+					eventOccurrenceResource.setTitle(alarm.getSender() + " alarm");
+					//TODO: save the sound
 					eventOccurrenceResource.setDate(new Date());
 					eventOccurrenceResource.setPlay(true);
 					eventOccurrenceResource.setDisplay(false);
 					// eventOccurrenceResource.setId(1L);
 					eventOccurrenceResource.setCloseable(false);
-					eventOccurrenceResource.setType_id(0L);
 					TaskManager.get().getEventResourceBuffer().add(eventOccurrenceResource);
 				}
 

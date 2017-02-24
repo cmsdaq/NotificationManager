@@ -15,14 +15,14 @@ import org.apache.log4j.Logger;
 
 import com.google.gson.Gson;
 
-import cern.cms.daq.nm.persistence.EventOccurrence;
+import cern.cms.daq.nm.persistence.Event;
 
 /**
  * Event occurrences servlet API, used for async requests in autoupdate mode.
  * 
  * This API is used by main servlet for event occurrences view.
  * 
- * @see EventOccurrencesServlet
+ * @see EventArchiveServlet
  * 
  * @author Maciej Gladki (maciej.szymon.gladki@cern.ch)
  *
@@ -47,7 +47,7 @@ public class EventOccurrencesUpdateAPIServlet extends HttpServlet {
 			for (String idString : ids) {
 				Long currentId = Long.parseLong(idString);
 
-				EventOccurrence eventOccurrence = em.find(EventOccurrence.class, currentId);
+				Event eventOccurrence = em.find(Event.class, currentId);
 				
 				if(eventOccurrence == null){
 					logger.warn("Error retrieving event occurrence with id " + currentId);

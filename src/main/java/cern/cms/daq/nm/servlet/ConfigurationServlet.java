@@ -85,7 +85,7 @@ public class ConfigurationServlet extends UserContextServlet {
 			update(em, request, user);
 
 			/* for each configuration fill settings from database */
-			HashMap<Long, HashMap<Long, Boolean>> eventMode = new HashMap<>();
+			HashMap<Long, HashMap<EventType, Boolean>> eventMode = new HashMap<>();
 			HashMap<Long, HashMap<Integer, Boolean>> channelMode = new HashMap<>();
 			HashMap<Long, HashMap<Integer, Boolean>> conditionMode = new HashMap<>();
 			for (Configuration configuration : configurationList) {
@@ -94,13 +94,13 @@ public class ConfigurationServlet extends UserContextServlet {
 				Set<Condition> currentConditionList = configuration.getConditions();
 
 				/* fill settings for events */
-				HashMap<Long, Boolean> eventSetting = new HashMap<>();
+				HashMap<EventType, Boolean> eventSetting = new HashMap<>();
 				for (EventType eventType : eventTypeList) {
 
 					if (currentEventList.contains(eventType)) {
-						eventSetting.put(eventType.getId(), true);
+						eventSetting.put(eventType, true);
 					} else {
-						eventSetting.put(eventType.getId(), false);
+						eventSetting.put(eventType, false);
 					}
 
 					eventMode.put(configuration.getId(), eventSetting);

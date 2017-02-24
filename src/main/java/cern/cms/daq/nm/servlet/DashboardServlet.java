@@ -14,7 +14,7 @@ import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Order;
 
-import cern.cms.daq.nm.persistence.EventOccurrence;
+import cern.cms.daq.nm.persistence.Event;
 
 public class DashboardServlet extends UserContextServlet {
 	private static final long serialVersionUID = 1L;

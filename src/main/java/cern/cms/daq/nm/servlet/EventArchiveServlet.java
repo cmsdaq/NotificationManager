@@ -14,42 +14,41 @@ import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 
+import cern.cms.daq.nm.persistence.Event;
 import cern.cms.daq.nm.persistence.EventType;
 
 /**
- * Event occurrences servlet, used for presenting view with event occurrences
- * 
- * This servlet uses also API servlet for async requests (autoupdate mode)
+ * Event history servlet, used for presenting view with events
  * 
  * @see EventOccurrencesAPIServlet
  * 
  * @author Maciej Gladki (maciej.szymon.gladki@cern.ch)
  *
  */
-public class EventOccurrencesServlet extends HttpServlet {
+public class EventArchiveServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	
-	private static final Logger logger = Logger.getLogger(EventOccurrencesServlet.class);
+
+	private static final Logger logger = Logger.getLogger(EventArchiveServlet.class);
 
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		
+
 		logger.debug("get occurrences layout");
 
 		EntityManagerFactory emf = (EntityManagerFactory) getServletContext().getAttribute("emf");
 		EntityManager em = emf.createEntityManager();
 
 		Session session = em.unwrap(Session.class);
-		Criteria eventCriteria = session.createCriteria(EventType.class);
-		@SuppressWarnings("unchecked")
-		List<EventType> eventTypeList = eventCriteria.list();
-
 
 		try {
-
-			request.setAttribute("eventTypes", eventTypeList);
-			request.getRequestDispatcher("/event_occurrences.jsp").forward(request, response);
+			
+			Criteria eventCriteria = session.createCriteria(Event.class);
+			@SuppressWarnings("unchecked")
+			List<Event> eventTypeList = eventCriteria.list();
+			request.setAttribute("events", eventTypeList);
+			request.setAttribute("eventTypes", EventType.values());
+			request.getRequestDispatcher("/archive.jsp").forward(request, response);
 
 		} finally {
 			if (em.getTransaction().isActive())

@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import cern.cms.daq.nm.EventCloseResource;
-import cern.cms.daq.nm.persistence.EventOccurrence;
+import cern.cms.daq.nm.persistence.Event;
 import cern.cms.daq.nm.sound.Sound;
 import cern.cms.daq.nm.task.TaskManager;
 
@@ -45,12 +45,12 @@ public class CloseEventAPIController {
 		EntityManager em = emf.createEntityManager();
 		try {
 
-			EventOccurrence notification = em.find(EventOccurrence.class, id);
+			Event notification = em.find(Event.class, id);
 			logger.debug("Found object with given id: " + notification);
 			
 			int retry = 5;
 			while (notification == null && retry > 0) {
-				notification = em.find(EventOccurrence.class, id);
+				notification = em.find(Event.class, id);
 				logger.debug("Could not find the object in db, retries left: " + retry);
 				try {
 					Thread.sleep(1000);

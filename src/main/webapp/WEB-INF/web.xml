@@ -27,8 +27,8 @@
 		<servlet-class>cern.cms.daq.nm.servlet.EventsServlet</servlet-class>
 	</servlet>
 	<servlet>
-		<servlet-name>EventOccurrencesServlet</servlet-name>
-		<servlet-class>cern.cms.daq.nm.servlet.EventOccurrencesServlet</servlet-class>
+		<servlet-name>EventArchiveServlet</servlet-name>
+		<servlet-class>cern.cms.daq.nm.servlet.EventArchiveServlet</servlet-class>
 	</servlet>
 	<servlet>
 		<servlet-name>EventOccurrencesAPIServlet</servlet-name>
@@ -81,8 +81,8 @@
 	</servlet-mapping>
 
 	<servlet-mapping>
-		<servlet-name>EventOccurrencesServlet</servlet-name>
-		<url-pattern>/event_occurrences</url-pattern>
+		<servlet-name>EventArchiveServlet</servlet-name>
+		<url-pattern>/archive</url-pattern>
 	</servlet-mapping>
 
 	<servlet-mapping>

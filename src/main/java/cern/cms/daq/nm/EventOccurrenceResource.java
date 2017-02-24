@@ -1,36 +1,33 @@
 package cern.cms.daq.nm;
 
 import java.util.Date;
-import java.util.List;
 
 import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
 
 import org.apache.log4j.Logger;
-import org.hibernate.Criteria;
 import org.hibernate.Session;
-import org.hibernate.criterion.Restrictions;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-import cern.cms.daq.nm.persistence.EventOccurrence;
+import cern.cms.daq.nm.persistence.Event;
 import cern.cms.daq.nm.persistence.EventStatus;
-import cern.cms.daq.nm.persistence.EventType;
 
 @Entity
 public class EventOccurrenceResource {
 
 	private static final Logger logger = Logger.getLogger(EventOccurrenceResource.class);
 
-	@NotNull
-	private Long type_id;
-
 	private Long id;
 
 	@NotNull
 	private String message;
 
-	private List<String> action;
+	private String title;
+
+	private String sender;
+
+	private String textToSpeech;
 
 	@NotNull
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "CET")
@@ -44,14 +41,6 @@ public class EventOccurrenceResource {
 
 	private int soundId;
 	private boolean closeable;
-
-	public Long getType_id() {
-		return type_id;
-	}
-
-	public void setType_id(Long type_id) {
-		this.type_id = type_id;
-	}
 
 	public Date getDate() {
 		return date;
@@ -69,9 +58,9 @@ public class EventOccurrenceResource {
 		this.message = message;
 	}
 
-	public EventOccurrence asEventOccurrence(Session session) {
+	public Event asEventOccurrence(Session session) {
 
-		EventOccurrence eventOccurrence = new EventOccurrence();
+		Event eventOccurrence = new Event();
 
 		int MAX_CHARS = 4000;
 		if (this.message.length() >= MAX_CHARS) {
@@ -84,26 +73,14 @@ public class EventOccurrenceResource {
 
 		eventOccurrence.setMessage(this.message);
 
-		Criteria cr = session.createCriteria(EventType.class);
-		cr.add(Restrictions.eq("id", this.type_id));
-		EventType eventType = (EventType) cr.uniqueResult();
-
-		if (eventType == null) {
-			// TODO: add other type
-			logger.warn("cannot find event type with id " + this.type_id + ", adding to other type");
-			return null;
-		} else {
-			logger.debug("Found event type " + eventType.getName());
-		}
-
-		eventOccurrence.setEventType(eventType);
 		eventOccurrence.setStatus(EventStatus.Received);
 		eventOccurrence.setDate(this.date);
-		eventOccurrence.setActionSteps(this.getAction());
 		eventOccurrence.setDisplay(this.display);
 		eventOccurrence.setPlay(this.play);
 		eventOccurrence.setSoundId(this.soundId);
-		eventOccurrence.setCloseable(this.closeable);
+		eventOccurrence.setSender(sender);
+		eventOccurrence.setTitle(title);
+		eventOccurrence.setTextToSpeech(textToSpeech);
 		return eventOccurrence;
 	}
 
@@ -113,20 +90,6 @@ public class EventOccurrenceResource {
 
 	public void setId(Long id) {
 		this.id = id;
-	}
-
-	public List<String> getAction() {
-		return action;
-	}
-
-	public void setAction(List<String> actionSteps) {
-		this.action = actionSteps;
-	}
-
-	@Override
-	public String toString() {
-		return "EventOccurrenceResource [type_id=" + type_id + ", id=" + id + ", message=" + message + ", actionSteps="
-				+ action + ", date=" + date + "]";
 	}
 
 	public boolean isDisplay() {
@@ -159,6 +122,30 @@ public class EventOccurrenceResource {
 
 	public void setCloseable(boolean closeable) {
 		this.closeable = closeable;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public String getSender() {
+		return sender;
+	}
+
+	public void setSender(String sender) {
+		this.sender = sender;
+	}
+
+	public String getTextToSpeech() {
+		return textToSpeech;
+	}
+
+	public void setTextToSpeech(String textToSpeech) {
+		this.textToSpeech = textToSpeech;
 	}
 
 }
