@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+
+
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css"
+	integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ"
+	crossorigin="anonymous">
+
+<script src="https://code.jquery.com/jquery-3.1.1.slim.min.js"
+	integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n"
+	crossorigin="anonymous"></script>
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"
+	integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb"
+	crossorigin="anonymous"></script>
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"
+	integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn"
+	crossorigin="anonymous"></script>
+</head>
+<body>
+
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-sm-8">
+
+				<div class="row">
+					<div class="col-sm-12">
+
+
+						<div class="panel panel-default">
+							<!-- Default panel contents -->
+							<div class="panel-heading">Current Suggestion</div>
+							<div class="panel-body">
+
+								<div class="row">
+									<div class="col-sm-12">
+
+										<div class="jumbotron jumbotron-fluid">
+											<div class="container">
+												<h1 class="display-5">Trigger blocked by partition</h1>
+
+												<p class="lead">Partition {{TTCP}} in {{SUBSYSTEM}}
+													subsystem is in {{STATE}} TTS state. It's blocking trigger</p>
+
+												<div class="list-group">
+													<div class="list-group-item">Issue a TTCHardReset</div>
+													<div class="list-group-item">If DAQ is still stuck
+														after a few seconds, issue another TTCHardReset (HardReset
+														includes a Resync, so it may be used for both OOS and
+														ERROR)</div>
+													<div class="list-group-item">Problem fixed: Make an
+														e-log entry</div>
+													<div class="list-group-item">Problem not fixed: Try
+														to recover: Stop the run. Red & Green recycle the
+														subsystem {{SUBSYSTEM}}. Start a new run. Try up to 2
+														times</div>
+													<div class="list-group-item">Problem still not fixed
+														after recover: Call the DOC of {{SUBSYSTEM}} (for the
+														partition in {{STATE}})</div>
+													<div class="list-group-item">Problem fixed after
+														recover: Make an e-log entry. Call the DOC of
+														{{SUBSYSTEM}} (for the partition in {{STATE}}) to inform")</div>
+												</div>
+											</div>
+										</div>
+
+									</div>
+
+
+								</div>
+
+							</div>
+						</div>
+					</div>
+
+				</div>
+
+
+				<div class="row">
+					<div class="col-sm-12">
+
+
+
+						<div class="panel panel-default">
+							<!-- Default panel contents -->
+							<div class="panel-heading">All Suggestions</div>
+							<div class="panel-body">
+
+								<div class="list-group">
+									<a href="#"
+										class="list-group-item list-group-item-action flex-column align-items-start">
+										<div class="d-flex w-100 justify-content-between">
+											<h5 class="mb-1">List group item heading</h5>
+											<small>3 days ago</small>
+										</div>
+										<p class="mb-1">Donec id elit non mi porta gravida at eget
+											metus. Maecenas sed diam eget risus varius blandit.</p> <small>Donec
+											id elit non mi porta.</small>
+									</a> <a href="#"
+										class="list-group-item list-group-item-action flex-column align-items-start">
+										<div class="d-flex w-100 justify-content-between">
+											<h5 class="mb-1">List group item heading</h5>
+											<small class="text-muted">3 days ago</small>
+										</div>
+										<p class="mb-1">Donec id elit non mi porta gravida at eget
+											metus. Maecenas sed diam eget risus varius blandit.</p> <small
+										class="text-muted">Donec id elit non mi porta.</small>
+									</a> <a href="#"
+										class="list-group-item list-group-item-action flex-column align-items-start">
+										<div class="d-flex w-100 justify-content-between">
+											<h5 class="mb-1">List group item heading</h5>
+											<small class="text-muted">3 days ago</small>
+										</div>
+										<p class="mb-1">Donec id elit non mi porta gravida at eget
+											metus. Maecenas sed diam eget risus varius blandit.</p> <small
+										class="text-muted">Donec id elit non mi porta.</small>
+									</a>
+								</div>
+
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-sm-4">
+
+
+
+				<div class="panel panel-default">
+					<!-- Default panel contents -->
+					<div class="panel-heading">All Events</div>
+					<div class="panel-body">
+
+
+
+						<div class="list-group">
+							<a href="#"
+								class="list-group-item list-group-item-action flex-column align-items-start">
+								<div class="d-flex w-100 justify-content-between">
+									<h5 class="mb-1">Backpressure finished</h5>
+									<small>3 days ago</small>
+								</div>
+								<p class="mb-1">Condition ended.</p> <small>Manual
+									action</small>
+							</a> <a href="#"
+								class="list-group-item list-group-item-action flex-column align-items-start">
+								<div class="d-flex w-100 justify-content-between">
+									<h5 class="mb-1">Backpressure detected</h5>
+									<small class="text-muted">3 days ago</small>
+								</div>
+								<p class="mb-1">Condition start.</p> <small class="text-muted">fed
+									345 is oos.</small>
+							</a> <a href="#"
+								class="list-group-item list-group-item-action flex-column align-items-start">
+								<div class="d-flex w-100 justify-content-between">
+									<h5 class="mb-1">DQM alarm</h5>
+									<small class="text-muted">3 days ago</small>
+								</div>
+								<p class="mb-1">DQM alarm</p> <small class="text-muted">Text
+									to speak</small>
+							</a><a href="#"
+								class="list-group-item list-group-item-action flex-column align-items-start">
+								<div class="d-flex w-100 justify-content-between">
+									<h5 class="mb-1">Backpressure finished</h5>
+									<small>3 days ago</small>
+								</div>
+								<p class="mb-1">Condition ended.</p> <small>Manual
+									action</small>
+							</a> <a href="#"
+								class="list-group-item list-group-item-action flex-column align-items-start">
+								<div class="d-flex w-100 justify-content-between">
+									<h5 class="mb-1">Backpressure detected</h5>
+									<small class="text-muted">3 days ago</small>
+								</div>
+								<p class="mb-1">Condition start.</p> <small class="text-muted">fed
+									345 is oos.</small>
+							</a> <a href="#"
+								class="list-group-item list-group-item-action flex-column align-items-start">
+								<div class="d-flex w-100 justify-content-between">
+									<h5 class="mb-1">DQM alarm</h5>
+									<small class="text-muted">3 days ago</small>
+								</div>
+								<p class="mb-1">DQM alarm</p> <small class="text-muted">Text
+									to speak</small>
+							</a><a href="#"
+								class="list-group-item list-group-item-action flex-column align-items-start">
+								<div class="d-flex w-100 justify-content-between">
+									<h5 class="mb-1">Backpressure finished</h5>
+									<small>3 days ago</small>
+								</div>
+								<p class="mb-1">Condition ended.</p> <small>Manual
+									action</small>
+							</a> <a href="#"
+								class="list-group-item list-group-item-action flex-column align-items-start">
+								<div class="d-flex w-100 justify-content-between">
+									<h5 class="mb-1">Backpressure detected</h5>
+									<small class="text-muted">3 days ago</small>
+								</div>
+								<p class="mb-1">Condition start.</p> <small class="text-muted">fed
+									345 is oos.</small>
+							</a> <a href="#"
+								class="list-group-item list-group-item-action flex-column align-items-start">
+								<div class="d-flex w-100 justify-content-between">
+									<h5 class="mb-1">DQM alarm</h5>
+									<small class="text-muted">3 days ago</small>
+								</div>
+								<p class="mb-1">DQM alarm</p> <small class="text-muted">Text
+									to speak</small>
+							</a><a href="#"
+								class="list-group-item list-group-item-action flex-column align-items-start">
+								<div class="d-flex w-100 justify-content-between">
+									<h5 class="mb-1">Backpressure finished</h5>
+									<small>3 days ago</small>
+								</div>
+								<p class="mb-1">Condition ended.</p> <small>Manual
+									action</small>
+							</a> 
+						</div>
+
+					</div>
+
+
+				</div>
+			</div>
+		</div>
+	</div>
+
+</body>
+</html>
+
+
