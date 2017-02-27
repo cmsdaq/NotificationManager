@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
+import org.hibernate.criterion.Order;
 
 import cern.cms.daq.nm.persistence.Event;
 import cern.cms.daq.nm.persistence.EventType;
@@ -44,6 +45,7 @@ public class EventArchiveServlet extends HttpServlet {
 		try {
 			
 			Criteria eventCriteria = session.createCriteria(Event.class);
+			eventCriteria.addOrder(Order.desc("date"));
 			@SuppressWarnings("unchecked")
 			List<Event> eventTypeList = eventCriteria.list();
 			request.setAttribute("events", eventTypeList);

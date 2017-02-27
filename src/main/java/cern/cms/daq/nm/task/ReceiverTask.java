@@ -12,7 +12,7 @@ import javax.persistence.EntityManagerFactory;
 import org.apache.log4j.Logger;
 import org.hibernate.Session;
 
-import cern.cms.daq.nm.EventOccurrenceResource;
+import cern.cms.daq.nm.EventResource;
 import cern.cms.daq.nm.persistence.Event;
 import cern.cms.daq.nm.persistence.EventSenderType;
 import cern.cms.daq.nm.persistence.EventType;
@@ -24,8 +24,8 @@ import cern.cms.daq.nm.sound.SoundSystemManager;
  * This task processes events from external sources received via API. Following
  * steps are taken:
  * <ol>
- * <li>take event occurrence resource ({@link EventOccurrenceResource} objects)
- * from API buffer</li>
+ * <li>take event occurrence resource ({@link EventResource} objects) from API
+ * buffer</li>
  * <li>convert into event occurrences ({@link Event} objects)</li>
  * <li>persist converted object to database</li>
  * <li>pass converted object to dispatcher buffer</li>
@@ -47,13 +47,13 @@ public class ReceiverTask extends TimerTask {
 	/**
 	 * Incoming buffer
 	 */
-	private ConcurrentLinkedQueue<EventOccurrenceResource> eventResourceBuffer;
+	private ConcurrentLinkedQueue<EventResource> eventResourceBuffer;
 
 	private EntityManagerFactory emf;
 
 	private final boolean dispatchToSoundSystem;
 
-	public ReceiverTask(EntityManagerFactory emf, ConcurrentLinkedQueue<EventOccurrenceResource> eventResourceBuffer,
+	public ReceiverTask(EntityManagerFactory emf, ConcurrentLinkedQueue<EventResource> eventResourceBuffer,
 			ConcurrentLinkedQueue<Event> eventBuffer, SoundSystemManager soundSystemManager,
 			boolean dispatchToSoundSystem) {
 		this.emf = emf;
@@ -78,13 +78,10 @@ public class ReceiverTask extends TimerTask {
 
 			while (!eventResourceBuffer.isEmpty() && i < size) {
 				i++;
-				EventOccurrenceResource current = eventResourceBuffer.poll();
+				EventResource current = eventResourceBuffer.poll();
 				logger.debug("Received: " + current);
 				Event eventOccurrence = current.asEventOccurrence(session);
-				eventOccurrence.setEventType(EventType.Single);
-				eventOccurrence.setEventSenderType(EventSenderType.External);
-				
-				
+
 				em.persist(eventOccurrence);
 
 				if (dispatchToSoundSystem && eventOccurrence.isPlay()) {
@@ -107,12 +104,6 @@ public class ReceiverTask extends TimerTask {
 				}
 
 				logger.debug("Persisted: " + eventOccurrence);
-				if (current.getId() != null) {
-					em.flush();
-					Long nmId = eventOccurrence.getId();
-					logger.debug("Mapping this id: " + nmId);
-					TaskManager.get().getExpertIdToNmId().put(current.getId(), nmId);
-				}
 
 				// Add to temporary buffer - event occurrence cannot be added to
 				// buffer before tranaction has successfully commited.

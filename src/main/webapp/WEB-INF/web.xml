@@ -23,16 +23,8 @@
 	</listener>
 
 	<servlet>
-		<servlet-name>EventsServlet</servlet-name>
-		<servlet-class>cern.cms.daq.nm.servlet.EventsServlet</servlet-class>
-	</servlet>
-	<servlet>
 		<servlet-name>EventArchiveServlet</servlet-name>
 		<servlet-class>cern.cms.daq.nm.servlet.EventArchiveServlet</servlet-class>
-	</servlet>
-	<servlet>
-		<servlet-name>EventOccurrencesAPIServlet</servlet-name>
-		<servlet-class>cern.cms.daq.nm.servlet.EventOccurrencesAPIServlet</servlet-class>
 	</servlet>
 	<servlet>
 		<servlet-name>ConfigurationServlet</servlet-name>
@@ -56,11 +48,6 @@
 	</servlet>
 
 	<servlet>
-		<servlet-name>EventOccurrencesUpdateAPIServlet</servlet-name>
-		<servlet-class>cern.cms.daq.nm.servlet.EventOccurrencesUpdateAPIServlet</servlet-class>
-	</servlet>
-	
-	<servlet>
 		<servlet-name>APIServlet</servlet-name>
 		<servlet-class>
 			org.springframework.web.servlet.DispatcherServlet
@@ -76,18 +63,8 @@
 	</servlet-mapping>
 
 	<servlet-mapping>
-		<servlet-name>EventsServlet</servlet-name>
-		<url-pattern>/events</url-pattern>
-	</servlet-mapping>
-
-	<servlet-mapping>
 		<servlet-name>EventArchiveServlet</servlet-name>
 		<url-pattern>/archive</url-pattern>
-	</servlet-mapping>
-
-	<servlet-mapping>
-		<servlet-name>EventOccurrencesAPIServlet</servlet-name>
-		<url-pattern>/event_occurrences_api</url-pattern>
 	</servlet-mapping>
 
 	<servlet-mapping>
@@ -115,11 +92,6 @@
 		<url-pattern>/dashboard</url-pattern>
 	</servlet-mapping>
 	
-	<servlet-mapping>
-		<servlet-name>EventOccurrencesUpdateAPIServlet</servlet-name>
-		<url-pattern>/event_occurrences_update_api</url-pattern>
-	</servlet-mapping>
-
 
 	<!-- <servlet-mapping> <servlet-name>mvc-dispatcher</servlet-name> <url-pattern>/rest/*</url-pattern> 
 		</servlet-mapping> -->

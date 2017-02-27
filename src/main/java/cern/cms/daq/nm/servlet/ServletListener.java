@@ -7,6 +7,7 @@ import javax.servlet.ServletContextListener;
 
 import org.apache.log4j.Logger;
 
+import cern.cms.daq.nm.Application;
 import cern.cms.daq.nm.Setting;
 import cern.cms.daq.nm.sound.ExternalSoundReceiver;
 import cern.cms.daq.nm.task.TaskManager;

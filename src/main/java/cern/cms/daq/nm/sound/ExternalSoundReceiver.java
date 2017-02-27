@@ -12,7 +12,9 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import cern.cms.daq.nm.EventOccurrenceResource;
+import cern.cms.daq.nm.EventResource;
+import cern.cms.daq.nm.persistence.EventSenderType;
+import cern.cms.daq.nm.persistence.EventType;
 import cern.cms.daq.nm.task.TaskManager;
 
 public class ExternalSoundReceiver implements Runnable {
@@ -47,18 +49,21 @@ public class ExternalSoundReceiver implements Runnable {
 			if (alarms != null) {
 
 				for (Alarm alarm : alarms) {
-					EventOccurrenceResource eventOccurrenceResource = new EventOccurrenceResource();
-					eventOccurrenceResource.setMessage(alarm.getText());
-					eventOccurrenceResource.setTextToSpeech(alarm.getTalk());
-					eventOccurrenceResource.setSender(alarm.getSender());
-					eventOccurrenceResource.setTitle(alarm.getSender() + " alarm");
+					EventResource eventResource = new EventResource();
+					eventResource.setMessage(alarm.getText());
+					eventResource.setTextToSpeech(alarm.getTalk());
+					eventResource.setSender(alarm.getSender());
+					eventResource.setTitle(alarm.getSender() + " alarm");
 					//TODO: save the sound
-					eventOccurrenceResource.setDate(new Date());
-					eventOccurrenceResource.setPlay(true);
-					eventOccurrenceResource.setDisplay(false);
+					eventResource.setDate(new Date());
+					eventResource.setPlay(true);
+					eventResource.setDisplay(false);
+					
+
+					eventResource.setEventType(EventType.Single);
+					eventResource.setEventSenderType(EventSenderType.External);
 					// eventOccurrenceResource.setId(1L);
-					eventOccurrenceResource.setCloseable(false);
-					TaskManager.get().getEventResourceBuffer().add(eventOccurrenceResource);
+					TaskManager.get().getEventResourceBuffer().add(eventResource);
 				}
 
 				logger.info("Request successfully processed.");
@@ -79,4 +84,5 @@ public class ExternalSoundReceiver implements Runnable {
 			}
 		}
 	}
+	
 }

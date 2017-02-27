@@ -63,7 +63,7 @@
 </head>
 <body>
 
-	<%@  tag import="cern.cms.daq.nm.servlet.Application"%>
+	<%@  tag import="cern.cms.daq.nm.Application"%>
 	<%@  tag import="cern.cms.daq.nm.Setting"%>
 
 	<nav class="navbar navbar-default">
