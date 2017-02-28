@@ -1,10 +1,13 @@
-<!DOCTYPE web-app PUBLIC
- "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
- "http://java.sun.com/dtd/web-app_2_3.dtd" >
-
-<web-app>
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://java.sun.com/xml/ns/javaee"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+	version="3.0">
 
 	<display-name>Notification Manager Application</display-name>
+	<welcome-file-list>
+		<welcome-file>dashboard.html</welcome-file>
+	</welcome-file-list>
 
 
 	<context-param>
@@ -41,10 +44,6 @@
 	<servlet>
 		<servlet-name>SettingsServlet</servlet-name>
 		<servlet-class>cern.cms.daq.nm.servlet.SettingsServlet</servlet-class>
-	</servlet>
-	<servlet>
-		<servlet-name>DashboardServlet</servlet-name>
-		<servlet-class>cern.cms.daq.nm.servlet.DashboardServlet</servlet-class>
 	</servlet>
 
 	<servlet>
@@ -86,12 +85,6 @@
 		<servlet-name>SettingsServlet</servlet-name>
 		<url-pattern>/settings</url-pattern>
 	</servlet-mapping>
-
-	<servlet-mapping>
-		<servlet-name>DashboardServlet</servlet-name>
-		<url-pattern>/dashboard</url-pattern>
-	</servlet-mapping>
-	
 
 	<!-- <servlet-mapping> <servlet-name>mvc-dispatcher</servlet-name> <url-pattern>/rest/*</url-pattern> 
 		</servlet-mapping> -->

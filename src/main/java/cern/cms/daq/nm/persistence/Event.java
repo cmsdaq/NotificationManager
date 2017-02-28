@@ -173,4 +173,12 @@ public class Event {
 	public void setSound(Sound sound) {
 		this.sound = sound;
 	}
+
+	@Override
+	public String toString() {
+		return "Event [id=" + id + ", eventType=" + eventType + ", eventSenderType=" + eventSenderType + ", title="
+				+ title + ", textToSpeech=" + textToSpeech + ", sender=" + sender + ", message=" + message
+				+ ", conditionId=" + conditionId + ", sound=" + sound + ", date=" + date + ", status=" + status
+				+ ", display=" + display + ", play=" + play + ", soundId=" + soundId + "]";
+	}
 }

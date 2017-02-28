@@ -1,7 +1,6 @@
 $(document)
 		.ready(
 				function() {
-					console.log("ready!");
 
 					var socket = new WebSocket(
 							"ws://localhost:18081/nm/actions");
@@ -32,6 +31,7 @@ $(document)
 						eventHeader.setAttribute("class",
 								"d-flex w-100 justify-content-between");
 
+						
 						var eventName = document.createElement("h5");
 						eventName.setAttribute("class", "mb-1");
 						eventName.innerHTML = event.name;

@@ -16,7 +16,7 @@ public class EventWebSocketServer {
 
 	private static final Logger logger = Logger.getLogger(EventWebSocketServer.class);
 
-	private static EventSessionHandler sessionHandler = new EventSessionHandler();
+	public static EventSessionHandler sessionHandler = new EventSessionHandler();
 
 	@OnOpen
 	public void open(Session session) {

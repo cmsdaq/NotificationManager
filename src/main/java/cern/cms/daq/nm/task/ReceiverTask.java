@@ -18,6 +18,7 @@ import cern.cms.daq.nm.persistence.EventSenderType;
 import cern.cms.daq.nm.persistence.EventType;
 import cern.cms.daq.nm.sound.Sound;
 import cern.cms.daq.nm.sound.SoundSystemManager;
+import cern.cms.daq.nm.websocket.EventWebSocketServer;
 
 /**
  * 
@@ -82,7 +83,13 @@ public class ReceiverTask extends TimerTask {
 				logger.debug("Received: " + current);
 				Event eventOccurrence = current.asEventOccurrence(session);
 
+				long start = System.currentTimeMillis();
+
 				em.persist(eventOccurrence);
+
+				long end = System.currentTimeMillis();
+				logger.info("Event persistence time: " + (end - start) + "ms");
+				EventWebSocketServer.sessionHandler.addEvent(eventOccurrence);
 
 				if (dispatchToSoundSystem && eventOccurrence.isPlay()) {
 					try {
