@@ -1,63 +1,67 @@
 package cern.cms.daq.nm.persistence;
 
-import java.util.List;
-
-import javax.persistence.CollectionTable;
 import javax.persistence.Column;
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import cern.cms.daq.nm.sound.Sound;
+
 @Entity
-public class EventOccurrence {
-	
+public class Event {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.TABLE)
 	private Long id;
-	
-	@ManyToOne(optional = false)
+
+	@Enumerated(EnumType.ORDINAL)
+	@Column(name = "EVENT_TYPE")
 	private EventType eventType;
 
+	@Enumerated(EnumType.ORDINAL)
+	@Column(name = "EVENT_SENDER_TYPE")
+	private EventSenderType eventSenderType;
 
-    @Column(columnDefinition="VARCHAR2(4000)") 
+	@Column(columnDefinition = "VARCHAR2(40)")
+	private String title;
+
+	@Column(columnDefinition = "VARCHAR2(200)")
+	private String textToSpeech;
+
+	@Column(columnDefinition = "VARCHAR2(200)")
+	private String sender;
+
+	@Column(columnDefinition = "VARCHAR2(4000)")
 	private String message;
 
+	@Column(nullable = true)
+	private int conditionId;
 
-	@ElementCollection
-	@CollectionTable(name = "Actions", joinColumns = @JoinColumn(name = "event_occurrence_id"))
-	@Column(name = "action")
-	private List<String> actionSteps;
-	
+	@Enumerated(EnumType.ORDINAL)
+	private Sound sound;
+
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "DATETIME_FIELD")
 	private java.util.Date date;
-	
+
 	@Enumerated(EnumType.ORDINAL)
 	private EventStatus status;
 
-	@Column(nullable = true)
-    private long duration;
-	
 	/** Flag indicating if this notification should be displayed */
 	private boolean display;
 
 	/** Flag indicating if this notification should be played */
 	private boolean play;
-	
+
 	@Transient
 	private int soundId;
 
-	private boolean closeable;
-    
 	public EventType getEventType() {
 		return eventType;
 	}
@@ -98,28 +102,6 @@ public class EventOccurrence {
 		this.status = status;
 	}
 
-	@Override
-	public String toString() {
-		return "EventOccurrence [id=" + id + ", eventType=" + eventType + ", message=" + message + ", actionSteps="
-				+ actionSteps + ", date=" + date + ", status=" + status + ", duration=" + duration + "]";
-	}
-
-	public long getDuration() {
-		return duration;
-	}
-
-	public void setDuration(long duration) {
-		this.duration = duration;
-	}
-
-	public List<String> getActionSteps() {
-		return actionSteps;
-	}
-
-	public void setActionSteps(List<String> actionSteps) {
-		this.actionSteps = actionSteps;
-	}
-
 	public boolean isDisplay() {
 		return display;
 	}
@@ -144,11 +126,59 @@ public class EventOccurrence {
 		this.soundId = soundId;
 	}
 
-	public boolean isCloseable() {
-		return closeable;
+	public int getConditionId() {
+		return conditionId;
 	}
 
-	public void setCloseable(boolean closeable) {
-		this.closeable = closeable;
+	public void setConditionId(int conditionId) {
+		this.conditionId = conditionId;
+	}
+
+	public EventSenderType getEventSenderType() {
+		return eventSenderType;
+	}
+
+	public void setEventSenderType(EventSenderType eventSenderType) {
+		this.eventSenderType = eventSenderType;
+	}
+
+	public String getSender() {
+		return sender;
+	}
+
+	public void setSender(String sender) {
+		this.sender = sender;
+	}
+
+	public String getTextToSpeech() {
+		return textToSpeech;
+	}
+
+	public void setTextToSpeech(String textToSpeech) {
+		this.textToSpeech = textToSpeech;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public Sound getSound() {
+		return sound;
+	}
+
+	public void setSound(Sound sound) {
+		this.sound = sound;
+	}
+
+	@Override
+	public String toString() {
+		return "Event [id=" + id + ", eventType=" + eventType + ", eventSenderType=" + eventSenderType + ", title="
+				+ title + ", textToSpeech=" + textToSpeech + ", sender=" + sender + ", message=" + message
+				+ ", conditionId=" + conditionId + ", sound=" + sound + ", date=" + date + ", status=" + status
+				+ ", display=" + display + ", play=" + play + ", soundId=" + soundId + "]";
 	}
 }

@@ -6,7 +6,7 @@
 <%@taglib prefix="t" tagdir="/WEB-INF/tags"%>
 
 
-<%@  page import="cern.cms.daq.nm.servlet.Application"%>
+<%@  page import="cern.cms.daq.nm.Application"%>
 
 <t:genericpage>
 	<jsp:attribute name="header">

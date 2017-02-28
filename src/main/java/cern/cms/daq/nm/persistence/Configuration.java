@@ -2,6 +2,8 @@ package cern.cms.daq.nm.persistence;
 
 import java.util.Set;
 
+import javax.persistence.CollectionTable;
+import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -10,7 +12,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 
 import cern.cms.daq.nm.Condition;
@@ -24,23 +25,21 @@ public class Configuration {
 
 	@ElementCollection(targetClass = Channel.class)
 	@JoinTable(name = "CONFIGURATIONS_CHANNELS")
-    @Enumerated(EnumType.ORDINAL)
+	@Enumerated(EnumType.ORDINAL)
 	private Set<Channel> channels;
-
 
 	@ElementCollection(targetClass = Condition.class)
 	@JoinTable(name = "CONFIGURATIONS_CONDITIONS")
-    @Enumerated(EnumType.ORDINAL)
+	@Enumerated(EnumType.ORDINAL)
 	private Set<Condition> conditions;
-	
-	@ManyToMany()
-	@JoinTable(name = "CONFIGURATIONS_EVENTTYPES")
-	private Set<EventType> eventTypes;
 
+	@ElementCollection(targetClass = EventType.class)
+	@JoinTable(name = "CONFIGURATIONS_EVENTTYPES")
+	@Enumerated(EnumType.ORDINAL)
+	private Set<EventType> eventTypes;
 
 	@ManyToOne(optional = false)
 	private DummyUser user;
-
 
 	public Set<EventType> getEventTypes() {
 		return eventTypes;
@@ -81,9 +80,5 @@ public class Configuration {
 	public void setChannels(Set<Channel> channels) {
 		this.channels = channels;
 	}
-
-
-	
-
 
 }

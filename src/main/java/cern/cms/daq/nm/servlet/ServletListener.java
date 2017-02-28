@@ -7,7 +7,7 @@ import javax.servlet.ServletContextListener;
 
 import org.apache.log4j.Logger;
 
-import cern.cms.daq.nm.Initializer;
+import cern.cms.daq.nm.Application;
 import cern.cms.daq.nm.Setting;
 import cern.cms.daq.nm.sound.ExternalSoundReceiver;
 import cern.cms.daq.nm.task.TaskManager;
@@ -40,7 +40,6 @@ public class ServletListener implements ServletContextListener {
 
 			e.getServletContext().setAttribute("emf", emf);
 			// e.getServletContext().setAttribute("emf-shifters", emf2);
-			Initializer.initDefaults(emf);
 			TaskManager.initialize(emf, null);
 			TaskManager.get().schedule();
 			(new Thread() {

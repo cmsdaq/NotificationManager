@@ -15,7 +15,7 @@ import org.hibernate.criterion.Restrictions;
 import cern.cms.daq.nm.persistence.Channel;
 import cern.cms.daq.nm.persistence.Configuration;
 import cern.cms.daq.nm.persistence.DummyUser;
-import cern.cms.daq.nm.persistence.EventOccurrence;
+import cern.cms.daq.nm.persistence.Event;
 import cern.cms.daq.nm.persistence.EventStatus;
 import cern.cms.daq.nm.persistence.NotificationOccurrence;
 import cern.cms.daq.nm.persistence.NotificationStatus;
@@ -35,7 +35,7 @@ public class DispatcherTask extends TimerTask {
 
 	private static final Logger logger = Logger.getLogger(DispatcherTask.class);
 
-	private final ConcurrentLinkedQueue<EventOccurrence> eventBuffer;
+	private final ConcurrentLinkedQueue<Event> eventBuffer;
 	private final ConcurrentLinkedQueue<NotificationOccurrence> notificationBuffer;
 	private final EntityManagerFactory notificationEMF;
 	private final EntityManagerFactory shiftEMF;
@@ -45,7 +45,7 @@ public class DispatcherTask extends TimerTask {
 	private final EventFilter eventFilter;
 
 	public DispatcherTask(EntityManagerFactory notificationEMF, EntityManagerFactory shiftEMF,
-			ConcurrentLinkedQueue<EventOccurrence> eventBuffer,
+			ConcurrentLinkedQueue<Event> eventBuffer,
 			ConcurrentLinkedQueue<NotificationOccurrence> notificationBuffer) {
 
 		this.notificationEMF = notificationEMF;
@@ -69,9 +69,9 @@ public class DispatcherTask extends TimerTask {
 
 			while (!eventBuffer.isEmpty() && i < bufferSize) {
 				i++;
-				EventOccurrence eventOccurrence = eventBuffer.poll();
+				Event eventOccurrence = eventBuffer.poll();
 
-				logger.debug("Dispatching event " + eventOccurrence.getEventType().getName() + " ("
+				logger.debug("Dispatching event " + eventOccurrence.getEventType().getDescription() + " ("
 						+ eventOccurrence.getMessage() + ")");
 
 				List<DummyUser> userList = getDummyUsers();
@@ -133,8 +133,8 @@ public class DispatcherTask extends TimerTask {
 
 	}
 
-	protected void updateEventStatus(EventOccurrence event, EventStatus status) {
-		EventOccurrence eventOccurrence = em.find(EventOccurrence.class, event.getId());
+	protected void updateEventStatus(Event event, EventStatus status) {
+		Event eventOccurrence = em.find(Event.class, event.getId());
 		eventOccurrence.setStatus(status);
 	}
 
@@ -149,14 +149,14 @@ public class DispatcherTask extends TimerTask {
 	}
 
 	@SuppressWarnings("unchecked")
-	protected List<Configuration> getConfiguration(DummyUser user, EventOccurrence eventOccurrence) {
+	protected List<Configuration> getConfiguration(DummyUser user, Event eventOccurrence) {
 		Criteria cr = session.createCriteria(Configuration.class);
 		cr.add(Restrictions.eq("user", user));
 		// cr.add(Restrictions.in("eventTypes",
 		// eventOccurrence.getEventType()));
 
 		cr.createAlias("eventTypes", "eventType");
-		cr.add(Restrictions.eq("eventType.id", eventOccurrence.getEventType().getId()));
+		cr.add(Restrictions.eq("eventType", eventOccurrence.getEventType()));
 
 		return cr.list();
 	}

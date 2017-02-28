@@ -25,7 +25,7 @@ public class NotificationOccurrence {
 	private java.util.Date date;
 
 	@ManyToOne(optional = false)
-	private EventOccurrence eventOccurrence;
+	private Event eventOccurrence;
 
 	@Enumerated(EnumType.ORDINAL)
 	private NotificationStatus status;
@@ -56,11 +56,11 @@ public class NotificationOccurrence {
 		this.date = date;
 	}
 
-	public EventOccurrence getEventOccurrence() {
+	public Event getEventOccurrence() {
 		return eventOccurrence;
 	}
 
-	public void setEventOccurrence(EventOccurrence eventOccurrence) {
+	public void setEventOccurrence(Event eventOccurrence) {
 		this.eventOccurrence = eventOccurrence;
 	}
 

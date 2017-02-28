@@ -63,7 +63,7 @@
 </head>
 <body>
 
-	<%@  tag import="cern.cms.daq.nm.servlet.Application"%>
+	<%@  tag import="cern.cms.daq.nm.Application"%>
 	<%@  tag import="cern.cms.daq.nm.Setting"%>
 
 	<nav class="navbar navbar-default">
@@ -98,11 +98,11 @@
 							class="glyphicon glyphicon-tasks"></i> Browser</a></li>
 
 					<!-- NM DASHBOARD -->
-					<li id="dashboard"><a href="dashboard"><i
+					<li id="dashboard"><a href="dashboard.html"><i
 							class="glyphicon glyphicon-bell"></i> Dashboard</a></li>
 
 					<!-- NM NOTIFICATIONS -->
-					<li id="event_occurrences"><a href="event_occurrences"><i
+					<li id="event_occurrences"><a href=archive><i
 							class="glyphicon glyphicon-calendar"></i> Notifications</a></li>
 
 

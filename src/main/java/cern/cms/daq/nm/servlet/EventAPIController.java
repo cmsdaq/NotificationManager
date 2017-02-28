@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import cern.cms.daq.nm.EventOccurrenceResource;
+import cern.cms.daq.nm.EventResource;
 import cern.cms.daq.nm.task.TaskManager;
 
 
@@ -29,9 +29,9 @@ public class EventAPIController {
 	  // return EventOccurrenceResource object as json
 	  @RequestMapping( method = RequestMethod.POST)
 	  @ResponseStatus( HttpStatus.CREATED )
-	  public @ResponseBody EventOccurrenceResource post( @Valid @RequestBody final  EventOccurrenceResource eventOccurrenceResource) {
-		  TaskManager.get().getEventResourceBuffer().add(eventOccurrenceResource);
-	      return eventOccurrenceResource;
+	  public @ResponseBody EventResource post( @Valid @RequestBody final  EventResource eventResource) {
+		  TaskManager.get().getEventResourceBuffer().add(eventResource);
+	      return eventResource;
 	  }
 
 }

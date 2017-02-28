@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<script src="https://code.jquery.com/jquery-3.1.1.slim.min.js"
+	integrity="sha256-/SIrNqv8h6QGKDuNoLGA4iret+kyesCkHGzVUUV0shc="
+	crossorigin="anonymous"></script>
+<script src="resources/websocket-nm.js"></script>
+<script src="resources/websocket-expert.js"></script>
+<title>Insert title here</title>
+
+
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css"
+	integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ"
+	crossorigin="anonymous">
+
+<script src="https://code.jquery.com/jquery-3.1.1.slim.min.js"
+	integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n"
+	crossorigin="anonymous"></script>
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"
+	integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb"
+	crossorigin="anonymous"></script>
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"
+	integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn"
+	crossorigin="anonymous"></script>
+</head>
+<body>
+
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-sm-8">
+
+				<div class="row">
+					<div class="col-sm-12">
+
+
+						<div class="panel panel-default">
+							<!-- Default panel contents -->
+							<div class="panel-heading">Current Suggestion</div>
+							<div class="panel-body">
+
+								<div class="row">
+									<div class="col-sm-12">
+
+										<div class="jumbotron jumbotron-fluid">
+											<div id="current" class="container">
+												<h1 id="current-title" class="display-5">No connection</h1>
+
+												<p id="current-description" class="lead">DAQExpert not
+													connected</p>
+
+												<div id="current-action" class="list-group"></div>
+											</div>
+										</div>
+
+									</div>
+								</div>
+
+							</div>
+						</div>
+					</div>
+
+				</div>
+
+
+				<div class="row">
+					<div class="col-sm-12">
+						<div class="panel panel-default">
+							<!-- Default panel contents -->
+							<div class="panel-heading">All Suggestions</div>
+							<div class="panel-body">
+
+								<div id="conditions" class="list-group"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-sm-4">
+
+
+
+				<div class="panel panel-default">
+					<!-- Default panel contents -->
+					<div class="panel-heading">All Events</div>
+					<div class="panel-body">
+
+
+
+						<div id="content" class="list-group"></div>
+
+					</div>
+
+
+				</div>
+			</div>
+		</div>
+	</div>
+
+</body>
+</html>
+
+

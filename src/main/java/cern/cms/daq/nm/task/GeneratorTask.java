@@ -12,7 +12,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 
-import cern.cms.daq.nm.persistence.EventOccurrence;
+import cern.cms.daq.nm.persistence.Event;
 import cern.cms.daq.nm.persistence.EventStatus;
 import cern.cms.daq.nm.persistence.EventType;
 
@@ -21,10 +21,10 @@ public class GeneratorTask extends TimerTask {
 
 	private static final Logger logger = Logger.getLogger(GeneratorTask.class);
 
-	private final ConcurrentLinkedQueue<EventOccurrence> eventBuffer;
+	private final ConcurrentLinkedQueue<Event> eventBuffer;
 	private EntityManagerFactory emf;
 
-	public GeneratorTask(EntityManagerFactory emf, ConcurrentLinkedQueue<EventOccurrence> eventBuffer) {
+	public GeneratorTask(EntityManagerFactory emf, ConcurrentLinkedQueue<Event> eventBuffer) {
 		this.emf = emf;
 		this.eventBuffer = eventBuffer;
 	}
@@ -40,7 +40,7 @@ public class GeneratorTask extends TimerTask {
 		@SuppressWarnings("unchecked")
 		List<EventType> eventList = cr.list();
 
-		EventOccurrence eventOccurrence = new EventOccurrence();
+		Event eventOccurrence = new Event();
 		eventOccurrence.setMessage("Example message " + new Date());
 		eventOccurrence.setEventType(eventList.get(0));
 		eventOccurrence.setStatus(EventStatus.Received);
