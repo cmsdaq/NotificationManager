@@ -22,6 +22,8 @@ $(document)
 					function onOpenHandle(event) {
 
 						$("#content").empty();
+						$("#event-list-empty-msg").show();
+						
 						console.log("NM websocket (re)connected");
 						$("#nm-status").text("Connected");
 						
@@ -34,6 +36,9 @@ $(document)
 					function printeventElement(event) {
 						var content = $("#content");
 
+						
+						$("#event-list-empty-msg").hide();
+						
 						var eventDiv = document.createElement("div");
 						eventDiv.setAttribute("id", event.id);
 						eventDiv

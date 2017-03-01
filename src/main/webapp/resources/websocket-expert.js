@@ -39,6 +39,7 @@ $(document)
 					function onOpenHandle(event) {
 
 						$("#conditions").empty();
+						$("#condition-list-empty-msg").show();
 						$("#current-title").text("Connected");
 						$("#current-description")
 								.text(
@@ -60,6 +61,8 @@ $(document)
 
 					function printConditionElement(condition) {
 						var content = $("#conditions");
+
+						$("#condition-list-empty-msg").hide();
 
 						var conditionDiv = document.createElement("div");
 						conditionDiv.setAttribute("id", "c-"+ condition.id);
