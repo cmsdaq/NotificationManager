@@ -2,8 +2,9 @@ $(document)
 		.ready(
 				function() {
 
+					var nmSocketAddress = document.getElementById("nm-socket-address").getAttribute("url");
 					var socket = new WebSocket(
-							"ws://localhost:18081/nm/actions");
+							nmSocketAddress);
 					socket.onmessage = onMessage;
 
 					function onMessage(event) {

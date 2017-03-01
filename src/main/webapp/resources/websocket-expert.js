@@ -1,9 +1,9 @@
 $(document)
 		.ready(
 				function() {
-
+					var expertSocketAddress = document.getElementById("expert-socket-address").getAttribute("url");
 					var expertSocket = new WebSocket(
-							"ws://localhost:18081/DAQExpert/actions");
+							expertSocketAddress);
 					expertSocket.onmessage = onConditionMessage;
 
 					function onConditionMessage(condition) {

@@ -9,17 +9,6 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-
-
-
-
-
-
-
-
-
-<script src="resources/websocket-nm.js"></script>
-<script src="resources/websocket-expert.js"></script>
 <!-- 
 <script
 	src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"
@@ -82,6 +71,8 @@
 <script
 	src="resources/external/bootstrap-tour-0.10.3/bootstrap-tour.min.js"></script>
 
+<script src="resources/websocket-nm.js"></script>
+<script src="resources/websocket-expert.js"></script>
 
 </head>
 <body>
@@ -107,6 +98,10 @@
 				<a class="navbar-brand"
 					href="<%out.println(Application.get().getProp().getProperty(Setting.LANDING.getCode()));%>"><b>DAQ</b>
 					Expert</a>
+				<div style="display: none;" id="nm-socket-address"
+					url="<%out.println(Application.get().getProp().getProperty(Setting.WEBSOCKET_NM.getCode()));%>"></div>
+				<div style="display: none;" id="expert-socket-address"
+					url="<%out.println(Application.get().getProp().getProperty(Setting.WEBSOCKET_EXPERT.getCode()));%>"></div>
 			</div>
 
 			<!-- Collect the nav links, forms, and other content for toggling -->
@@ -166,17 +161,15 @@
 	</nav>
 
 
-	<div class="container">
 
-		<div id="pageheader">
-			<jsp:invoke fragment="header" />
-		</div>
-		<div id="body">
-			<jsp:doBody />
-		</div>
-		<div id="pagefooter">
-			<jsp:invoke fragment="footer" />
-		</div>
+	<div id="pageheader">
+		<jsp:invoke fragment="header" />
+	</div>
+	<div id="body" class="container-fluid">
+		<jsp:doBody />
+	</div>
+	<div id="pagefooter">
+		<jsp:invoke fragment="footer" />
 	</div>
 
 
