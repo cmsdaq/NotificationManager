@@ -16,7 +16,7 @@ import cern.cms.daq.nm.Condition;
 import cern.cms.daq.nm.persistence.Channel;
 import cern.cms.daq.nm.persistence.Configuration;
 import cern.cms.daq.nm.persistence.DummyUser;
-import cern.cms.daq.nm.persistence.EventOccurrence;
+import cern.cms.daq.nm.persistence.Event;
 import cern.cms.daq.nm.persistence.EventStatus;
 import cern.cms.daq.nm.persistence.EventType;
 import cern.cms.daq.nm.persistence.NotificationOccurrence;
@@ -32,15 +32,15 @@ import cern.cms.daq.nm.persistence.NotificationStatus;
 public class DispatcherTaskTestBase {
 
 	protected static DispatcherTaskStub dispatcher;
-	protected static ConcurrentLinkedQueue<EventOccurrence> eventBuffer;
+	protected static ConcurrentLinkedQueue<Event> eventBuffer;
 	protected static ConcurrentLinkedQueue<NotificationOccurrence> notificationBuffer;
 
 	static List<Configuration> confs;
 	public static List<DummyUser> users;
 
-	static EventOccurrence event1;
-	static EventOccurrence event2;
-	static EventOccurrence event3;
+	static Event event1;
+	static Event event2;
+	static Event event3;
 
 	static Configuration conf1;
 	static Configuration conf2;
@@ -58,7 +58,7 @@ public class DispatcherTaskTestBase {
 	@BeforeClass
 	public static void init() {
 
-		eventBuffer = new ConcurrentLinkedQueue<EventOccurrence>();
+		eventBuffer = new ConcurrentLinkedQueue<Event>();
 		notificationBuffer = new ConcurrentLinkedQueue<NotificationOccurrence>();
 		dispatcher = new DispatcherTaskStub(eventBuffer, notificationBuffer);
 
@@ -89,10 +89,8 @@ public class DispatcherTaskTestBase {
 		/*
 		 * event types
 		 */
-		et1 = new EventType();
-		et1.setName("A");
-		et2 = new EventType();
-		et2.setName("B");
+		et1 = EventType.Single;
+		et2 = EventType.ConditionStart;
 
 		/*
 		 * event occurrences
@@ -100,13 +98,13 @@ public class DispatcherTaskTestBase {
 		String event1msg = "ev1";
 		String event2msg = "ev2";
 		String event3msg = "ev3";
-		event1 = new EventOccurrence();
+		event1 = new Event();
 		event1.setMessage(event1msg);
 		event1.setEventType(et1);
-		event2 = new EventOccurrence();
+		event2 = new Event();
 		event2.setMessage(event2msg);
 		event2.setEventType(et2);
-		event3 = new EventOccurrence();
+		event3 = new Event();
 		event3.setMessage(event3msg);
 		event3.setEventType(et1);
 
@@ -130,7 +128,7 @@ public class DispatcherTaskTestBase {
 		return conf;
 	}
 
-	protected NotificationOccurrence create(Channel channel, DummyUser user, EventOccurrence eventOccurrence) {
+	protected NotificationOccurrence create(Channel channel, DummyUser user, Event eventOccurrence) {
 		NotificationOccurrence a = new NotificationOccurrence();
 		a.setChannel(channel);
 		a.setStatus(NotificationStatus.Pending);
@@ -159,7 +157,7 @@ public class DispatcherTaskTestBase {
 
 class DispatcherTaskStub extends DispatcherTask {
 
-	public DispatcherTaskStub(ConcurrentLinkedQueue<EventOccurrence> eventBuffer,
+	public DispatcherTaskStub(ConcurrentLinkedQueue<Event> eventBuffer,
 			ConcurrentLinkedQueue<NotificationOccurrence> notificationBuffer) {
 		super(null, null, eventBuffer, notificationBuffer);
 
@@ -177,7 +175,7 @@ class DispatcherTaskStub extends DispatcherTask {
 	}
 
 	@Override
-	protected void updateEventStatus(EventOccurrence event, EventStatus status) {
+	protected void updateEventStatus(Event event, EventStatus status) {
 
 		System.out.println("update stub");
 	}
@@ -200,7 +198,7 @@ class DispatcherTaskStub extends DispatcherTask {
 	 * Simulate database access
 	 */
 	@Override
-	protected List<Configuration> getConfiguration(DummyUser user, EventOccurrence eventOccurrence) {
+	protected List<Configuration> getConfiguration(DummyUser user, Event eventOccurrence) {
 
 		System.out.println("get conf stub");
 

@@ -1,11 +1,9 @@
-package cern.cms.daq.nm.servlet;
+package cern.cms.daq.nm;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Properties;
-
-import cern.cms.daq.nm.Setting;
 
 public class Application {
 

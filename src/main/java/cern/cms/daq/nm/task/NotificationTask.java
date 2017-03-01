@@ -14,7 +14,7 @@ import org.apache.log4j.Logger;
 import cern.cms.daq.nm.NotificationException;
 import cern.cms.daq.nm.persistence.Channel;
 import cern.cms.daq.nm.persistence.DummyUser;
-import cern.cms.daq.nm.persistence.EventOccurrence;
+import cern.cms.daq.nm.persistence.Event;
 import cern.cms.daq.nm.persistence.EventStatus;
 import cern.cms.daq.nm.persistence.NotificationOccurrence;
 import cern.cms.daq.nm.persistence.NotificationStatus;
@@ -73,7 +73,7 @@ public class NotificationTask extends TimerTask {
 			 */
 			em.getTransaction().begin();
 			for (Long eventOccurrenceId : eventOccurrencesIds) {
-				EventOccurrence eventOccurrence = em.find(EventOccurrence.class, eventOccurrenceId);
+				Event eventOccurrence = em.find(Event.class, eventOccurrenceId);
 				eventOccurrence.setStatus(EventStatus.Notified);
 			}
 			em.getTransaction().commit();

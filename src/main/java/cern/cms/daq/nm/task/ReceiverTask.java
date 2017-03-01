@@ -12,19 +12,22 @@ import javax.persistence.EntityManagerFactory;
 import org.apache.log4j.Logger;
 import org.hibernate.Session;
 
-import cern.cms.daq.nm.EventOccurrenceResource;
-import cern.cms.daq.nm.persistence.EventOccurrence;
+import cern.cms.daq.nm.EventResource;
+import cern.cms.daq.nm.persistence.Event;
+import cern.cms.daq.nm.persistence.EventSenderType;
+import cern.cms.daq.nm.persistence.EventType;
 import cern.cms.daq.nm.sound.Sound;
 import cern.cms.daq.nm.sound.SoundSystemManager;
+import cern.cms.daq.nm.websocket.EventWebSocketServer;
 
 /**
  * 
  * This task processes events from external sources received via API. Following
  * steps are taken:
  * <ol>
- * <li>take event occurrence resource ({@link EventOccurrenceResource} objects)
- * from API buffer</li>
- * <li>convert into event occurrences ({@link EventOccurrence} objects)</li>
+ * <li>take event occurrence resource ({@link EventResource} objects) from API
+ * buffer</li>
+ * <li>convert into event occurrences ({@link Event} objects)</li>
  * <li>persist converted object to database</li>
  * <li>pass converted object to dispatcher buffer</li>
  * </ol>
@@ -40,19 +43,19 @@ public class ReceiverTask extends TimerTask {
 	/**
 	 * Outcoming buffer
 	 */
-	private final ConcurrentLinkedQueue<EventOccurrence> eventBuffer;
+	private final ConcurrentLinkedQueue<Event> eventBuffer;
 
 	/**
 	 * Incoming buffer
 	 */
-	private ConcurrentLinkedQueue<EventOccurrenceResource> eventResourceBuffer;
+	private ConcurrentLinkedQueue<EventResource> eventResourceBuffer;
 
 	private EntityManagerFactory emf;
 
 	private final boolean dispatchToSoundSystem;
 
-	public ReceiverTask(EntityManagerFactory emf, ConcurrentLinkedQueue<EventOccurrenceResource> eventResourceBuffer,
-			ConcurrentLinkedQueue<EventOccurrence> eventBuffer, SoundSystemManager soundSystemManager,
+	public ReceiverTask(EntityManagerFactory emf, ConcurrentLinkedQueue<EventResource> eventResourceBuffer,
+			ConcurrentLinkedQueue<Event> eventBuffer, SoundSystemManager soundSystemManager,
 			boolean dispatchToSoundSystem) {
 		this.emf = emf;
 		this.eventBuffer = eventBuffer;
@@ -70,17 +73,23 @@ public class ReceiverTask extends TimerTask {
 			int i = 0;
 
 			EntityManager em = emf.createEntityManager();
-			Queue<EventOccurrence> tmpReceiverBuffer = new ArrayDeque<>();
+			Queue<Event> tmpReceiverBuffer = new ArrayDeque<>();
 			em.getTransaction().begin();
 			Session session = em.unwrap(Session.class);
 
 			while (!eventResourceBuffer.isEmpty() && i < size) {
 				i++;
-				EventOccurrenceResource current = eventResourceBuffer.poll();
+				EventResource current = eventResourceBuffer.poll();
 				logger.debug("Received: " + current);
-				EventOccurrence eventOccurrence = current.asEventOccurrence(session);
+				Event eventOccurrence = current.asEventOccurrence(session);
+
+				long start = System.currentTimeMillis();
 
 				em.persist(eventOccurrence);
+
+				long end = System.currentTimeMillis();
+				logger.info("Event persistence time: " + (end - start) + "ms");
+				EventWebSocketServer.sessionHandler.addEvent(eventOccurrence);
 
 				if (dispatchToSoundSystem && eventOccurrence.isPlay()) {
 					try {
@@ -102,12 +111,6 @@ public class ReceiverTask extends TimerTask {
 				}
 
 				logger.debug("Persisted: " + eventOccurrence);
-				if (current.getId() != null) {
-					em.flush();
-					Long nmId = eventOccurrence.getId();
-					logger.debug("Mapping this id: " + nmId);
-					TaskManager.get().getExpertIdToNmId().put(current.getId(), nmId);
-				}
 
 				// Add to temporary buffer - event occurrence cannot be added to
 				// buffer before tranaction has successfully commited.

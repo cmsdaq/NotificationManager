@@ -45,9 +45,5 @@ public enum Condition{
 	}
 	private final String description;
 	
-	public int getOrdinal(){
-		return this.ordinal();
-	}
-	
 	
 }
