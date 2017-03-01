@@ -111,18 +111,20 @@
 
 				<ul class="nav navbar-nav">
 
+
+					<!-- NM DASHBOARD -->
+					<li id="dashboard"><a href="dashboard.jsp"><i
+							class="glyphicon glyphicon-bell"></i> Dashboard</a></li>
+							
 					<!-- EXPERT BROWSER -->
 					<li><a id="expertLink"
 						href="<%out.println(Application.get().getProp().getProperty(Setting.EXPERT_BROWSER.getCode()));%>"><i
 							class="glyphicon glyphicon-tasks"></i> Browser</a></li>
 
-					<!-- NM DASHBOARD -->
-					<li id="dashboard"><a href="dashboard.jsp"><i
-							class="glyphicon glyphicon-bell"></i> Dashboard</a></li>
 
 					<!-- NM NOTIFICATIONS -->
-					<li id="event_occurrences"><a href=archive><i
-							class="glyphicon glyphicon-calendar"></i> Notifications</a></li>
+					<!-- <li id="event_occurrences"><a href=archive><i
+							class="glyphicon glyphicon-calendar"></i> Notifications</a></li> -->
 
 
 
