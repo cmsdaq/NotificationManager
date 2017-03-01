@@ -121,7 +121,7 @@
 							class="glyphicon glyphicon-tasks"></i> Browser</a></li>
 
 					<!-- NM DASHBOARD -->
-					<li id="dashboard"><a href="dashboard.html"><i
+					<li id="dashboard"><a href="dashboard.jsp"><i
 							class="glyphicon glyphicon-bell"></i> Dashboard</a></li>
 
 					<!-- NM NOTIFICATIONS -->

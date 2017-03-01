@@ -16,8 +16,8 @@ public enum Setting {
 	DATABASE_MODE("hibernate.hbm2ddl.auto"),
 	
 
-	WEBSOCKET_NM("websocket.expert.url"),
-	WEBSOCKET_EXPERT("websocket.nm.url"),
+	WEBSOCKET_NM("websocket.nm.url"),
+	WEBSOCKET_EXPERT("websocket.expert.url"),
 	;
 
 	private final String code;
