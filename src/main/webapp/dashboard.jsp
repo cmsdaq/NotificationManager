@@ -38,7 +38,7 @@
 							<div class="panel-heading">Recent Suggestions</div>
 							<div class="panel-body">
 								<div id="conditions" class="list-group"></div>
-								<p id="condition-list-empty-msg" >no recent conditions</p>
+								<p id="condition-list-empty-msg" >no recent suggestions</p>
 							</div>
 						</div>
 					</div>
