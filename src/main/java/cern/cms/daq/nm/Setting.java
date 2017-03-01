@@ -14,6 +14,10 @@ public enum Setting {
 	DATABASE_URL("hibernate.connection.url"),
 	DATABASE_DRIVER("hibernate.connection.driver_class"),
 	DATABASE_MODE("hibernate.hbm2ddl.auto"),
+	
+
+	WEBSOCKET_NM("websocket.nm.url"),
+	WEBSOCKET_EXPERT("websocket.expert.url"),
 	;
 
 	private final String code;

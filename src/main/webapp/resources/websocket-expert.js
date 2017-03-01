@@ -1,10 +1,14 @@
 $(document)
 		.ready(
 				function() {
-
-					var expertSocket = new WebSocket(
-							"ws://localhost:18081/DAQExpert/actions");
+					var expertSocketAddress = document.getElementById(
+							"expert-socket-address").getAttribute("url");
+					var expertSocket = new ReconnectingWebSocket(expertSocketAddress);
 					expertSocket.onmessage = onConditionMessage;
+
+					expertSocket.onerror = onErrorHandle;
+					expertSocket.onopen = onOpenHandle;
+					expertSocket.onclose = onCloseHandle;
 
 					function onConditionMessage(condition) {
 						var condition = JSON.parse(condition.data);
@@ -12,7 +16,7 @@ $(document)
 							printConditionElement(condition);
 						}
 						if (condition.action === "remove") {
-							document.getElementById(condition.id).remove();
+							document.getElementById("c-"+condition.id).remove();
 						}
 						if (condition.action === "addSuggestion") {
 							console.log("action update current suggestion");
@@ -25,13 +29,43 @@ $(document)
 											"DAQExpert has no suggestion at the moment");
 							$("#current-action").empty();
 						}
+
+					}
+
+					function onErrorHandle(event) {
+						console.log("new error: " + JSON.stringify(event));
+					}
+
+					function onOpenHandle(event) {
+
+						$("#conditions").empty();
+						$("#condition-list-empty-msg").show();
+						$("#current-title").text("Connected");
+						$("#current-description")
+								.text(
+										"DAQExpert is now connected, you will now see suggestions");
+						$("#current-action").empty();
+						console.log("Expert websocket (re)connected");
+						$("#expert-status").text("Connected");
+						
+					}
+
+					function onCloseHandle(event) {
+						$("#current-title").text("Disconnected");
+						$("#current-description")
+								.text(
+										"DAQExpert is now disconnected, dashboard will try to reconnect..");
+						$("#current-action").empty();
+						$("#expert-status").text("Disconnected");
 					}
 
 					function printConditionElement(condition) {
 						var content = $("#conditions");
 
+						$("#condition-list-empty-msg").hide();
+
 						var conditionDiv = document.createElement("div");
-						conditionDiv.setAttribute("id", condition.id);
+						conditionDiv.setAttribute("id", "c-"+ condition.id);
 						conditionDiv
 								.setAttribute("class",
 										"list-group-item list-group-item-action flex-column align-items-start active");
