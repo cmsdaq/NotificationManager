@@ -3,9 +3,11 @@ $(document)
 				function() {
 
 					var nmSocketAddress = document.getElementById("nm-socket-address").getAttribute("url");
-					var socket = new WebSocket(
+					var socket = new ReconnectingWebSocket(
 							nmSocketAddress);
 					socket.onmessage = onMessage;
+					socket.onopen = onOpenHandle;
+					socket.onclose = onCloseHandle;
 
 					function onMessage(event) {
 						var event = JSON.parse(event.data);
@@ -15,6 +17,18 @@ $(document)
 						if (event.action === "remove") {
 							document.getElementById(event.id).remove();
 						}
+					}
+					
+					function onOpenHandle(event) {
+
+						$("#content").empty();
+						console.log("NM websocket (re)connected");
+						$("#nm-status").text("Connected");
+						
+					}
+					
+					function onCloseHandle(event) {
+						$("#nm-status").text("Disconnected");
 					}
 
 					function printeventElement(event) {

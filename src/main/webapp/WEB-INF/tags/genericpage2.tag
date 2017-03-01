@@ -73,6 +73,7 @@
 
 <script src="resources/websocket-nm.js"></script>
 <script src="resources/websocket-expert.js"></script>
+<script src="resources/external/reconnecting-websocket.min.js"></script>
 
 </head>
 <body>

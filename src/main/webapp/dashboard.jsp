@@ -27,7 +27,7 @@
 												<h1 id="current-title" class="display-5">No connection</h1>
 
 												<p id="current-description" class="lead">DAQExpert not
-													connected</p>
+													connected to expert system</p>
 
 												<div id="current-action" class="list-group"></div>
 											</div>
@@ -72,6 +72,13 @@
 
 				</div>
 			</div>
+		</div>
+		
+		<div class="row">
+		<p>
+					<small>Expert websocket status: <span id="expert-status" class="badge">Not connected</span> NM websocket status: <span
+						id="nm-status" class="badge">Not connected</span></small>
+				</p>
 		</div>
 	</div>
 
