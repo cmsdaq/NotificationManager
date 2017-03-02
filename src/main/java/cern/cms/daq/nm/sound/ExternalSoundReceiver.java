@@ -59,6 +59,9 @@ public class ExternalSoundReceiver implements Runnable {
 					eventResource.setPlay(true);
 					eventResource.setDisplay(false);
 					
+					eventResource.setSoundId(Sound.getByFilename(alarm.getSound()).ordinal());
+					
+					
 
 					eventResource.setEventType(EventType.Single);
 					eventResource.setEventSenderType(EventSenderType.External);

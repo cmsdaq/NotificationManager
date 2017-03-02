@@ -8,13 +8,17 @@ public enum Sound {
 	STATE_CHANGE_DAQ("IntroLivingonMyOwn.wav"),
 	NEW_RUN("ItsAKindOfMagic.wav"),
 
+	DCS("DCS_1.wav"),
+	WBM("WBM_1.wav"),
+	DQM("DQM_1.wav"),
+
 	KNOWN("added-info.wav"),
 	DEADTIME("added-pulse.wav"),
 	COMPLETED("added-complete.wav"),
 	DARK_CHANGE("added-dark3.wav"),
 	CROW("added-crow.wav"),
 	DROP("added-hard-drop.wav");
-	
+
 	private final String filename;
 
 	private Sound(String filename) {
@@ -23,6 +27,15 @@ public enum Sound {
 
 	public String getFilename() {
 		return filename;
+	}
+
+	public static Sound getByFilename(String filename) {
+		for (Sound sound : Sound.values()) {
+			if (sound.getFilename().equals(filename)) {
+				return sound;
+			}
+		}
+		return DEFAULT;
 	}
 
 }
