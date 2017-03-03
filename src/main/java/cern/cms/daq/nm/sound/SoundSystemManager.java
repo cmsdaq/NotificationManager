@@ -55,7 +55,7 @@ public class SoundSystemManager {
 			URL theURL = new URL(urlString);
 			connection = new Socket(theURL.getHost(), port);
 		} catch (IOException e) {
-			logger.error(e);
+			logger.error("Request to CMS-WOW failed: ",e);
 		}
 	}
 }

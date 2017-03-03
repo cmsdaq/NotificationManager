@@ -18,6 +18,7 @@ import cern.cms.daq.nm.persistence.EventType;
 import cern.cms.daq.nm.task.TaskManager;
 
 public class ExternalSoundReceiver implements Runnable {
+	private static ServerSocket ssock;
 	private final Socket csocket;
 	private final static Logger logger = Logger.getLogger(ExternalSoundReceiver.class);
 
@@ -26,7 +27,7 @@ public class ExternalSoundReceiver implements Runnable {
 	}
 
 	public static void startSoundReceiver(int socketPort) throws Exception {
-		ServerSocket ssock = new ServerSocket(socketPort);
+		ssock = new ServerSocket(socketPort);
 		logger.info("Listening for external clients to connect");
 
 		while (true) {
@@ -35,6 +36,15 @@ public class ExternalSoundReceiver implements Runnable {
 			new Thread(new ExternalSoundReceiver(sock)).start();
 		}
 
+	}
+
+	public static  void close() {
+		try {
+			logger.info("Closing external sound receiver");
+			ssock.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void run() {
@@ -54,14 +64,12 @@ public class ExternalSoundReceiver implements Runnable {
 					eventResource.setTextToSpeech(alarm.getTalk());
 					eventResource.setSender(alarm.getSender());
 					eventResource.setTitle(alarm.getSender() + " alarm");
-					//TODO: save the sound
+					// TODO: save the sound
 					eventResource.setDate(new Date());
 					eventResource.setPlay(true);
 					eventResource.setDisplay(false);
-					
+
 					eventResource.setSoundId(Sound.getByFilename(alarm.getSound()).ordinal());
-					
-					
 
 					eventResource.setEventType(EventType.Single);
 					eventResource.setEventSenderType(EventSenderType.External);
@@ -87,5 +95,5 @@ public class ExternalSoundReceiver implements Runnable {
 			}
 		}
 	}
-	
+
 }

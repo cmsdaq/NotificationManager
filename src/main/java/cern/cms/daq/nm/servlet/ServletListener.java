@@ -64,6 +64,8 @@ public class ServletListener implements ServletContextListener {
 		// e.getServletContext().getAttribute("emf-shifters");
 		emf.close();
 		// emf2.close();
+		
+		ExternalSoundReceiver.close();
 	}
 
 }
