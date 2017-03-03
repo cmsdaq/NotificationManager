@@ -1,5 +1,10 @@
 package cern.cms.daq.nm.servlet;
 
+import java.sql.Driver;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.Enumeration;
+
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.servlet.ServletContextEvent;
@@ -59,6 +64,10 @@ public class ServletListener implements ServletContextListener {
 	}
 
 	public void contextDestroyed(ServletContextEvent e) {
+
+		logger.info("NM will go down now, starting shutdown sequence");
+		TaskManager.get().stopTasks();
+		
 		EntityManagerFactory emf = (EntityManagerFactory) e.getServletContext().getAttribute("emf");
 		// EntityManagerFactory emf2 = (EntityManagerFactory)
 		// e.getServletContext().getAttribute("emf-shifters");
@@ -66,6 +75,19 @@ public class ServletListener implements ServletContextListener {
 		// emf2.close();
 		
 		ExternalSoundReceiver.close();
+		
+		Enumeration<Driver> drivers = DriverManager.getDrivers();
+		while (drivers.hasMoreElements()) {
+			Driver driver = drivers.nextElement();
+			try {
+				DriverManager.deregisterDriver(driver);
+				logger.info(String.format("deregistering jdbc driver: %s", driver));
+			} catch (SQLException ex) {
+				logger.error(String.format("Error deregistering driver %s", driver), ex);
+			}
+
+		}
+		logger.info("Shutdown sequence completed, NM is down");
 	}
 
 }

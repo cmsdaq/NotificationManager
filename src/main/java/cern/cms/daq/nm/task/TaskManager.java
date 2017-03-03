@@ -39,7 +39,11 @@ public class TaskManager {
 
 	private final Logger logger = Logger.getLogger(TaskManager.class);
 
+	private final Timer timer;
+
 	private TaskManager(EntityManagerFactory notificationEMF, EntityManagerFactory shiftEMF) {
+
+		this.timer = new Timer();
 		eventResourceBuffer = new ConcurrentLinkedQueue<EventResource>();
 		eventBuffer = new ConcurrentLinkedQueue<Event>();
 		notificationBuffer = new ConcurrentLinkedQueue<NotificationOccurrence>();
@@ -91,20 +95,25 @@ public class TaskManager {
 	}
 
 	public void schedule() {
-		Timer t = new Timer();
 
 		/*
 		 * schedule main tasks
 		 */
-		t.scheduleAtFixedRate(receiverTask, 1000, 1000);
-		t.scheduleAtFixedRate(dispatcherTask, 1000 * 10, 1000 * 10);
-		t.scheduleAtFixedRate(notificationTask, 1000 * 20, 1000 * 30);
+		timer.scheduleAtFixedRate(receiverTask, 1000, 1000);
+		timer.scheduleAtFixedRate(dispatcherTask, 1000 * 10, 1000 * 10);
+		timer.scheduleAtFixedRate(notificationTask, 1000 * 20, 1000 * 30);
 
 		/*
 		 * other tasks
 		 */
 		// t.scheduleAtFixedRate(monitoringTask, 1000 * 5, 1000 * 5);
 		// t.scheduleAtFixedRate(generatorTask, 0, 1000);
+	}
+
+	public void stopTasks() {
+		logger.info("Canceling scheduled tasks");
+		timer.cancel();
+		logger.info("Taskds canceled sucessfully");
 	}
 
 	public static TaskManager get() {
