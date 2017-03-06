@@ -87,6 +87,7 @@ $(document)
 						var separator = document.createElement("span");
 
 						conditionDate.innerHTML = condition.type;
+						conditionStatus.setAttribute("class","pull-right");
 						conditionDuration.innerHTML = condition.duration;
 						separator.innerHTML = " ";
 
@@ -94,8 +95,8 @@ $(document)
 						conditionStatus.appendChild(separator);
 						conditionStatus.appendChild(conditionDuration);
 
-						conditionHeader.appendChild(conditionName);
 						conditionHeader.appendChild(conditionStatus);
+						conditionHeader.appendChild(conditionName);
 
 						conditionDiv.appendChild(conditionHeader);
 

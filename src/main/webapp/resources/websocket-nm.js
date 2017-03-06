@@ -58,9 +58,10 @@ $(document)
 
 						var eventDate = document.createElement("small");
 						eventDate.innerHTML = event.type;
+						eventDate.setAttribute("class","pull-right");
 
-						eventHeader.appendChild(eventName);
 						eventHeader.appendChild(eventDate);
+						eventHeader.appendChild(eventName);
 
 						eventDiv.appendChild(eventHeader);
 
