@@ -1,6 +1,7 @@
 package cern.cms.daq.nm.websocket;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -20,6 +21,8 @@ public class EventSessionHandler {
 
 	private final Set<Session> sessions = new HashSet<>();
 	private final List<Event> events = new ArrayList<>();
+
+	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z");
 
 	public EventSessionHandler() {
 		final EventSessionHandler handler = this;
@@ -86,7 +89,7 @@ public class EventSessionHandler {
 		String title = event.getTitle() != null ? event.getTitle() : "";
 
 		JsonObject addMessage = provider.createObjectBuilder().add("action", "add").add("id", event.getId())
-				.add("name", title).add("type", event.getDate().toString()).add("status", tts)
+				.add("name", title).add("type", dateFormat.format(event.getDate())).add("status", tts)
 				.add("description", message).build();
 
 		logger.info("Created message for event: " + addMessage);
