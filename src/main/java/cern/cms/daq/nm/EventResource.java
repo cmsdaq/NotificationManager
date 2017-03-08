@@ -28,13 +28,13 @@ public class EventResource {
 	private String sender;
 
 	private String textToSpeech;
-	
+
 	private Long conditionId;
 
 	private EventType eventType;
 
 	private EventSenderType eventSenderType;
-	
+
 	@NotNull
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "CET")
 	private Date date;
@@ -46,7 +46,6 @@ public class EventResource {
 	private boolean play;
 
 	private int soundId;
-
 
 	public Date getDate() {
 		return date;
@@ -68,25 +67,48 @@ public class EventResource {
 
 		Event event = new Event();
 
-		int MAX_CHARS = 4000;
-		if (this.message.length() >= MAX_CHARS) {
-			String message = "... (" + (this.message.length() - MAX_CHARS) + " trimmed)";
-			logger.info("Message too long " + this.message.length() + " characters, shortening to " + MAX_CHARS);
-			this.message = this.message.substring(0, MAX_CHARS - message.length()) + message;
+		String messageTrimmed = this.message;
+		int MAX_CHARS_FOR_DESCRIPTION = 4000;
+		if (this.message.length() >= MAX_CHARS_FOR_DESCRIPTION) {
+			String messageTrimText = "... (" + (this.message.length() - MAX_CHARS_FOR_DESCRIPTION) + " trimmed)";
+			logger.info("Message too long " + this.message.length() + " characters, shortening to "
+					+ MAX_CHARS_FOR_DESCRIPTION);
+			messageTrimmed = this.message.substring(0, MAX_CHARS_FOR_DESCRIPTION - messageTrimText.length())
+					+ messageTrimText;
 		}
 
+		String titleTrimmed = this.title;
+		int MAX_CHARS_FOR_TITLE = 40;
+		if (this.title.length() >= MAX_CHARS_FOR_TITLE) {
+			String titleTrimText = "... (" + (this.title.length() - MAX_CHARS_FOR_TITLE) + " trimmed)";
+			logger.info(
+					"Title too long " + this.message.length() + " characters, shortening to " + MAX_CHARS_FOR_TITLE);
+			titleTrimmed = this.title.substring(0, MAX_CHARS_FOR_TITLE - titleTrimText.length()) + titleTrimText;
+		}
+
+		String senderTrimmed = this.sender;
+		if (this.sender.length() >= 200) {
+			senderTrimmed = this.sender.substring(0, 200);
+		}
+
+		String textToSpeechTrimmed = this.textToSpeech;
+		if (this.textToSpeech.length() >= 200) {
+			textToSpeechTrimmed = this.textToSpeech.substring(0, 200);
+		}
+
+		
 		logger.debug("Message ready to be persisted " + this.message.length());
 
-		event.setMessage(this.message);
-
+		event.setMessage(messageTrimmed);
+		event.setTitle(titleTrimmed);
+		event.setSender(senderTrimmed);
+		event.setTextToSpeech(textToSpeechTrimmed);
+		
 		event.setStatus(EventStatus.Received);
 		event.setDate(this.date);
 		event.setDisplay(this.display);
 		event.setPlay(this.play);
 		event.setSoundId(this.soundId);
-		event.setSender(sender);
-		event.setTitle(title);
-		event.setTextToSpeech(textToSpeech);
 		event.setEventSenderType(eventSenderType);
 		event.setEventType(eventType);
 		return event;
