@@ -3,7 +3,8 @@ $(document)
 				function() {
 					var expertSocketAddress = document.getElementById(
 							"expert-socket-address").getAttribute("url");
-					var expertSocket = new ReconnectingWebSocket(expertSocketAddress);
+					var expertSocket = new ReconnectingWebSocket(
+							expertSocketAddress);
 					expertSocket.onmessage = onConditionMessage;
 
 					expertSocket.onerror = onErrorHandle;
@@ -16,10 +17,11 @@ $(document)
 							printConditionElement(condition);
 						}
 						if (condition.action === "remove") {
-							document.getElementById("c-"+condition.id).remove();
+							document.getElementById("c-" + condition.id)
+									.remove();
 						}
 						if (condition.action === "addSuggestion") {
-							console.log("action update current suggestion");
+							// console.log("action add current suggestion");
 							printCurrentSuggestion(condition);
 						}
 						if (condition.action === "removeCurrent") {
@@ -28,6 +30,20 @@ $(document)
 									.text(
 											"DAQExpert has no suggestion at the moment");
 							$("#current-action").empty();
+						}
+						if (condition.action === "update") {
+
+							//console.log("action update recent " + condition.id);
+							var conditionToUpdate =  $("#s-" + condition.id);
+							//console.log("found by id: " + JSON.stringify(conditionToUpdate));
+							conditionToUpdate.html(condition.status);
+							conditionToUpdate.removeClass('label-warning');
+							conditionToUpdate.removeClass('label-success');
+							conditionToUpdate.addClass('label-primary');
+							setTimeout(function() {
+								conditionToUpdate.removeClass('label-primary');
+								conditionToUpdate.addClass('label-success');
+							}, 2000);
 						}
 
 					}
@@ -47,7 +63,7 @@ $(document)
 						$("#current-action").empty();
 						console.log("Expert websocket (re)connected");
 						$("#expert-status").text("Connected");
-						
+
 					}
 
 					function onCloseHandle(event) {
@@ -65,7 +81,7 @@ $(document)
 						$("#condition-list-empty-msg").hide();
 
 						var conditionDiv = document.createElement("div");
-						conditionDiv.setAttribute("id", "c-"+ condition.id);
+						conditionDiv.setAttribute("id", "c-" + condition.id);
 						conditionDiv
 								.setAttribute("class",
 										"list-group-item list-group-item-action flex-column align-items-start active");
@@ -73,21 +89,26 @@ $(document)
 						content.prepend(conditionDiv);
 
 						var conditionHeader = document.createElement("div");
-						conditionHeader.setAttribute("class",
-								"d-flex w-100 justify-content-between");
 
-						var conditionName = document.createElement("h5");
+						var conditionName = document.createElement("h4");
 						conditionName.setAttribute("class", "mb-1");
 						conditionName.innerHTML = condition.name;
 
 						var conditionStatus = document.createElement("p");
 						var conditionDate = document.createElement("small");
 						var conditionDuration = document.createElement("span");
-						conditionDuration.setAttribute("class", "strong");
+						$(conditionDuration).addClass("label");
+						if(condition.duration === "Ongoing"){
+							$(conditionDuration).addClass("label-warning");
+						} else{
+							$(conditionDuration).addClass("label-success");
+						}
+						conditionDuration.setAttribute("id", "s-" + condition.id);
 						var separator = document.createElement("span");
 
 						conditionDate.innerHTML = condition.type;
-						conditionStatus.setAttribute("class","pull-right");
+						conditionStatus.setAttribute("class",
+								"pull-right");
 						conditionDuration.innerHTML = condition.duration;
 						separator.innerHTML = " ";
 
@@ -112,7 +133,7 @@ $(document)
 
 						setTimeout(function() {
 							$(conditionDiv).removeClass('active');
-						}, 1000);
+						}, 2000);
 
 					}
 
@@ -123,7 +144,7 @@ $(document)
 						$("#current-action").empty();
 
 						$.each(condition.steps, function(index, value) {
-							console.log("Step: " + step);
+							//console.log("Step: " + step);
 							var step = document.createElement("div");
 							step.setAttribute("class", "list-group-item");
 							step.innerHTML = value;

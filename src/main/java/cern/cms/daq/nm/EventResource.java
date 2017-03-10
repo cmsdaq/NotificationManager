@@ -82,7 +82,7 @@ public class EventResource {
 		if (this.title != null && this.title.length() >= MAX_CHARS_FOR_TITLE) {
 			String titleTrimText = "... (" + (this.title.length() - MAX_CHARS_FOR_TITLE) + " trimmed)";
 			logger.info(
-					"Title too long " + this.message.length() + " characters, shortening to " + MAX_CHARS_FOR_TITLE);
+					"Title too long " + this.title.length() + " characters, shortening to " + MAX_CHARS_FOR_TITLE);
 			titleTrimmed = this.title.substring(0, MAX_CHARS_FOR_TITLE - titleTrimText.length()) + titleTrimText;
 		}
 

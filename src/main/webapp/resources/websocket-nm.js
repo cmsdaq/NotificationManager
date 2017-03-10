@@ -77,7 +77,7 @@ $(document)
 
 						setTimeout(function() {
 							$(eventDiv).removeClass('active');
-						}, 1000);
+						}, 2000);
 
 					}
 
