@@ -88,7 +88,7 @@ public class ReceiverTask extends TimerTask {
 				em.persist(eventOccurrence);
 
 				long end = System.currentTimeMillis();
-				logger.info("Event persistence time: " + (end - start) + "ms");
+				logger.debug("Event persistence time: " + (end - start) + "ms");
 				EventWebSocketServer.sessionHandler.addEvent(eventOccurrence);
 
 				if (dispatchToSoundSystem && eventOccurrence.isPlay()) {

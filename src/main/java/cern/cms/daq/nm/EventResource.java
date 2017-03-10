@@ -69,7 +69,7 @@ public class EventResource {
 
 		String messageTrimmed = this.message;
 		int MAX_CHARS_FOR_DESCRIPTION = 4000;
-		if (this.message != null && this.message.length() >= MAX_CHARS_FOR_DESCRIPTION) {
+		if (this.message != null && this.message.length() > MAX_CHARS_FOR_DESCRIPTION) {
 			String messageTrimText = "... (" + (this.message.length() - MAX_CHARS_FOR_DESCRIPTION) + " trimmed)";
 			logger.info("Message too long " + this.message.length() + " characters, shortening to "
 					+ MAX_CHARS_FOR_DESCRIPTION);
@@ -79,20 +79,19 @@ public class EventResource {
 
 		String titleTrimmed = this.title;
 		int MAX_CHARS_FOR_TITLE = 40;
-		if (this.title != null && this.title.length() >= MAX_CHARS_FOR_TITLE) {
+		if (this.title != null && this.title.length() > MAX_CHARS_FOR_TITLE) {
 			String titleTrimText = "... (" + (this.title.length() - MAX_CHARS_FOR_TITLE) + " trimmed)";
-			logger.info(
-					"Title too long " + this.title.length() + " characters, shortening to " + MAX_CHARS_FOR_TITLE);
+			logger.info("Title too long " + this.title.length() + " characters, shortening to " + MAX_CHARS_FOR_TITLE);
 			titleTrimmed = this.title.substring(0, MAX_CHARS_FOR_TITLE - titleTrimText.length()) + titleTrimText;
 		}
 
 		String senderTrimmed = this.sender;
-		if (this.sender != null && this.sender.length() >= 200) {
+		if (this.sender != null && this.sender.length() > 200) {
 			senderTrimmed = this.sender.substring(0, 200);
 		}
 
 		String textToSpeechTrimmed = this.textToSpeech;
-		if (this.textToSpeech != null && this.textToSpeech.length() >= 200) {
+		if (this.textToSpeech != null && this.textToSpeech.length() > 200) {
 			textToSpeechTrimmed = this.textToSpeech.substring(0, 200);
 		}
 

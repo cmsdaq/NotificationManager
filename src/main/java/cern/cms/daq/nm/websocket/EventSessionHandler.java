@@ -81,8 +81,8 @@ public class EventSessionHandler {
 
 	private JsonObject createAddMessage(Event event) {
 		JsonProvider provider = JsonProvider.provider();
-		logger.info("is provider null? " + provider == null);
-		logger.info("Creating message for event: " + event);
+		logger.debug("is provider null? " + provider == null);
+		logger.debug("Creating message for event: " + event);
 
 		String tts = event.getTextToSpeech() != null ? event.getTextToSpeech() : "";
 		String message = event.getMessage() != null ? event.getMessage() : "";
@@ -92,7 +92,7 @@ public class EventSessionHandler {
 				.add("name", title).add("type", dateFormat.format(event.getDate())).add("status", tts)
 				.add("description", message).build();
 
-		logger.info("Created message for event: " + addMessage);
+		logger.debug("Created message for event: " + addMessage);
 		return addMessage;
 	}
 
