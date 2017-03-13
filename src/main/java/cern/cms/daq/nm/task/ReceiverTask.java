@@ -101,8 +101,16 @@ public class ReceiverTask extends TimerTask {
 						}
 						String r = soundSystemManager.play(sound);
 						logger.debug("Result of sending play command: " + r);
-						String r2 = soundSystemManager.sayAndListen(eventOccurrence.getMessage());
-						logger.debug("Result of sending speak command: " + r2);
+
+						if (eventOccurrence.getTextToSpeech() != null
+								&& !"".equals(eventOccurrence.getTextToSpeech())) {
+
+							String r2 = soundSystemManager.sayAndListen(
+									eventOccurrence.getTitle() + ": " + eventOccurrence.getTextToSpeech());
+							logger.debug("Result of sending speak command: " + r2);
+						} else {
+							logger.info("Nothing to play for the event " + eventOccurrence.getId());
+						}
 					} catch (RuntimeException e) {
 						logger.error(e);
 					} catch (IOException e) {

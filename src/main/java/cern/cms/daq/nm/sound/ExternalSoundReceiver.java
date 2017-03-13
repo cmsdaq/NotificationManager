@@ -38,7 +38,7 @@ public class ExternalSoundReceiver implements Runnable {
 
 	}
 
-	public static  void close() {
+	public static void close() {
 		try {
 			logger.info("Closing external sound receiver");
 			ssock.close();
@@ -63,7 +63,12 @@ public class ExternalSoundReceiver implements Runnable {
 					eventResource.setMessage(alarm.getText());
 					eventResource.setTextToSpeech(alarm.getTalk());
 					eventResource.setSender(alarm.getSender());
-					eventResource.setTitle(alarm.getSender() + " alarm");
+
+					if (alarm.getSender() != null) {
+						eventResource.setTitle(alarm.getSender() + " alarm");
+					} else {
+						eventResource.setTitle("External alarm");
+					}
 					// TODO: save the sound
 					eventResource.setDate(new Date());
 					eventResource.setPlay(true);
