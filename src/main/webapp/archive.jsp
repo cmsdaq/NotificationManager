@@ -1,14 +1,16 @@
-
-
 <!DOCTYPE html>
 <%@ taglib uri='http://java.sun.com/jsp/jstl/core' prefix='c'%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags"%>
 <t:genericpage>
 	<jsp:attribute name="header">
       <div class="row" style="margin-bottom: 15px;">
          <div class="col-md-12">
+         
+         <span id="curr-params">Init</span>
+          
             <form class="form-inline pull-right " method="POST">
                 	
 
@@ -18,10 +20,13 @@
 							multiple="multiple" class="multiselect form-control">
                   
 						<c:forEach items="${eventTypes}" var="eventType">
-                     		<option selected name="type"
+                     		<option name="type"
 									value="<c:out value="${eventType.name }"/>"><c:out
-										value="${eventType.name }" /></option>
+										value="${eventType.name }" />
+										
+		 			 </option>
                    		</c:forEach>
+                   		
                   </select>
                </div>
                <div class="input-group" id="date-range-picker-group">
@@ -52,6 +57,7 @@
         <div class="input-group" id="entries-group">
  		
         	<span class="input-group-addon">Entries per page</span>
+        	
 			  <select id="entries-per-page">
 			    <option value="10">10</option>
 			    <option value="20">20</option>
@@ -108,28 +114,28 @@
       </table>
       
       <!-- Modal -->
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog"
+	<div class="modal fade" id="myModal" tabindex="-1" role="dialog"
 			aria-labelledby="myModalLabel">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal"
+	  <div class="modal-dialog" role="document">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal"
 							aria-label="Close">
-							<span aria-hidden="true">&times;</span>
-						</button>
-        <h4 class="modal-title" id="myModalLabel">Modal title</h4>
-      </div>
-      <div class="modal-body">
-        ...
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default"
+								<span aria-hidden="true">&times;</span>
+							</button>
+	        <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+	      </div>
+	      <div class="modal-body">
+	        ...
+	      </div>
+	      <div class="modal-footer">
+	        <button type="button" class="btn btn-default"
 							data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
-      </div>
-    </div>
-  </div>
-</div>
+	        <button type="button" class="btn btn-primary">Save changes</button>
+	      </div>
+	    </div>
+	  </div>
+	</div>
      
    </jsp:body>
 

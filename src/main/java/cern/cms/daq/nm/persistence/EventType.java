@@ -24,4 +24,14 @@ public enum EventType {
 		return name;
 	}
 
+	public static EventType getByName(String name) {
+		for (EventType type : EventType.values()) {
+			if (type.getName().equalsIgnoreCase(name)) {
+				return type;
+			}
+		}
+		return null;
+
+	}
+
 }
