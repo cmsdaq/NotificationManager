@@ -10,6 +10,7 @@ queryParameters = $.deparam(queryString);
 $(document).ready(function() {
 	// debug//$('#curr-params').html("onLoad: " + $.param(queryParameters));
 	initTypeSelector();
+	initLogicModuleSelector();
 	initEntriesPerPageSelector();
 	initDatePicker();
 	initPagination();
@@ -41,6 +42,37 @@ function initTypeSelector() {
 		$('select#event-type-multiselect').multiselect('select', selected);
 	}
 }
+
+function initLogicModuleSelector() {
+
+	$('#event-source-multiselect').multiselect({
+		buttonWidth : '200px',
+		nonSelectedText : 'showing all',
+		enableFiltering: true,
+        filterPlaceholder: 'Search for LM...',
+		maxHeight : 500,
+		onDropdownHidden : function(event) {
+			var sources = $('select#event-source-multiselect').val();
+			console.log("sources: " + JSON.stringify(sources));
+			queryParameters['source'] = sources;
+			queryParameters['page'] = 1; // reset the page
+
+			console.log($.param(queryParameters));
+			location.search = $.param(queryParameters); // reload
+		}
+	});
+	selected = [];
+	if (queryParameters['source']) {
+		// console.log("Exists type query: " + queryParameters['type']);
+		selected = queryParameters['source'];
+	}
+
+	// console.log("Selected " + selected.length);
+	if (selected.length != 0) {
+		$('select#event-source-multiselect').multiselect('select', selected);
+	}
+}
+
 
 /* initialize entries per page select */
 function initEntriesPerPageSelector() {

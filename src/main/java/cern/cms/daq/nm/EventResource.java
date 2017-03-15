@@ -14,6 +14,7 @@ import cern.cms.daq.nm.persistence.Event;
 import cern.cms.daq.nm.persistence.EventSenderType;
 import cern.cms.daq.nm.persistence.EventStatus;
 import cern.cms.daq.nm.persistence.EventType;
+import cern.cms.daq.nm.persistence.LogicModuleView;
 import cern.cms.daq.nm.sound.Sound;
 
 @Entity
@@ -35,6 +36,8 @@ public class EventResource {
 	private EventType eventType;
 
 	private EventSenderType eventSenderType;
+
+	private LogicModuleView logicModule;
 
 	@NotNull
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "CET")
@@ -81,7 +84,7 @@ public class EventResource {
 		String titleTrimmed = this.title;
 		int MAX_CHARS_FOR_TITLE = 40;
 		if (this.title != null && this.title.length() > MAX_CHARS_FOR_TITLE) {
-			String titleTrimText = "... (" + (this.title.length() - MAX_CHARS_FOR_TITLE) + " trimmed)";
+			String titleTrimText = "...";
 			logger.info("Title too long " + this.title.length() + " characters, shortening to " + MAX_CHARS_FOR_TITLE);
 			titleTrimmed = this.title.substring(0, MAX_CHARS_FOR_TITLE - titleTrimText.length()) + titleTrimText;
 		}
@@ -111,6 +114,7 @@ public class EventResource {
 		event.setSound(Sound.getById(soundId));
 		event.setEventSenderType(eventSenderType);
 		event.setEventType(eventType);
+		event.setLogicModule(logicModule);
 		return event;
 	}
 
@@ -184,6 +188,14 @@ public class EventResource {
 
 	public void setConditionId(Long conditionId) {
 		this.conditionId = conditionId;
+	}
+
+	public LogicModuleView getLogicModule() {
+		return logicModule;
+	}
+
+	public void setLogicModule(LogicModuleView logicModule) {
+		this.logicModule = logicModule;
 	}
 
 }

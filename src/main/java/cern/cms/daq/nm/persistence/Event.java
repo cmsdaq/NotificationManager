@@ -9,7 +9,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.persistence.Transient;
 
 import cern.cms.daq.nm.sound.Sound;
 
@@ -52,6 +51,9 @@ public class Event {
 
 	@Enumerated(EnumType.ORDINAL)
 	private EventStatus status;
+
+	@Enumerated(EnumType.ORDINAL)
+	private LogicModuleView logicModule;
 
 	/** Flag indicating if this notification should be displayed */
 	private boolean display;
@@ -169,5 +171,13 @@ public class Event {
 				+ title + ", textToSpeech=" + textToSpeech + ", sender=" + sender + ", message=" + message
 				+ ", conditionId=" + conditionId + ", sound=" + sound + ", date=" + date + ", status=" + status
 				+ ", display=" + display + ", play=" + play + "]";
+	}
+
+	public LogicModuleView getLogicModule() {
+		return logicModule;
+	}
+
+	public void setLogicModule(LogicModuleView logicModule) {
+		this.logicModule = logicModule;
 	}
 }

@@ -13,7 +13,21 @@
 		  
 			<form class="form-inline pull-right " method="POST">
 					
-
+				<div class="input-group" id="source-picker-group">
+				<span class="input-group-addon">source</span>
+				  <select name="select" id="event-source-multiselect"
+							multiple="multiple" class="multiselect form-control">
+				  
+						<c:forEach items="${sources}" var="logicModule">
+					 		<option name="type" value="<c:out value="${logicModule }"/>">
+					 		
+					 		<c:out value="${logicModule.displayedName }" />
+										
+		 					</option>
+				   		</c:forEach>
+				   		
+				  </select>
+			   </div>
 			   <div class="input-group" id="type-picker-group">
 				  <span class="input-group-addon">event type</span>
 				  <select name="select" id="event-type-multiselect"
@@ -23,7 +37,7 @@
 					 		<option name="type" value="<c:out value="${eventType.name }"/>"><c:out
 										value="${eventType.name }" />
 										
-		 			 </option>
+		 					</option>
 				   		</c:forEach>
 				   		
 				  </select>
@@ -86,6 +100,7 @@
 			<th>Sender</th>
 			<th>Displayed message</th>
 			<th>Spoken message</th>
+			<th>Source LM</th>
 			<%-- <th>Status</th>
 			<th>Display</th>
 			<th>Play</th>
@@ -102,6 +117,7 @@
 					 		<td><c:out value="${event.sender }" /></td>
 					 		<td><c:out value="${event.message }" /></td>
 					 		<td><c:out value="${event.textToSpeech }" /></td>
+					 		<td><c:out value="${event.logicModule.displayedName }" /></td>
 					 		<%-- <td>-</td>
 					 		<td>-</td>
 					 		<td>-</td>

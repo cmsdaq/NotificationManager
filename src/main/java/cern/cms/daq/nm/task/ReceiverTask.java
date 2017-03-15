@@ -14,8 +14,6 @@ import org.hibernate.Session;
 
 import cern.cms.daq.nm.EventResource;
 import cern.cms.daq.nm.persistence.Event;
-import cern.cms.daq.nm.persistence.EventSenderType;
-import cern.cms.daq.nm.persistence.EventType;
 import cern.cms.daq.nm.sound.Sound;
 import cern.cms.daq.nm.sound.SoundSystemManager;
 import cern.cms.daq.nm.websocket.EventWebSocketServer;

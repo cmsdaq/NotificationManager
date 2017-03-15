@@ -23,6 +23,7 @@ import org.hibernate.criterion.Restrictions;
 
 import cern.cms.daq.nm.persistence.Event;
 import cern.cms.daq.nm.persistence.EventType;
+import cern.cms.daq.nm.persistence.LogicModuleView;
 
 /**
  * Event archive servlet
@@ -42,6 +43,7 @@ public class EventArchiveServlet extends HttpServlet {
 		String paginationEntriesPerPage = request.getParameter("entries");
 		String paginationCurrentPage = request.getParameter("page");
 		String[] types = request.getParameterValues("type[]");
+		String[] sources = request.getParameterValues("source[]");
 		String startRange = request.getParameter("start");
 		String endRange = request.getParameter("end");
 
@@ -57,6 +59,20 @@ public class EventArchiveServlet extends HttpServlet {
 		if (filteredTypes.size() == 0) {
 			filteredTypes = Arrays.asList(EventType.values());
 		}
+
+		List<LogicModuleView> filteredSources = new ArrayList<>();
+		if (sources != null) {
+			for (String source : sources) {
+				LogicModuleView lm = LogicModuleView.valueOf(source);
+				if (lm != null) {
+					filteredSources.add(lm);
+				}
+			}
+		}
+		if (filteredSources.size() == 0) {
+			filteredSources = Arrays.asList(LogicModuleView.values());
+		}
+
 		try {
 			int entries = 20;
 			if (paginationEntriesPerPage != null) {
@@ -86,6 +102,7 @@ public class EventArchiveServlet extends HttpServlet {
 				Criteria eventCriteria = session.createCriteria(Event.class);
 				eventCriteria.addOrder(Order.desc("date"));
 				eventCriteria.add(Restrictions.in("eventType", filteredTypes));
+				eventCriteria.add(Restrictions.in("logicModule", filteredSources));
 				if (startDate != null && endDate != null)
 					eventCriteria.add(Restrictions.between("date", startDate, endDate));
 
@@ -102,6 +119,7 @@ public class EventArchiveServlet extends HttpServlet {
 
 				request.setAttribute("events", eventTypeList);
 				request.setAttribute("count", count);
+				request.setAttribute("sources", LogicModuleView.values());
 				request.setAttribute("eventTypes", EventType.values());
 				request.getRequestDispatcher("/archive.jsp").forward(request, response);
 
