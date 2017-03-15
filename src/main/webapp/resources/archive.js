@@ -8,11 +8,12 @@ var queryParameters = {}, queryString = location.search.substring(1);
 queryParameters = $.deparam(queryString);
 
 $(document).ready(function() {
-	//debug//$('#curr-params').html("onLoad: " + $.param(queryParameters));
+	// debug//$('#curr-params').html("onLoad: " + $.param(queryParameters));
 	initTypeSelector();
 	initEntriesPerPageSelector();
 	initDatePicker();
 	initPagination();
+	initTour();
 });
 
 function initTypeSelector() {
@@ -24,6 +25,7 @@ function initTypeSelector() {
 			var types = $('select#event-type-multiselect').val();
 			// console.log("Types: " + types);
 			queryParameters['type'] = types;
+			queryParameters['page'] = 1; // reset the page
 
 			location.search = $.param(queryParameters); // reload
 		}
@@ -69,6 +71,7 @@ function cb(start, end) {
 			start.format('YYYY-MM-DD HH:mm') + ' - '
 					+ end.format('YYYY-MM-DD HH:mm'));
 
+	queryParameters['page'] = 1; // reset the page
 	queryParameters['start'] = start.format();
 	queryParameters['end'] = end.format();
 }
@@ -133,7 +136,7 @@ function initPagination() {
 		curr_entries = queryParameters['entries']
 	}
 	var pages = Math.ceil(all_entries / curr_entries);
-	
+
 	$('#pages').text(pages);
 
 	var curr_page = 1;
@@ -156,4 +159,73 @@ function initPagination() {
 		total : Math.ceil(all_entries / curr_entries),
 		page : curr_page,
 	});
+}
+
+function initTour() {
+	// Instance the tour
+	var tour = new Tour(
+			{
+				container : "body",
+				name : "events-tour",
+				smartPlacement : true,
+				placement : "left",
+				keyboard : true,
+				storage : window.localStorage,
+				debug : false,
+				backdrop : true,
+				backdropContainer : 'body',
+				backdropPadding : 0,
+				redirect : true,
+				orphan : false,
+				duration : false,
+				delay : false,
+				steps : [
+
+						{
+							title : "Archive introduction",
+							orphan : true,
+							content : function() {
+								return "<p>This is <span class='text-muted'>Archive view</span>. You can browse all generated events here.</p>";
+							}
+
+						},
+						{
+							element : "#type-picker-group",
+							title : "Filter by type",
+							placement : 'bottom',
+							content : "Filter events by type here"
+						},
+						{
+							element : "#date-range-picker-group",
+							title : "Data range picker",
+							placement : 'bottom',
+							content : "Select data range to find events by date of occurrence."
+						},
+						{
+							element : "#tour",
+							title : "Tour",
+							placement : 'left',
+							content : "You can always start this tour again here."
+						} ]
+
+			});
+	$('#tour').click(function(e) {
+		// console.log("Start tour");
+
+		tour.restart();
+
+		// it's also good practice to preventDefault on the click event
+		// to avoid the click triggering whatever is within href:
+		e.preventDefault();
+	});
+
+	$(document).ready(function() {
+		// Initialize the tour
+		tour.init();
+
+		// Start the tour
+		tour.start();
+
+	});
+
 }
