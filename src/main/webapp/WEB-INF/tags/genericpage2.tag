@@ -123,8 +123,8 @@
 
 
 					<!-- NM NOTIFICATIONS -->
-					<!-- <li id="event_occurrences"><a href=archive><i
-							class="glyphicon glyphicon-calendar"></i> Notifications</a></li> -->
+					<li id="event_occurrences"><a href=archive><i
+							class="glyphicon glyphicon-calendar"></i> Archive</a></li>
 
 
 

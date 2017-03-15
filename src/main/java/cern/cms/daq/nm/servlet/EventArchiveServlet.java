@@ -18,6 +18,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 
 import cern.cms.daq.nm.persistence.Event;
@@ -65,9 +66,12 @@ public class EventArchiveServlet extends HttpServlet {
 			if (paginationCurrentPage != null) {
 				page = Integer.parseInt(paginationCurrentPage);
 			}
+			Date startDate = null, endDate = null;
+			if (startRange != null)
+				startDate = DatatypeConverter.parseDateTime(startRange).getTime();
 
-			Date startDate = DatatypeConverter.parseDateTime(startRange).getTime();
-			Date endDate = DatatypeConverter.parseDateTime(endRange).getTime();
+			if (endRange != null)
+				endDate = DatatypeConverter.parseDateTime(endRange).getTime();
 			logger.info("Range parsed : " + startDate + " - " + endDate);
 
 			logger.info("Requested events: entriesPerPage: " + paginationEntriesPerPage + ", currentPage: "
@@ -82,7 +86,8 @@ public class EventArchiveServlet extends HttpServlet {
 				Criteria eventCriteria = session.createCriteria(Event.class);
 				eventCriteria.addOrder(Order.desc("date"));
 				eventCriteria.add(Restrictions.in("eventType", filteredTypes));
-				eventCriteria.add(Restrictions.between("date", startDate, endDate));
+				if (startDate != null && endDate != null)
+					eventCriteria.add(Restrictions.between("date", startDate, endDate));
 
 				/* process pagination */
 				eventCriteria.setFirstResult((page - 1) * entries);
@@ -90,7 +95,13 @@ public class EventArchiveServlet extends HttpServlet {
 
 				@SuppressWarnings("unchecked")
 				List<Event> eventTypeList = eventCriteria.list();
+
+				eventCriteria.setProjection(Projections.rowCount());
+				eventCriteria.setFirstResult(0);
+				Long count = (Long) eventCriteria.uniqueResult();
+
 				request.setAttribute("events", eventTypeList);
+				request.setAttribute("count", count);
 				request.setAttribute("eventTypes", EventType.values());
 				request.getRequestDispatcher("/archive.jsp").forward(request, response);
 
@@ -102,6 +113,8 @@ public class EventArchiveServlet extends HttpServlet {
 		} catch (NumberFormatException e) {
 			response.sendError(HttpServletResponse.SC_BAD_REQUEST,
 					"One or more parameters missing or could not be parsed: " + e);
+		} catch (NullPointerException e) {
+			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "One or more parameters missing: " + e);
 		}
 	}
 
