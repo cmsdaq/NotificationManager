@@ -38,4 +38,10 @@ public enum Sound {
 		return DEFAULT;
 	}
 
+	public static Sound getById(int id) {
+		if (Sound.values().length >= id) {
+			return Sound.values()[id];
+		}
+		return DEFAULT;
+	}
 }

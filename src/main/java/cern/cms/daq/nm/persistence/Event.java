@@ -59,9 +59,6 @@ public class Event {
 	/** Flag indicating if this notification should be played */
 	private boolean play;
 
-	@Transient
-	private int soundId;
-
 	public EventType getEventType() {
 		return eventType;
 	}
@@ -118,14 +115,6 @@ public class Event {
 		this.play = play;
 	}
 
-	public int getSoundId() {
-		return soundId;
-	}
-
-	public void setSoundId(int soundId) {
-		this.soundId = soundId;
-	}
-
 	public int getConditionId() {
 		return conditionId;
 	}
@@ -179,6 +168,6 @@ public class Event {
 		return "Event [id=" + id + ", eventType=" + eventType + ", eventSenderType=" + eventSenderType + ", title="
 				+ title + ", textToSpeech=" + textToSpeech + ", sender=" + sender + ", message=" + message
 				+ ", conditionId=" + conditionId + ", sound=" + sound + ", date=" + date + ", status=" + status
-				+ ", display=" + display + ", play=" + play + ", soundId=" + soundId + "]";
+				+ ", display=" + display + ", play=" + play + "]";
 	}
 }

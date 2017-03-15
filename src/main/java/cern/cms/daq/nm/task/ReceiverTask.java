@@ -95,9 +95,8 @@ public class ReceiverTask extends TimerTask {
 					try {
 						logger.debug("Dispatching to Sound system");
 						Sound sound = Sound.DEFAULT;
-						if (eventOccurrence.getSoundId() != 0
-								&& Sound.values().length >= eventOccurrence.getSoundId()) {
-							sound = Sound.values()[eventOccurrence.getSoundId()];
+						if (eventOccurrence.getSound() != null) {
+							sound = eventOccurrence.getSound();
 						}
 						String r = soundSystemManager.play(sound);
 						logger.debug("Result of sending play command: " + r);

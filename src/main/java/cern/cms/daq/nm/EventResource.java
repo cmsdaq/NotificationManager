@@ -14,6 +14,7 @@ import cern.cms.daq.nm.persistence.Event;
 import cern.cms.daq.nm.persistence.EventSenderType;
 import cern.cms.daq.nm.persistence.EventStatus;
 import cern.cms.daq.nm.persistence.EventType;
+import cern.cms.daq.nm.sound.Sound;
 
 @Entity
 public class EventResource {
@@ -106,7 +107,8 @@ public class EventResource {
 		event.setDate(this.date);
 		event.setDisplay(this.display);
 		event.setPlay(this.play);
-		event.setSoundId(this.soundId);
+
+		event.setSound(Sound.getById(soundId));
 		event.setEventSenderType(eventSenderType);
 		event.setEventType(eventType);
 		return event;
