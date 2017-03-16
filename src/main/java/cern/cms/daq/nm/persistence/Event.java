@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import cern.cms.daq.nm.sound.ConditionPriority;
 import cern.cms.daq.nm.sound.Sound;
 
 @Entity
@@ -39,11 +40,17 @@ public class Event {
 	@Column(columnDefinition = "VARCHAR2(4000)")
 	private String message;
 
+	/** Sound or speech generated */
+	private boolean audible;
+
 	@Column(nullable = true)
 	private int conditionId;
 
 	@Enumerated(EnumType.ORDINAL)
 	private Sound sound;
+
+	@Enumerated(EnumType.ORDINAL)
+	private ConditionPriority priority;
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "DATETIME_FIELD")
@@ -57,9 +64,6 @@ public class Event {
 
 	/** Flag indicating if this notification should be displayed */
 	private boolean display;
-
-	/** Flag indicating if this notification should be played */
-	private boolean play;
 
 	public EventType getEventType() {
 		return eventType;
@@ -107,14 +111,6 @@ public class Event {
 
 	public void setDisplay(boolean display) {
 		this.display = display;
-	}
-
-	public boolean isPlay() {
-		return play;
-	}
-
-	public void setPlay(boolean play) {
-		this.play = play;
 	}
 
 	public int getConditionId() {
@@ -170,7 +166,7 @@ public class Event {
 		return "Event [id=" + id + ", eventType=" + eventType + ", eventSenderType=" + eventSenderType + ", title="
 				+ title + ", textToSpeech=" + textToSpeech + ", sender=" + sender + ", message=" + message
 				+ ", conditionId=" + conditionId + ", sound=" + sound + ", date=" + date + ", status=" + status
-				+ ", display=" + display + ", play=" + play + "]";
+				+ ", display=" + display + "]";
 	}
 
 	public LogicModuleView getLogicModule() {
@@ -179,5 +175,21 @@ public class Event {
 
 	public void setLogicModule(LogicModuleView logicModule) {
 		this.logicModule = logicModule;
+	}
+
+	public ConditionPriority getPriority() {
+		return priority;
+	}
+
+	public void setPriority(ConditionPriority priority) {
+		this.priority = priority;
+	}
+
+	public boolean isAudible() {
+		return audible;
+	}
+
+	public void setAudible(boolean audible) {
+		this.audible = audible;
 	}
 }

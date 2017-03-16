@@ -15,6 +15,7 @@ import cern.cms.daq.nm.persistence.EventSenderType;
 import cern.cms.daq.nm.persistence.EventStatus;
 import cern.cms.daq.nm.persistence.EventType;
 import cern.cms.daq.nm.persistence.LogicModuleView;
+import cern.cms.daq.nm.sound.ConditionPriority;
 import cern.cms.daq.nm.sound.Sound;
 
 @Entity
@@ -25,47 +26,31 @@ public class EventResource {
 	@NotNull
 	private String message;
 
+	@NotNull
 	private String title;
 
-	private String sender;
-
-	private String textToSpeech;
-
-	private Long conditionId;
-
+	@NotNull
 	private EventType eventType;
-
-	private EventSenderType eventSenderType;
-
-	private LogicModuleView logicModule;
 
 	@NotNull
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "CET")
 	private Date date;
 
-	/** Flag indicating if this notification should be displayed */
-	private boolean display;
+	@NotNull
+	private EventSenderType eventSenderType;
 
-	/** Flag indicating if this notification should be played */
-	private boolean play;
+	@NotNull
+	private String sender;
 
-	private int soundId;
+	private String textToSpeech;
 
-	public Date getDate() {
-		return date;
-	}
+	private Sound sound;
 
-	public void setDate(Date date) {
-		this.date = date;
-	}
+	private Long conditionId;
 
-	public String getMessage() {
-		return message;
-	}
+	private ConditionPriority priority;
 
-	public void setMessage(String message) {
-		this.message = message;
-	}
+	private LogicModuleView logicModule;
 
 	public Event asEventOccurrence(Session session) {
 
@@ -108,38 +93,29 @@ public class EventResource {
 
 		event.setStatus(EventStatus.Received);
 		event.setDate(this.date);
-		event.setDisplay(this.display);
-		event.setPlay(this.play);
 
-		event.setSound(Sound.getById(soundId));
+		event.setSound(sound);
 		event.setEventSenderType(eventSenderType);
 		event.setEventType(eventType);
 		event.setLogicModule(logicModule);
+		event.setPriority(priority);
 		return event;
 	}
 
-	public boolean isDisplay() {
-		return display;
+	public Date getDate() {
+		return date;
 	}
 
-	public void setDisplay(boolean display) {
-		this.display = display;
+	public void setDate(Date date) {
+		this.date = date;
 	}
 
-	public boolean isPlay() {
-		return play;
+	public String getMessage() {
+		return message;
 	}
 
-	public void setPlay(boolean play) {
-		this.play = play;
-	}
-
-	public int getSoundId() {
-		return soundId;
-	}
-
-	public void setSoundId(int soundId) {
-		this.soundId = soundId;
+	public void setMessage(String message) {
+		this.message = message;
 	}
 
 	public String getTitle() {
@@ -196,6 +172,22 @@ public class EventResource {
 
 	public void setLogicModule(LogicModuleView logicModule) {
 		this.logicModule = logicModule;
+	}
+
+	public Sound getSound() {
+		return sound;
+	}
+
+	public void setSound(Sound sound) {
+		this.sound = sound;
+	}
+
+	public ConditionPriority getPriority() {
+		return priority;
+	}
+
+	public void setPriority(ConditionPriority priority) {
+		this.priority = priority;
 	}
 
 }

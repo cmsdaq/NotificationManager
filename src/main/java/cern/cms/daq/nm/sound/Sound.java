@@ -2,7 +2,7 @@ package cern.cms.daq.nm.sound;
 
 public enum Sound {
 
-	DEFAULT("added-hard-drop.wav"),
+	DEFAULT("added-complete.wav"),
 	STATE_CHANGE_LHC_BEAM_MODE("U2Bell.wav"),
 	STATE_CHANGE_LHC_MACHINE_MODE("DingDong.wav"),
 	STATE_CHANGE_DAQ("IntroLivingonMyOwn.wav"),

@@ -59,26 +59,7 @@ public class ExternalSoundReceiver implements Runnable {
 			if (alarms != null) {
 
 				for (Alarm alarm : alarms) {
-					EventResource eventResource = new EventResource();
-					eventResource.setMessage(alarm.getText());
-					eventResource.setTextToSpeech(alarm.getTalk());
-					eventResource.setSender(alarm.getSender());
-
-					if (alarm.getSender() != null) {
-						eventResource.setTitle(alarm.getSender() + " alarm");
-					} else {
-						eventResource.setTitle("External alarm");
-					}
-					// TODO: save the sound
-					eventResource.setDate(new Date());
-					eventResource.setPlay(true);
-					eventResource.setDisplay(false);
-
-					eventResource.setSoundId(Sound.getByFilename(alarm.getSound()).ordinal());
-
-					eventResource.setEventType(EventType.Single);
-					eventResource.setEventSenderType(EventSenderType.External);
-					// eventOccurrenceResource.setId(1L);
+					EventResource eventResource = convertAlarmToEvent(alarm);
 					TaskManager.get().getEventResourceBuffer().add(eventResource);
 				}
 
@@ -99,6 +80,26 @@ public class ExternalSoundReceiver implements Runnable {
 				logger.info("Problem closing socket");
 			}
 		}
+	}
+
+	private EventResource convertAlarmToEvent(Alarm alarm) {
+		EventResource eventResource = new EventResource();
+		if (alarm.getSender() != null) {
+			eventResource.setTitle(alarm.getSender() + " alarm");
+		} else {
+			eventResource.setTitle("External alarm");
+		}
+		eventResource.setMessage(alarm.getText());
+		eventResource.setTextToSpeech(alarm.getTalk());
+		eventResource.setSender(alarm.getSender());
+
+		eventResource.setDate(new Date());
+		eventResource.setSound(Sound.getByFilename(alarm.getSound()));
+
+		eventResource.setEventType(EventType.Single);
+		eventResource.setEventSenderType(EventSenderType.External);
+		// eventOccurrenceResource.setId(1L);
+		return eventResource;
 	}
 
 }

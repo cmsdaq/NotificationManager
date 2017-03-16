@@ -1,6 +1,5 @@
 package cern.cms.daq.nm.task;
 
-import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.Queue;
 import java.util.TimerTask;
@@ -15,7 +14,7 @@ import org.hibernate.Session;
 import cern.cms.daq.nm.EventResource;
 import cern.cms.daq.nm.persistence.Event;
 import cern.cms.daq.nm.sound.Sound;
-import cern.cms.daq.nm.sound.SoundSystemManager;
+import cern.cms.daq.nm.sound.SoundDispatcher;
 import cern.cms.daq.nm.websocket.EventWebSocketServer;
 
 /**
@@ -37,7 +36,7 @@ public class ReceiverTask extends TimerTask {
 
 	private static final Logger logger = Logger.getLogger(ReceiverTask.class);
 
-	private final SoundSystemManager soundSystemManager;
+	private final SoundDispatcher soundDispatcher;
 	/**
 	 * Outcoming buffer
 	 */
@@ -50,16 +49,12 @@ public class ReceiverTask extends TimerTask {
 
 	private EntityManagerFactory emf;
 
-	private final boolean dispatchToSoundSystem;
-
 	public ReceiverTask(EntityManagerFactory emf, ConcurrentLinkedQueue<EventResource> eventResourceBuffer,
-			ConcurrentLinkedQueue<Event> eventBuffer, SoundSystemManager soundSystemManager,
-			boolean dispatchToSoundSystem) {
+			ConcurrentLinkedQueue<Event> eventBuffer, SoundDispatcher soundDispatcher) {
 		this.emf = emf;
 		this.eventBuffer = eventBuffer;
 		this.eventResourceBuffer = eventResourceBuffer;
-		this.soundSystemManager = soundSystemManager;
-		this.dispatchToSoundSystem = dispatchToSoundSystem;
+		this.soundDispatcher = soundDispatcher;
 	}
 
 	@Override
@@ -79,47 +74,29 @@ public class ReceiverTask extends TimerTask {
 				i++;
 				EventResource current = eventResourceBuffer.poll();
 				logger.debug("Received: " + current);
-				Event eventOccurrence = current.asEventOccurrence(session);
+				Event event = current.asEventOccurrence(session);
+
+				boolean audible = soundDispatcher.triggerSound(event);
+				event.setAudible(audible);
+
+				if (audible && event.getSound() == null) {
+					Sound selected = soundDispatcher.selectSound(event);
+					event.setSound(selected);
+				}
 
 				long start = System.currentTimeMillis();
 
-				em.persist(eventOccurrence);
+				em.persist(event);
 
 				long end = System.currentTimeMillis();
 				logger.debug("Event persistence time: " + (end - start) + "ms");
-				EventWebSocketServer.sessionHandler.addEvent(eventOccurrence);
+				EventWebSocketServer.sessionHandler.addEvent(event);
 
-				if (dispatchToSoundSystem && eventOccurrence.isPlay()) {
-					try {
-						logger.debug("Dispatching to Sound system");
-						Sound sound = Sound.DEFAULT;
-						if (eventOccurrence.getSound() != null) {
-							sound = eventOccurrence.getSound();
-						}
-						String r = soundSystemManager.play(sound);
-						logger.debug("Result of sending play command: " + r);
-
-						if (eventOccurrence.getTextToSpeech() != null
-								&& !"".equals(eventOccurrence.getTextToSpeech())) {
-
-							String r2 = soundSystemManager.sayAndListen(
-									eventOccurrence.getTitle() + ": " + eventOccurrence.getTextToSpeech());
-							logger.debug("Result of sending speak command: " + r2);
-						} else {
-							logger.info("Nothing to play for the event " + eventOccurrence.getId());
-						}
-					} catch (RuntimeException e) {
-						logger.error(e);
-					} catch (IOException e) {
-						logger.error(e);
-					}
-				}
-
-				logger.debug("Persisted: " + eventOccurrence);
+				soundDispatcher.dispatch(event);
 
 				// Add to temporary buffer - event occurrence cannot be added to
 				// buffer before tranaction has successfully commited.
-				tmpReceiverBuffer.add(eventOccurrence);
+				tmpReceiverBuffer.add(event);
 			}
 
 			try {

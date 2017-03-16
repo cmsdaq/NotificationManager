@@ -10,15 +10,18 @@ import java.net.URL;
 
 import org.apache.log4j.Logger;
 
-public class SoundSystemManager {
+import cern.cms.daq.nm.Application;
+import cern.cms.daq.nm.Setting;
+
+public class SoundSystemConnector {
 
 	private final String url;
 	private final int port;
 	private Socket connection;
 
-	private final static Logger logger = Logger.getLogger(SoundSystemManager.class);
+	protected final static Logger logger = Logger.getLogger(SoundSystemConnector.class);
 
-	public SoundSystemManager(String urlString, int port) {
+	public SoundSystemConnector(String urlString, int port) {
 		this.url = urlString;
 		this.port = port;
 	}
@@ -55,7 +58,27 @@ public class SoundSystemManager {
 			URL theURL = new URL(urlString);
 			connection = new Socket(theURL.getHost(), port);
 		} catch (IOException e) {
-			logger.error("Request to CMS-WOW failed: ",e);
+			logger.error("Request to CMS-WOW failed: ", e);
 		}
+	}
+
+	public static SoundSystemConnector buildSoundSystemConnector() {
+		String soundUrl = "";
+		int soundPort = 0;
+		logger.info("Sound enabled, parsing url and port");
+		String soundProp = (String) Application.get().getProp().get(Setting.SOUND_URL.getCode());
+		String soundPortProp = (String) Application.get().getProp().get(Setting.SOUND_PORT.getCode());
+		try {
+			soundPort = Integer.parseInt(soundPortProp);
+		} catch (NumberFormatException e) {
+			logger.error("Cannot parse sound port", e);
+		}
+
+		if (soundProp != "" && soundPort != 0) {
+			soundUrl = soundProp;
+		}
+
+		logger.info("Initializing sound system with url: " + soundUrl + ":" + soundPort);
+		return new SoundSystemConnector(soundUrl, soundPort);
 	}
 }

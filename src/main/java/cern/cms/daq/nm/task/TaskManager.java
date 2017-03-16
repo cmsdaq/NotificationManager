@@ -2,9 +2,7 @@ package cern.cms.daq.nm.task;
 
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.ConcurrentMap;
 
 import javax.persistence.EntityManagerFactory;
 
@@ -16,7 +14,10 @@ import cern.cms.daq.nm.NotificationException;
 import cern.cms.daq.nm.Setting;
 import cern.cms.daq.nm.persistence.Event;
 import cern.cms.daq.nm.persistence.NotificationOccurrence;
-import cern.cms.daq.nm.sound.SoundSystemManager;
+import cern.cms.daq.nm.sound.SoundTrigger;
+import cern.cms.daq.nm.sound.SoundDispatcher;
+import cern.cms.daq.nm.sound.SoundSelector;
+import cern.cms.daq.nm.sound.SoundSystemConnector;
 
 public class TaskManager {
 
@@ -35,8 +36,6 @@ public class TaskManager {
 	@SuppressWarnings("unused")
 	private final TimerTask monitoringTask;
 
-	private final SoundSystemManager soundSystemManager;
-
 	private final Logger logger = Logger.getLogger(TaskManager.class);
 
 	private final Timer timer;
@@ -49,8 +48,7 @@ public class TaskManager {
 		notificationBuffer = new ConcurrentLinkedQueue<NotificationOccurrence>();
 
 		boolean soundEnabled = false;
-		String soundUrl = "";
-		int soundPort = 0;
+
 		String soundEnabledProp = (String) Application.get().getProp().get(Setting.SOUND_ENABLED.getCode());
 
 		try {
@@ -59,33 +57,15 @@ public class TaskManager {
 			logger.error("Cannot parse sound port", e);
 		}
 
-		if (soundEnabled) {
-
-			logger.info("Sound enabled, parsing url and port");
-			String soundProp = (String) Application.get().getProp().get(Setting.SOUND_URL.getCode());
-			String soundPortProp = (String) Application.get().getProp().get(Setting.SOUND_PORT.getCode());
-			try {
-				soundPort = Integer.parseInt(soundPortProp);
-			} catch (NumberFormatException e) {
-				logger.error("Cannot parse sound port", e);
-			}
-
-			if (soundProp != "" && soundPort != 0) {
-				soundUrl = soundProp;
-			}
-
-			logger.info("Initializing sound system with url: " + soundUrl + ":" + soundPort);
-			this.soundSystemManager = new SoundSystemManager(soundUrl, soundPort);
-		} else {
-			logger.info("Sound system is disabled");
-			this.soundSystemManager = null;
-		}
+		SoundTrigger configurator = new SoundTrigger();
+		SoundSystemConnector connector = SoundSystemConnector.buildSoundSystemConnector();
+		SoundSelector selector = new SoundSelector();
+		SoundDispatcher soundDispatcher = new SoundDispatcher(connector, configurator, selector, soundEnabled);
 
 		/*
 		 * initialize main tasks
 		 */
-		receiverTask = new ReceiverTask(notificationEMF, eventResourceBuffer, eventBuffer, soundSystemManager,
-				soundEnabled);
+		receiverTask = new ReceiverTask(notificationEMF, eventResourceBuffer, eventBuffer, soundDispatcher);
 		dispatcherTask = new DispatcherTask(notificationEMF, shiftEMF, eventBuffer, notificationBuffer);
 		notificationTask = new NotificationTask(notificationEMF, notificationBuffer);
 
@@ -140,10 +120,6 @@ public class TaskManager {
 
 	public ConcurrentLinkedQueue<EventResource> getEventResourceBuffer() {
 		return eventResourceBuffer;
-	}
-
-	public SoundSystemManager getSoundSystemManager() {
-		return soundSystemManager;
 	}
 
 }

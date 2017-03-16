@@ -5,9 +5,13 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Properties;
 
+import cern.cms.daq.nm.sound.SoundTrigger;
+
 public class Application {
 
 	private final Properties prop;
+
+	private final SoundTrigger soundConfiguration;
 
 	public static Application get() {
 		if (instance == null) {
@@ -30,6 +34,7 @@ public class Application {
 
 	private Application(String propertiesFile) {
 		prop = load(propertiesFile);
+		soundConfiguration = new SoundTrigger();
 	}
 
 	private static Application instance;
@@ -54,5 +59,9 @@ public class Application {
 	public Properties getProp() {
 		return prop;
 	}
-	
+
+	public SoundTrigger getSoundConfiguration() {
+		return soundConfiguration;
+	}
+
 }
