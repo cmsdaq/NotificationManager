@@ -69,9 +69,6 @@ public class EventArchiveServlet extends HttpServlet {
 				}
 			}
 		}
-		if (filteredSources.size() == 0) {
-			filteredSources = Arrays.asList(LogicModuleView.values());
-		}
 
 		try {
 			int entries = 20;
@@ -102,7 +99,10 @@ public class EventArchiveServlet extends HttpServlet {
 				Criteria eventCriteria = session.createCriteria(Event.class);
 				eventCriteria.addOrder(Order.desc("date"));
 				eventCriteria.add(Restrictions.in("eventType", filteredTypes));
-				eventCriteria.add(Restrictions.in("logicModule", filteredSources));
+
+				if (!filteredSources.isEmpty()) {
+					eventCriteria.add(Restrictions.in("logicModule", filteredSources));
+				}
 				if (startDate != null && endDate != null)
 					eventCriteria.add(Restrictions.between("date", startDate, endDate));
 

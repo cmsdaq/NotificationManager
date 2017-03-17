@@ -2,24 +2,24 @@ package cern.cms.daq.nm.sound;
 
 public enum Sound {
 
-	DEFAULT("added-complete.wav", "Default sound"),
-	STATE_CHANGE_LHC_BEAM_MODE("U2Bell.wav", "LHC beam sound"),
-	STATE_CHANGE_LHC_MACHINE_MODE("DingDong.wav", "LHC machine sound"),
-	STATE_CHANGE_DAQ("IntroLivingonMyOwn.wav", "DAQ state sound"),
-	NEW_RUN("ItsAKindOfMagic.wav", "New run sound"),
+	DEFAULT("added-complete.wav", "Default"),
+	STATE_CHANGE_LHC_BEAM_MODE("U2Bell.wav", "LHC beam"),
+	STATE_CHANGE_LHC_MACHINE_MODE("DingDong.wav", "LHC machine"),
+	STATE_CHANGE_DAQ("IntroLivingonMyOwn.wav", "DAQ state"),
+	NEW_RUN("ItsAKindOfMagic.wav", "New run"),
 
 	DCS("DCS_1.wav", "DCS sound"),
 	WBM("WBM_1.wav", "WBM sound"),
 	DQM("DQM_1.wav", "DQM sound"),
-	EXTERNAL_DEFAULT("U2Bell.wav", "External alarm sound"),
+	EXTERNAL_DEFAULT("U2Bell.wav", "External alarm"),
 
 	KNOWN("added-info.wav", "Known"),
-	DEADTIME("added-pulse.wav", "Deadtime sound"),
-	COMPLETED("added-complete.wav", "Completed sound"),
-	DARK_CHANGE("added-dark3.wav", "Dark change sound"),
-	CROW("added-crow.wav", "Crow sound"),
-	DROP("added-hard-drop.wav", "Drop sound"),
-	OTHER("", "Other sound");
+	DEADTIME("added-pulse.wav", "Deadtime"),
+	COMPLETED("added-complete.wav", "Completed"),
+	DARK_CHANGE("added-dark3.wav", "Dark change"),
+	CROW("added-crow.wav", "Crow"),
+	DROP("added-hard-drop.wav", "Drop"),
+	OTHER("", "Other");
 
 	private final String filename;
 

@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <%@ taglib uri='http://java.sun.com/jsp/jstl/core' prefix='c'%>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags"%>
@@ -99,12 +99,10 @@
 			<th>Title</th>
 			<th>Sender</th>
 			<th>Displayed message</th>
-			<th>Spoken message</th>
 			<th>Source LM</th>
-			<%-- <th>Status</th>
-			<th>Display</th>
-			<th>Play</th>
-			<th>Link</th> --%>
+			<th>Audible</th>
+			<%-- <th>Display</th>--%>
+			<%-- <th>Link</th> --%>
 		 </tr>
 		 </thead>
 		 <tbody>
@@ -116,13 +114,24 @@
 					 		<td><c:out value="${event.title }" /></td>
 					 		<td><c:out value="${event.sender }" /></td>
 					 		<td><c:out value="${event.message }" /></td>
-					 		<td><c:out value="${event.textToSpeech }" /></td>
-					 		<td><c:out value="${event.logicModule.displayedName }" /></td>
+							<td>
+								<c:choose>
+									<c:when test="${event.logicModule != null}">${event.logicModule}</c:when> 
+									<c:otherwise>n/a</c:otherwise>  
+								</c:choose>
+							</td>
+					 		<td>
+					 		<c:if test="${event.audible == false}">false</c:if> 
+					 		<c:if test="${event.sound != null}">
+								<span class="label label-info" data-toggle="tooltip"
+									title="${event.sound.filename}"><span
+									class="glyphicon glyphicon-music"></span> ${event.sound.displayName}</span>
+							</c:if> 
+					 		<c:if test="${event.textToSpeech != null}">${event.textToSpeech}</c:if> 
 					 		<%-- <td>-</td>
-					 		<td>-</td>
-					 		<td>-</td>
 					 		<td>-</td> --%>
-				</tr>   		
+				
+					</tr>   		
 				
 				</c:forEach>
 		 </tbody>
