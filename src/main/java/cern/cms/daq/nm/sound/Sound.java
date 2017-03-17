@@ -13,7 +13,7 @@ public enum Sound {
 	WBM("WBM_1.wav", "WBM sound"),
 	DQM("DQM_1.wav", "DQM sound"),
 	EXTERNAL_DEFAULT("U2Bell.wav", "External alarm"),
-	END("U2SingleBell.wav", "End"),
+	END("U2SingelBell.wav", "End"),
 
 	KNOWN("added-info.wav", "Known"),
 	DEADTIME("added-pulse.wav", "Deadtime"),
