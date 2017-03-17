@@ -21,7 +21,7 @@ public class SoundSystemConnector {
 
 	protected final static Logger logger = Logger.getLogger(SoundSystemConnector.class);
 
-	public SoundSystemConnector(String urlString, int port) {
+	protected SoundSystemConnector(String urlString, int port) {
 		this.url = urlString;
 		this.port = port;
 	}
@@ -46,7 +46,7 @@ public class SoundSystemConnector {
 		printWriter.flush();
 	}
 
-	public String listen() throws IOException {
+	private String listen() throws IOException {
 		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 		char[] buffer = new char[200];
 		int count = bufferedReader.read(buffer, 0, 200);

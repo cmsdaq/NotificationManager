@@ -1,16 +1,13 @@
 package cern.cms.daq.nm.sound;
 
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-
 import java.io.IOException;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.mockito.Mockito;
 
 import cern.cms.daq.nm.persistence.Event;
 
@@ -34,92 +31,32 @@ public class SoundDispatcherTest {
 
 	@Test
 	public void testDispatch() throws IOException {
-		SoundSystemConnector connectorStub = Mockito.spy(new SoundSystemConnectorStub());
+		ConcurrentLinkedQueue<Event> queue = new ConcurrentLinkedQueue<>();
 		SoundConfigurationStub configuration = new SoundConfigurationStub();
 		SoundSelectorStub selector = new SoundSelectorStub();
-		SoundDispatcher soundDispatcher = new SoundDispatcher(connectorStub, configuration, selector, true);
+		SoundDispatcher soundDispatcher = new SoundDispatcher(queue, configuration, selector, true);
 
 		configuration.fakeTriggerDecision = true;
-		boolean sent = soundDispatcher.dispatch(generateEvent("a", Sound.DEFAULT, soundDispatcher));
+		soundDispatcher.dispatch(generateEvent("a", Sound.DEFAULT, soundDispatcher));
 
-		Assert.assertTrue(sent);
-		verify(connectorStub).play(Sound.DEFAULT.getFilename());
-		verify(connectorStub).sayAndListen("a");
+		
+		Assert.assertEquals(1,queue.size());
 	}
 
 	@Test
 	public void testDispatchEventNotPlayedAtAll() throws IOException {
-		SoundSystemConnector connectorStub = Mockito.spy(new SoundSystemConnectorStub());
+		ConcurrentLinkedQueue<Event> queue = new ConcurrentLinkedQueue<>();
 		SoundConfigurationStub configuration = new SoundConfigurationStub();
 		SoundSelectorStub selector = new SoundSelectorStub();
-		SoundDispatcher soundDispatcher = new SoundDispatcher(connectorStub, configuration, selector, true);
+		SoundDispatcher soundDispatcher = new SoundDispatcher(queue, configuration, selector, true);
 
 		configuration.fakeTriggerDecision = false;
-		boolean sent = soundDispatcher.dispatch(generateEvent("a", Sound.DEFAULT, soundDispatcher));
+		soundDispatcher.dispatch(generateEvent("a", Sound.DEFAULT, soundDispatcher));
 
-		Assert.assertFalse(sent);
-		verify(connectorStub, never()).play(Mockito.anyString());
-		verify(connectorStub, never()).sayAndListen(Mockito.anyString());
+
+		Assert.assertEquals(0,queue.size());
 	}
 
-	@Test
-	public void testDispatchEventEmptyTTS() throws IOException {
-		SoundSystemConnector connectorStub = Mockito.spy(new SoundSystemConnectorStub());
-		SoundConfigurationStub configuration = new SoundConfigurationStub();
-		SoundSelectorStub selector = new SoundSelectorStub();
-		SoundDispatcher soundDispatcher = new SoundDispatcher(connectorStub, configuration, selector, true);
-
-		configuration.fakeTriggerDecision = true;
-		boolean sent = soundDispatcher.dispatch(generateEvent("", Sound.DEFAULT, soundDispatcher));
-
-		Assert.assertTrue(sent);
-		verify(connectorStub).play(Sound.DEFAULT.getFilename());
-		verify(connectorStub, never()).sayAndListen(Mockito.anyString());
-	}
-
-	@Test
-	public void testDispatchEventNoTTS() throws IOException {
-		SoundSystemConnector connectorStub = Mockito.spy(new SoundSystemConnectorStub());
-		SoundConfigurationStub configuration = new SoundConfigurationStub();
-		SoundSelectorStub selector = new SoundSelectorStub();
-		SoundDispatcher soundDispatcher = new SoundDispatcher(connectorStub, configuration, selector, true);
-
-		configuration.fakeTriggerDecision = true;
-		boolean sent = soundDispatcher.dispatch(generateEvent(null, Sound.DEFAULT, soundDispatcher));
-
-		Assert.assertTrue(sent);
-		verify(connectorStub).play(Sound.DEFAULT.getFilename());
-		verify(connectorStub, never()).sayAndListen(Mockito.anyString());
-	}
-
-	@Test
-	public void testDispatchEventNoSound() throws IOException {
-		SoundSystemConnector connectorStub = Mockito.spy(new SoundSystemConnectorStub());
-		SoundConfigurationStub configuration = new SoundConfigurationStub();
-		SoundSelectorStub selector = new SoundSelectorStub();
-		SoundDispatcher soundDispatcher = new SoundDispatcher(connectorStub, configuration, selector, true);
-
-		configuration.fakeTriggerDecision = true;
-		boolean sent = soundDispatcher.dispatch(generateEvent("a", null, soundDispatcher));
-
-		Assert.assertTrue(sent);
-		verify(connectorStub, never()).play(Mockito.anyString());
-		verify(connectorStub).sayAndListen("a");
-	}
-
-	@Test
-	public void testDispatchCommunicationProblem() throws IOException {
-		SoundSystemConnectorStub connectorStub = Mockito.spy(new SoundSystemConnectorStub());
-		SoundConfigurationStub configuration = new SoundConfigurationStub();
-		SoundSelectorStub selector = new SoundSelectorStub();
-		SoundDispatcher soundDispatcher = new SoundDispatcher(connectorStub, configuration, selector, true);
-
-		configuration.fakeTriggerDecision = true;
-		connectorStub.fakeProblem = true;
-		boolean sent = soundDispatcher.dispatch(generateEvent("a", null, soundDispatcher));
-		Assert.assertFalse(sent);
-
-	}
 
 	private Event generateEvent(String textToSpeech, Sound sound, SoundDispatcher dispatcher) {
 		Event event = new Event();
@@ -139,42 +76,6 @@ class SoundConfigurationStub extends SoundTrigger {
 	@Override
 	public boolean triggerSound(Event event) {
 		return fakeTriggerDecision;
-	}
-
-}
-
-class SoundSystemConnectorStub extends SoundSystemConnector {
-
-	public boolean fakeProblem = false;
-
-	public SoundSystemConnectorStub() {
-		super("", 0);
-	}
-
-	@Override
-	public String sayAndListen(String statement) throws IOException {
-		logger.trace("Say: " + statement);
-		if (fakeProblem) {
-			throw new IOException("Network problem");
-		}
-		return "All ok";
-	}
-
-	@Override
-	public String play(String sound) throws IOException {
-		logger.trace("Play: " + sound);
-		if (fakeProblem) {
-			throw new IOException("Network problem");
-		}
-		return "All ok";
-	}
-
-	@Override
-	public String listen() throws IOException {
-		if (fakeProblem) {
-			throw new IOException("Network problem");
-		}
-		return "All ok";
 	}
 
 }

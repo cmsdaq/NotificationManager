@@ -42,9 +42,9 @@ public class SoundConfigurationReader {
 		return result;
 	}
 
-	public Set<Triple<LogicModuleView, EventType, ConditionPriority>> readSoundTriggerConfigurations(
+	public Set<Triple<LogicModuleView, EventType, Priority>> readSoundTriggerConfigurations(
 			Properties properties) {
-		Set<Triple<LogicModuleView, EventType, ConditionPriority>> result = new HashSet<>();
+		Set<Triple<LogicModuleView, EventType, Priority>> result = new HashSet<>();
 		for (Entry<Object, Object> entry : properties.entrySet()) {
 			try {
 				String key = (String) entry.getKey();
@@ -75,7 +75,7 @@ public class SoundConfigurationReader {
 		}
 	}
 
-	private Triple<LogicModuleView, EventType, ConditionPriority> readSoundTriggerConfiguration(String key,
+	private Triple<LogicModuleView, EventType, Priority> readSoundTriggerConfiguration(String key,
 			String value) {
 
 		String[] parts = key.split("\\.");
@@ -95,11 +95,11 @@ public class SoundConfigurationReader {
 		return Triple.of(logicModule, EventType.Single, sound);
 	}
 
-	private Triple<LogicModuleView, EventType, ConditionPriority> readSimpleSoundTriggerConfiguration(String[] parts,
+	private Triple<LogicModuleView, EventType, Priority> readSimpleSoundTriggerConfiguration(String[] parts,
 			String value) {
 		String lm = parts[2];
 		LogicModuleView logicModule = getView(lm);
-		ConditionPriority priority = getPriority(value);
+		Priority priority = getPriority(value);
 		return Triple.of(logicModule, EventType.Single, priority);
 	}
 
@@ -128,7 +128,7 @@ public class SoundConfigurationReader {
 		return Triple.of(logicModule, eventType, sound);
 	}
 
-	private Triple<LogicModuleView, EventType, ConditionPriority> readConditionSoundTriggerConfiguration(String[] parts,
+	private Triple<LogicModuleView, EventType, Priority> readConditionSoundTriggerConfiguration(String[] parts,
 			String value) {
 		String lm = parts[2];
 		String type = parts[3];
@@ -148,7 +148,7 @@ public class SoundConfigurationReader {
 
 		LogicModuleView logicModule = getView(lm);
 
-		ConditionPriority priority = getPriority(value);
+		Priority priority = getPriority(value);
 
 		return Triple.of(logicModule, eventType, priority);
 	}
@@ -165,9 +165,9 @@ public class SoundConfigurationReader {
 
 	}
 
-	private ConditionPriority getPriority(String input) {
+	private Priority getPriority(String input) {
 
-		for (ConditionPriority sound : ConditionPriority.values()) {
+		for (Priority sound : Priority.values()) {
 			if (sound.getCode().equalsIgnoreCase(input) || sound.name().equalsIgnoreCase(input)) {
 				return sound;
 			}

@@ -3,12 +3,12 @@ package cern.cms.daq.nm.sound;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 /**
- * Priority of the condition
+ * Priority of the condition or event
  * 
  * @author Maciej Gladki (maciej.szymon.gladki@cern.ch)
  *
  */
-public enum ConditionPriority {
+public enum Priority {
 
 	FILTERED("filtered"),
 	FILTERED_IMPORTANT("filtered-important"),
@@ -18,7 +18,7 @@ public enum ConditionPriority {
 	WARNING("warning"),
 	CRITICAL("critical"),;
 
-	private ConditionPriority(String code) {
+	private Priority(String code) {
 		this.code = code;
 	}
 

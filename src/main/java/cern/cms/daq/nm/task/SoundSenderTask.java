@@ -1,0 +1,147 @@
+package cern.cms.daq.nm.task;
+
+import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.TimerTask;
+import java.util.concurrent.ConcurrentLinkedQueue;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+
+import org.apache.commons.lang3.tuple.Pair;
+import org.apache.log4j.Logger;
+import org.hibernate.Session;
+
+import cern.cms.daq.nm.persistence.Event;
+import cern.cms.daq.nm.persistence.EventSenderType;
+import cern.cms.daq.nm.sound.DominantSelector;
+import cern.cms.daq.nm.sound.Sound;
+import cern.cms.daq.nm.sound.SoundSystemConnector;
+
+/**
+ * 
+ * @author Maciej Gladki (maciej.szymon.gladki@cern.ch)
+ *
+ */
+public class SoundSenderTask extends TimerTask {
+
+	private static final Logger logger = Logger.getLogger(SoundSenderTask.class);
+
+	private final SoundSystemConnector soundSystemConnector;
+
+	private final DominantSelector dominantSoundSelector;
+
+	/**
+	 * Incoming buffer
+	 */
+	private ConcurrentLinkedQueue<Event> audibleEventBuffer;
+
+	private EntityManagerFactory emf;
+
+	public SoundSenderTask(EntityManagerFactory emf, ConcurrentLinkedQueue<Event> audibleEventBuffer,
+			SoundSystemConnector soundSystemConnector) {
+		this.emf = emf;
+		this.audibleEventBuffer = audibleEventBuffer;
+		this.soundSystemConnector = soundSystemConnector;
+		this.dominantSoundSelector = new DominantSelector();
+	}
+
+	@Override
+	public void run() {
+
+		if (!audibleEventBuffer.isEmpty()) {
+			int size = audibleEventBuffer.size();
+			logger.debug("Run sound task, " + size + " on queue");
+			int i = 0;
+
+			Set<Event> toProcessThisRound = new HashSet<>();
+			Event dominantEvent = null;
+			Set<Event> mutedEvents = null;
+
+			while (!audibleEventBuffer.isEmpty() && i < size) {
+				i++;
+				Event current = audibleEventBuffer.poll();
+				logger.debug("Received: " + current);
+
+				if (current.getEventSenderType() == EventSenderType.External) {
+					try {
+						sendDominant(current);
+					} catch (IOException e) {
+						logger.info("Problem sending external message");
+					}
+				} else {
+					toProcessThisRound.add(current);
+				}
+			}
+
+			if (toProcessThisRound.size() > 0) {
+				Pair<Event, Set<Event>> r = dominantSoundSelector.selectDominantEvent(toProcessThisRound);
+				dominantEvent = r.getLeft();
+				mutedEvents = r.getRight();
+
+				try {
+					sendDominant(dominantEvent);
+				} catch (IOException e) {
+					logger.warn("There was a problem sending event to SoundSystem: " + dominantEvent.getId());
+				}
+
+				if (mutedEvents.size() > 0) {
+					logger.info("Event: " + dominantEvent.getId() + " with priority: " + dominantEvent.getPriority()
+							+ ", and usefulness index: " + dominantEvent.getLogicModule().getUsefulness()
+							+ " dominated " + mutedEvents.size() + " events");
+					logger.info("Dominating event: " + dominantEvent);
+					logger.info("Dominated events: ");
+					for (Event dominated : mutedEvents) {
+						logger.info("    > id=" + dominated.getId() + ", priority= " + dominated.getPriority() + ", lm="
+								+ dominated.getLogicModule() + ", usefulness="
+								+ dominated.getLogicModule().getUsefulness() + ", title=" + dominated.getTitle());
+					}
+				}
+			}
+		}
+	}
+
+	private void sendDominant(Event event) throws IOException {
+		boolean sent = false;
+		Sound sound = event.getSound();
+		String soundFilename = "";
+		if (sound != null && sound != Sound.OTHER) {
+			soundFilename = sound.getFilename();
+		} else if (sound == Sound.OTHER) {
+			soundFilename = event.getCustomSound();
+		}
+		logger.info(
+				"Dispatching event with id: " + event.getId() + " to sound system. Sound: " + sound + ", sound file: "
+						+ soundFilename + ", TTS: " + event.getTextToSpeech() + " from sender: " + event.getSender());
+		if (sound != null) {
+			String r = soundSystemConnector.play(soundFilename);
+			logger.debug("Result of sending play command: " + r);
+			sent = true;
+		}
+		if (event.getTextToSpeech() != null && !"".equals(event.getTextToSpeech())) {
+			String r = soundSystemConnector.sayAndListen(event.getTextToSpeech());
+			logger.debug("Result of sending speak command: " + r);
+			sent = true;
+		}
+
+	}
+
+	private void persistMuted(Event event) {
+
+		EntityManager em = emf.createEntityManager();
+		em.getTransaction().begin();
+		Session session = em.unwrap(Session.class);
+
+		em.persist(event);
+		try {
+			em.getTransaction().commit();
+
+		} finally {
+			if (em.getTransaction().isActive())
+				em.getTransaction().rollback();
+			em.close();
+		}
+	}
+
+}

@@ -1,6 +1,6 @@
 package cern.cms.daq.nm.sound;
 
-import java.io.IOException;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.apache.log4j.Logger;
 
@@ -11,7 +11,7 @@ public class SoundDispatcher {
 
 	private final static Logger logger = Logger.getLogger(SoundDispatcher.class);
 
-	private final SoundSystemConnector connector;
+	private final ConcurrentLinkedQueue<Event> connector;
 
 	private final SoundTrigger soundTrigger;
 
@@ -19,51 +19,25 @@ public class SoundDispatcher {
 
 	private final boolean soundEnabled;
 
-	public SoundDispatcher(SoundSystemConnector connector, SoundTrigger soundTrigger, SoundSelector soundSelector,
-			boolean soundEnabled) {
+	public SoundDispatcher(ConcurrentLinkedQueue<Event> audibleEventBuffer, SoundTrigger soundTrigger,
+			SoundSelector soundSelector, boolean soundEnabled) {
 		super();
-		this.connector = connector;
+		this.connector = audibleEventBuffer;
 		this.soundTrigger = soundTrigger;
 		this.soundSelector = soundSelector;
 		this.soundEnabled = soundEnabled;
 	}
 
-	public boolean dispatch(Event event) {
-		boolean sent = false;
+	public void dispatch(Event event) {
 		if (soundEnabled) {
 			try {
 				if (event.isAudible()) {
-
-					try {
-						Sound sound = event.getSound();
-						String soundFilename = "";
-						if (sound != null && sound != Sound.OTHER) {
-							soundFilename = sound.getFilename();
-						} else if (sound == Sound.OTHER) {
-							soundFilename = event.getCustomSound();
-						}
-						logger.info("Dispatching event with id: " + event.getId() + " to sound system. Sound: " + sound
-								+ ", sound file: " + soundFilename + ", TTS: " + event.getTextToSpeech()
-								+ " from sender: " + event.getSender());
-						if (sound != null) {
-							String r = connector.play(soundFilename);
-							logger.debug("Result of sending play command: " + r);
-							sent = true;
-						}
-						if (event.getTextToSpeech() != null && !"".equals(event.getTextToSpeech())) {
-							String r = connector.sayAndListen(event.getTextToSpeech());
-							logger.debug("Result of sending speak command: " + r);
-							sent = true;
-						}
-					} catch (IOException e) {
-						throw new NotificationException("Could send event to Sound system: " + e.getMessage());
-					}
+					connector.add(event);
 				}
 			} catch (NotificationException e) {
 				logger.warn("Exception dispatching event " + event.getId() + ", caused by: " + e.getMessage());
 			}
 		}
-		return sent;
 	}
 
 	public boolean triggerSound(Event event) {

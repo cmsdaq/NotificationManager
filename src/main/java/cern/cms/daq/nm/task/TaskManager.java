@@ -27,10 +27,12 @@ public class TaskManager {
 	private final ConcurrentLinkedQueue<EventResource> eventResourceBuffer;
 	private final ConcurrentLinkedQueue<Event> eventBuffer;
 	private final ConcurrentLinkedQueue<NotificationOccurrence> notificationBuffer;
+	private final ConcurrentLinkedQueue<Event> soundBuffer;
 
 	private final TimerTask notificationTask;
 	private final TimerTask dispatcherTask;
 	private final TimerTask receiverTask;
+	private final TimerTask soundSendingTask;
 
 	@SuppressWarnings("unused")
 	private final TimerTask generatorTask;
@@ -47,6 +49,7 @@ public class TaskManager {
 		eventResourceBuffer = new ConcurrentLinkedQueue<EventResource>();
 		eventBuffer = new ConcurrentLinkedQueue<Event>();
 		notificationBuffer = new ConcurrentLinkedQueue<NotificationOccurrence>();
+		soundBuffer = new ConcurrentLinkedQueue<Event>();
 
 		boolean soundEnabled = false;
 
@@ -59,20 +62,22 @@ public class TaskManager {
 		}
 
 		SoundTrigger trigger = new SoundTrigger();
-		SoundSystemConnector connector = SoundSystemConnector.buildSoundSystemConnector();
 		SoundSelector selector = new SoundSelector();
 		SoundConfigurationReader reader = new SoundConfigurationReader();
 		selector.configure(reader.readSoundSelectConfigurations(Application.get().getProp()));
 		trigger.configure(reader.readSoundTriggerConfigurations(Application.get().getProp()));
 
-		SoundDispatcher soundDispatcher = new SoundDispatcher(connector, trigger, selector, soundEnabled);
+		SoundDispatcher soundDispatcher = new SoundDispatcher(soundBuffer, trigger, selector, soundEnabled);
 
+		SoundSystemConnector connector = SoundSystemConnector.buildSoundSystemConnector();
+		
 		/*
 		 * initialize main tasks
 		 */
 		receiverTask = new ReceiverTask(notificationEMF, eventResourceBuffer, eventBuffer, soundDispatcher);
 		dispatcherTask = new DispatcherTask(notificationEMF, shiftEMF, eventBuffer, notificationBuffer);
 		notificationTask = new NotificationTask(notificationEMF, notificationBuffer);
+		soundSendingTask = new SoundSenderTask(notificationEMF, soundBuffer, connector);
 
 		generatorTask = new GeneratorTask(notificationEMF, eventBuffer);
 		monitoringTask = new MonitoringTask();
@@ -87,6 +92,7 @@ public class TaskManager {
 		timer.scheduleAtFixedRate(receiverTask, 1000, 1000);
 		timer.scheduleAtFixedRate(dispatcherTask, 1000 * 10, 1000 * 10);
 		timer.scheduleAtFixedRate(notificationTask, 1000 * 20, 1000 * 30);
+		timer.scheduleAtFixedRate(soundSendingTask, 1000 * 1 , 1000);
 
 		/*
 		 * other tasks

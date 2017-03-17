@@ -22,7 +22,7 @@ public class SoundTriggerTest {
 		event.setEventSenderType(EventSenderType.Expert);
 		event.setEventType(EventType.ConditionStart);
 		event.setLogicModule(LogicModuleView.RunOngoing);
-		event.setPriority(ConditionPriority.DEFAULTT);
+		event.setPriority(Priority.DEFAULTT);
 
 		Assert.assertFalse(soundConfiguration.triggerSound(event));
 	}
@@ -36,7 +36,7 @@ public class SoundTriggerTest {
 		Event event = new Event();
 		event.setEventSenderType(EventSenderType.Expert);
 		event.setLogicModule(LogicModuleView.RunOngoing);
-		event.setPriority(ConditionPriority.IMPORTANT);
+		event.setPriority(Priority.IMPORTANT);
 
 		Assert.assertTrue(soundConfiguration.triggerSound(event));
 	}
@@ -51,7 +51,7 @@ public class SoundTriggerTest {
 		event.setEventSenderType(EventSenderType.Expert);
 		event.setEventType(EventType.ConditionStart);
 		event.setLogicModule(LogicModuleView.RunOngoing);
-		event.setPriority(ConditionPriority.IMPORTANT);
+		event.setPriority(Priority.IMPORTANT);
 
 		Assert.assertTrue(soundConfiguration.triggerSound(event));
 	}
@@ -66,7 +66,7 @@ public class SoundTriggerTest {
 		event.setEventSenderType(EventSenderType.Expert);
 		event.setEventType(EventType.ConditionEnd);
 		event.setLogicModule(LogicModuleView.RunOngoing);
-		event.setPriority(ConditionPriority.CRITICAL);
+		event.setPriority(Priority.CRITICAL);
 
 		Assert.assertTrue(soundConfiguration.triggerSound(event));
 	}
@@ -81,7 +81,7 @@ public class SoundTriggerTest {
 		event.setEventSenderType(EventSenderType.Expert);
 		event.setEventType(EventType.ConditionEnd);
 		event.setLogicModule(LogicModuleView.RunOngoing);
-		event.setPriority(ConditionPriority.IMPORTANT);
+		event.setPriority(Priority.IMPORTANT);
 
 		Assert.assertFalse(soundConfiguration.triggerSound(event));
 	}
@@ -96,7 +96,7 @@ public class SoundTriggerTest {
 		event.setEventSenderType(EventSenderType.Expert);
 		event.setEventType(EventType.Single);
 		event.setLogicModule(LogicModuleView.LHCBeamModeComparator);
-		event.setPriority(ConditionPriority.IMPORTANT);
+		event.setPriority(Priority.IMPORTANT);
 
 		Assert.assertTrue(soundConfiguration.triggerSound(event));
 	}
@@ -111,7 +111,7 @@ public class SoundTriggerTest {
 		event.setEventSenderType(EventSenderType.Expert);
 		event.setEventType(EventType.Single);
 		event.setLogicModule(LogicModuleView.LevelZeroStateComparator);
-		event.setPriority(ConditionPriority.DEFAULTT);
+		event.setPriority(Priority.DEFAULTT);
 
 		Assert.assertFalse(soundConfiguration.triggerSound(event));
 	}

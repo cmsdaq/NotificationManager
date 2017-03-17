@@ -15,7 +15,7 @@ import cern.cms.daq.nm.persistence.EventSenderType;
 import cern.cms.daq.nm.persistence.EventStatus;
 import cern.cms.daq.nm.persistence.EventType;
 import cern.cms.daq.nm.persistence.LogicModuleView;
-import cern.cms.daq.nm.sound.ConditionPriority;
+import cern.cms.daq.nm.sound.Priority;
 import cern.cms.daq.nm.sound.Sound;
 
 @Entity
@@ -48,7 +48,7 @@ public class EventResource {
 
 	private Long conditionId;
 
-	private ConditionPriority priority;
+	private Priority priority;
 
 	private LogicModuleView logicModule;
 
@@ -187,11 +187,11 @@ public class EventResource {
 		this.sound = sound;
 	}
 
-	public ConditionPriority getPriority() {
+	public Priority getPriority() {
 		return priority;
 	}
 
-	public void setPriority(ConditionPriority priority) {
+	public void setPriority(Priority priority) {
 		this.priority = priority;
 	}
 

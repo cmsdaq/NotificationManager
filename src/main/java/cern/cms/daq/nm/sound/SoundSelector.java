@@ -22,7 +22,7 @@ public class SoundSelector {
 		this.configuration = new HashMap<>();
 		for (LogicModuleView logicModule : LogicModuleView.values()) {
 			Sound startSound = Sound.DEFAULT;
-			Sound empty = Sound.DROP;
+			Sound empty = Sound.END;
 			configuration.put(logicModule, Pair.of(startSound, empty));
 		}
 	}

@@ -15,20 +15,20 @@ import cern.cms.daq.nm.persistence.LogicModuleView;
 public class SoundTrigger {
 
 	private final static Logger logger = Logger.getLogger(SoundTrigger.class);
-	private HashMap<LogicModuleView, Pair<ConditionPriority, ConditionPriority>> configuration;
+	private HashMap<LogicModuleView, Pair<Priority, Priority>> configuration;
 
 	public SoundTrigger() {
 		this.configuration = new HashMap<>();
 		for (LogicModuleView logicModule : LogicModuleView.values()) {
-			configuration.put(logicModule, Pair.of(ConditionPriority.IMPORTANT, ConditionPriority.CRITICAL));
+			configuration.put(logicModule, Pair.of(Priority.IMPORTANT, Priority.CRITICAL));
 		}
 	}
 
-	public void configure(Set<Triple<LogicModuleView, EventType, ConditionPriority>> soundConfiguration) {
+	public void configure(Set<Triple<LogicModuleView, EventType, Priority>> soundConfiguration) {
 
 		int sucessfullyConfigured = 0;
 
-		for (Triple<LogicModuleView, EventType, ConditionPriority> souncConfEntry : soundConfiguration) {
+		for (Triple<LogicModuleView, EventType, Priority> souncConfEntry : soundConfiguration) {
 
 			try {
 				updateConfiguration(souncConfEntry);
@@ -44,11 +44,11 @@ public class SoundTrigger {
 
 	}
 
-	private void updateConfiguration(Triple<LogicModuleView, EventType, ConditionPriority> entry) {
+	private void updateConfiguration(Triple<LogicModuleView, EventType, Priority> entry) {
 		if (configuration.containsKey(entry.getLeft())) {
-			Pair<ConditionPriority, ConditionPriority> defaultConfiguration = configuration.get(entry.getLeft());
-			ConditionPriority triggerForStart = defaultConfiguration.getLeft();
-			ConditionPriority triggerForEnd = defaultConfiguration.getRight();
+			Pair<Priority, Priority> defaultConfiguration = configuration.get(entry.getLeft());
+			Priority triggerForStart = defaultConfiguration.getLeft();
+			Priority triggerForEnd = defaultConfiguration.getRight();
 
 			switch (entry.getMiddle()) {
 			case Single:

@@ -11,7 +11,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
-import cern.cms.daq.nm.sound.ConditionPriority;
+import cern.cms.daq.nm.sound.Priority;
 import cern.cms.daq.nm.sound.Sound;
 
 @Entity
@@ -51,7 +51,7 @@ public class Event {
 	private Sound sound;
 
 	@Enumerated(EnumType.ORDINAL)
-	private ConditionPriority priority;
+	private Priority priority;
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "DATETIME_FIELD")
@@ -181,11 +181,11 @@ public class Event {
 		this.logicModule = logicModule;
 	}
 
-	public ConditionPriority getPriority() {
+	public Priority getPriority() {
 		return priority;
 	}
 
-	public void setPriority(ConditionPriority priority) {
+	public void setPriority(Priority priority) {
 		this.priority = priority;
 	}
 
