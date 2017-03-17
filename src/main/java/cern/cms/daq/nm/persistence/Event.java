@@ -9,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 import cern.cms.daq.nm.sound.ConditionPriority;
 import cern.cms.daq.nm.sound.Sound;
@@ -64,6 +65,9 @@ public class Event {
 
 	/** Flag indicating if this notification should be displayed */
 	private boolean display;
+
+	@Transient
+	private String customSound;
 
 	public EventType getEventType() {
 		return eventType;
@@ -191,5 +195,13 @@ public class Event {
 
 	public void setAudible(boolean audible) {
 		this.audible = audible;
+	}
+
+	public String getCustomSound() {
+		return customSound;
+	}
+
+	public void setCustomSound(String customSound) {
+		this.customSound = customSound;
 	}
 }

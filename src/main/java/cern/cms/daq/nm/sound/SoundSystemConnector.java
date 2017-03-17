@@ -34,9 +34,9 @@ public class SoundSystemConnector {
 		return listen();
 	}
 
-	public String play(Sound sound) throws IOException {
+	public String play(String soundFilename) throws IOException {
 		setUpConnection(url, port);
-		say("<play file=\"" + sound.getFilename() + "\"/>");
+		say("<play file=\"" + soundFilename + "\"/>");
 		return listen();
 	}
 

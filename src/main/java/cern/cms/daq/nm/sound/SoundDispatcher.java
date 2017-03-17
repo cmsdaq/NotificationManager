@@ -31,17 +31,22 @@ public class SoundDispatcher {
 	public boolean dispatch(Event event) {
 		boolean sent = false;
 		if (soundEnabled) {
-
 			try {
-
 				if (event.isAudible()) {
 
 					try {
 						Sound sound = event.getSound();
+						String soundFilename = "";
+						if (sound != null && sound != Sound.OTHER) {
+							soundFilename = sound.getFilename();
+						} else if (sound == Sound.OTHER) {
+							soundFilename = event.getCustomSound();
+						}
 						logger.info("Dispatching event with id: " + event.getId() + " to sound system. Sound: " + sound
-								+ ", TTS: " + event.getTextToSpeech() + " from sender: " + event.getSender());
+								+ ", sound file: " + soundFilename + ", TTS: " + event.getTextToSpeech()
+								+ " from sender: " + event.getSender());
 						if (sound != null) {
-							String r = connector.play(sound);
+							String r = connector.play(soundFilename);
 							logger.debug("Result of sending play command: " + r);
 							sent = true;
 						}

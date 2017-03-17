@@ -14,10 +14,11 @@ import cern.cms.daq.nm.NotificationException;
 import cern.cms.daq.nm.Setting;
 import cern.cms.daq.nm.persistence.Event;
 import cern.cms.daq.nm.persistence.NotificationOccurrence;
-import cern.cms.daq.nm.sound.SoundTrigger;
+import cern.cms.daq.nm.sound.SoundConfigurationReader;
 import cern.cms.daq.nm.sound.SoundDispatcher;
 import cern.cms.daq.nm.sound.SoundSelector;
 import cern.cms.daq.nm.sound.SoundSystemConnector;
+import cern.cms.daq.nm.sound.SoundTrigger;
 
 public class TaskManager {
 
@@ -60,6 +61,9 @@ public class TaskManager {
 		SoundTrigger configurator = new SoundTrigger();
 		SoundSystemConnector connector = SoundSystemConnector.buildSoundSystemConnector();
 		SoundSelector selector = new SoundSelector();
+		SoundConfigurationReader reader = new SoundConfigurationReader();
+		selector.configure(reader.readConfigurations(Application.get().getProp()));
+
 		SoundDispatcher soundDispatcher = new SoundDispatcher(connector, configurator, selector, soundEnabled);
 
 		/*

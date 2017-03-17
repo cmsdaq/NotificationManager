@@ -88,7 +88,7 @@ public class EventSessionHandler {
 		String message = event.getMessage() != null ? event.getMessage() : "";
 		String title = event.getTitle() != null ? event.getTitle() : "";
 
-		String soundPlayed = event.getSound() != null ? event.getSound().getFilename() : "";
+		String soundPlayed = event.getSound() != null ? event.getSound().getDisplayName() : "";
 
 		JsonObject addMessage = provider.createObjectBuilder().add("action", "add").add("id", event.getId())
 				.add("name", title).add("type", dateFormat.format(event.getDate())).add("tts", tts)

@@ -2,27 +2,32 @@ package cern.cms.daq.nm.sound;
 
 public enum Sound {
 
-	DEFAULT("added-complete.wav"),
-	STATE_CHANGE_LHC_BEAM_MODE("U2Bell.wav"),
-	STATE_CHANGE_LHC_MACHINE_MODE("DingDong.wav"),
-	STATE_CHANGE_DAQ("IntroLivingonMyOwn.wav"),
-	NEW_RUN("ItsAKindOfMagic.wav"),
+	DEFAULT("added-complete.wav", "Default sound"),
+	STATE_CHANGE_LHC_BEAM_MODE("U2Bell.wav", "LHC beam sound"),
+	STATE_CHANGE_LHC_MACHINE_MODE("DingDong.wav", "LHC machine sound"),
+	STATE_CHANGE_DAQ("IntroLivingonMyOwn.wav", "DAQ state sound"),
+	NEW_RUN("ItsAKindOfMagic.wav", "New run sound"),
 
-	DCS("DCS_1.wav"),
-	WBM("WBM_1.wav"),
-	DQM("DQM_1.wav"),
+	DCS("DCS_1.wav", "DCS sound"),
+	WBM("WBM_1.wav", "WBM sound"),
+	DQM("DQM_1.wav", "DQM sound"),
+	EXTERNAL_DEFAULT("U2Bell.wav", "External alarm sound"),
 
-	KNOWN("added-info.wav"),
-	DEADTIME("added-pulse.wav"),
-	COMPLETED("added-complete.wav"),
-	DARK_CHANGE("added-dark3.wav"),
-	CROW("added-crow.wav"),
-	DROP("added-hard-drop.wav");
+	KNOWN("added-info.wav", "Known"),
+	DEADTIME("added-pulse.wav", "Deadtime sound"),
+	COMPLETED("added-complete.wav", "Completed sound"),
+	DARK_CHANGE("added-dark3.wav", "Dark change sound"),
+	CROW("added-crow.wav", "Crow sound"),
+	DROP("added-hard-drop.wav", "Drop sound"),
+	OTHER("", "Other sound");
 
 	private final String filename;
 
-	private Sound(String filename) {
+	private final String displayName;
+
+	private Sound(String filename, String displayName) {
 		this.filename = filename;
+		this.displayName = displayName;
 	}
 
 	public String getFilename() {
@@ -35,7 +40,7 @@ public enum Sound {
 				return sound;
 			}
 		}
-		return DEFAULT;
+		return OTHER;
 	}
 
 	public static Sound getById(int id) {
@@ -43,5 +48,9 @@ public enum Sound {
 			return Sound.values()[id];
 		}
 		return DEFAULT;
+	}
+
+	public String getDisplayName() {
+		return displayName;
 	}
 }

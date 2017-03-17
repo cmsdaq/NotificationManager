@@ -44,7 +44,7 @@ public class EventResource {
 
 	private String textToSpeech;
 
-	private Sound sound;
+	private String sound;
 
 	private Long conditionId;
 
@@ -94,7 +94,12 @@ public class EventResource {
 		event.setStatus(EventStatus.Received);
 		event.setDate(this.date);
 
-		event.setSound(sound);
+		if (sound != null) {
+			event.setSound(Sound.getByFilename(sound));
+			if (event.getSound() == Sound.OTHER) {
+				event.setCustomSound(sound);
+			}
+		}
 		event.setEventSenderType(eventSenderType);
 		event.setEventType(eventType);
 		event.setLogicModule(logicModule);
@@ -174,11 +179,11 @@ public class EventResource {
 		this.logicModule = logicModule;
 	}
 
-	public Sound getSound() {
+	public String getSound() {
 		return sound;
 	}
 
-	public void setSound(Sound sound) {
+	public void setSound(String sound) {
 		this.sound = sound;
 	}
 

@@ -43,7 +43,7 @@ public class SoundDispatcherTest {
 		boolean sent = soundDispatcher.dispatch(generateEvent("a", Sound.DEFAULT, soundDispatcher));
 
 		Assert.assertTrue(sent);
-		verify(connectorStub).play(Sound.DEFAULT);
+		verify(connectorStub).play(Sound.DEFAULT.getFilename());
 		verify(connectorStub).sayAndListen("a");
 	}
 
@@ -58,7 +58,7 @@ public class SoundDispatcherTest {
 		boolean sent = soundDispatcher.dispatch(generateEvent("a", Sound.DEFAULT, soundDispatcher));
 
 		Assert.assertFalse(sent);
-		verify(connectorStub, never()).play(Mockito.any(Sound.class));
+		verify(connectorStub, never()).play(Mockito.anyString());
 		verify(connectorStub, never()).sayAndListen(Mockito.anyString());
 	}
 
@@ -73,7 +73,7 @@ public class SoundDispatcherTest {
 		boolean sent = soundDispatcher.dispatch(generateEvent("", Sound.DEFAULT, soundDispatcher));
 
 		Assert.assertTrue(sent);
-		verify(connectorStub).play(Sound.DEFAULT);
+		verify(connectorStub).play(Sound.DEFAULT.getFilename());
 		verify(connectorStub, never()).sayAndListen(Mockito.anyString());
 	}
 
@@ -88,7 +88,7 @@ public class SoundDispatcherTest {
 		boolean sent = soundDispatcher.dispatch(generateEvent(null, Sound.DEFAULT, soundDispatcher));
 
 		Assert.assertTrue(sent);
-		verify(connectorStub).play(Sound.DEFAULT);
+		verify(connectorStub).play(Sound.DEFAULT.getFilename());
 		verify(connectorStub, never()).sayAndListen(Mockito.anyString());
 	}
 
@@ -103,7 +103,7 @@ public class SoundDispatcherTest {
 		boolean sent = soundDispatcher.dispatch(generateEvent("a", null, soundDispatcher));
 
 		Assert.assertTrue(sent);
-		verify(connectorStub, never()).play(Mockito.any(Sound.class));
+		verify(connectorStub, never()).play(Mockito.anyString());
 		verify(connectorStub).sayAndListen("a");
 	}
 
@@ -161,7 +161,7 @@ class SoundSystemConnectorStub extends SoundSystemConnector {
 	}
 
 	@Override
-	public String play(Sound sound) throws IOException {
+	public String play(String sound) throws IOException {
 		logger.trace("Play: " + sound);
 		if (fakeProblem) {
 			throw new IOException("Network problem");

@@ -1,14 +1,20 @@
 package cern.cms.daq.nm.sound;
 
 import java.util.HashMap;
+import java.util.Set;
 
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.lang3.tuple.Triple;
+import org.apache.log4j.Logger;
 
 import cern.cms.daq.nm.NotificationException;
 import cern.cms.daq.nm.persistence.Event;
+import cern.cms.daq.nm.persistence.EventType;
 import cern.cms.daq.nm.persistence.LogicModuleView;
 
 public class SoundSelector {
+
+	private final static Logger logger = Logger.getLogger(SoundSelector.class);
 
 	private HashMap<LogicModuleView, Pair<Sound, Sound>> configuration;
 
@@ -18,6 +24,55 @@ public class SoundSelector {
 			Sound startSound = Sound.DEFAULT;
 			Sound empty = Sound.DROP;
 			configuration.put(logicModule, Pair.of(startSound, empty));
+		}
+	}
+
+	public void configure(Set<Triple<LogicModuleView, EventType, Sound>> soundConfiguration) {
+
+		int sucessfullyConfigured = 0;
+
+		for (Triple<LogicModuleView, EventType, Sound> souncConfEntry : soundConfiguration) {
+
+			try {
+				updateConfiguration(souncConfEntry);
+				sucessfullyConfigured++;
+			} catch (NotificationException e) {
+				logger.warn("Could not update the configuration for the entry: " + souncConfEntry + ", problem: "
+						+ e.getMessage());
+			}
+		}
+		if (sucessfullyConfigured > 0) {
+			logger.info(sucessfullyConfigured + " sound configuration entries successfuly processed");
+		}
+
+	}
+
+	private void updateConfiguration(Triple<LogicModuleView, EventType, Sound> entry) {
+		if (configuration.containsKey(entry.getLeft())) {
+			Pair<Sound, Sound> defaultConfiguration = configuration.get(entry.getLeft());
+			Sound soundOnStart = defaultConfiguration.getLeft();
+			Sound soundOnEnd = defaultConfiguration.getRight();
+
+			switch (entry.getMiddle()) {
+			case Single:
+				soundOnStart = entry.getRight();
+				break;
+			case ConditionStart:
+				soundOnStart = entry.getRight();
+				break;
+			case ConditionUpdate:
+				// TODO: change the configuration for this case
+				break;
+			case ConditionEnd:
+				soundOnEnd = entry.getRight();
+				break;
+
+			}
+			configuration.put(entry.getLeft(), Pair.of(soundOnStart, soundOnEnd));
+
+		} else {
+			throw new NotificationException(
+					"Default configuration does not contain custom entry for LM: " + entry.getLeft());
 		}
 	}
 
@@ -44,7 +99,8 @@ public class SoundSelector {
 	}
 
 	public Sound selectExternalSound(Event event) {
-		return Sound.DEFAULT;
+
+		return Sound.EXTERNAL_DEFAULT;
 	}
 
 	public Sound selectExpertSound(Event event) {
@@ -67,6 +123,8 @@ public class SoundSelector {
 			return sounds.getLeft();
 		case ConditionEnd:
 			return sounds.getRight();
+		case Single:
+			return sounds.getLeft();
 		default:
 			return null;
 		}
