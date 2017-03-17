@@ -18,8 +18,8 @@ public class SoundConfigurationReaderTest {
 		SoundConfigurationReader configurator = new SoundConfigurationReader();
 		Properties properties = new Properties();
 
-		properties.put("sound.configuration.RunOngoing.start", "ItsAKindOfMagic.wav");
-		Set<Triple<LogicModuleView, EventType, Sound>> r = configurator.readConfigurations(properties);
+		properties.put("sound.select.RunOngoing.start", "ItsAKindOfMagic.wav");
+		Set<Triple<LogicModuleView, EventType, Sound>> r = configurator.readSoundSelectConfigurations(properties);
 
 		Assert.assertEquals(1, r.size());
 		Triple<LogicModuleView, EventType, Sound> r1 = r.iterator().next();
@@ -33,8 +33,8 @@ public class SoundConfigurationReaderTest {
 		SoundConfigurationReader configurator = new SoundConfigurationReader();
 		Properties properties = new Properties();
 
-		properties.put("sound.configuration.NoRateWhenExpected.update", "DingDong.wav");
-		Set<Triple<LogicModuleView, EventType, Sound>> r = configurator.readConfigurations(properties);
+		properties.put("sound.select.NoRateWhenExpected.update", "DingDong.wav");
+		Set<Triple<LogicModuleView, EventType, Sound>> r = configurator.readSoundSelectConfigurations(properties);
 
 		Assert.assertEquals(1, r.size());
 		Triple<LogicModuleView, EventType, Sound> r1 = r.iterator().next();
@@ -48,8 +48,8 @@ public class SoundConfigurationReaderTest {
 		SoundConfigurationReader configurator = new SoundConfigurationReader();
 		Properties properties = new Properties();
 
-		properties.put("sound.configuration.NoRateWhenExpected.end", "DingDong.wav");
-		Set<Triple<LogicModuleView, EventType, Sound>> r = configurator.readConfigurations(properties);
+		properties.put("sound.select.NoRateWhenExpected.end", "DingDong.wav");
+		Set<Triple<LogicModuleView, EventType, Sound>> r = configurator.readSoundSelectConfigurations(properties);
 
 		Assert.assertEquals(1, r.size());
 		Triple<LogicModuleView, EventType, Sound> r1 = r.iterator().next();
@@ -63,8 +63,8 @@ public class SoundConfigurationReaderTest {
 		SoundConfigurationReader configurator = new SoundConfigurationReader();
 		Properties properties = new Properties();
 
-		properties.put("sound.configuration.LHCBeamModeComparator", "DingDong.wav");
-		Set<Triple<LogicModuleView, EventType, Sound>> r = configurator.readConfigurations(properties);
+		properties.put("sound.select.LHCBeamModeComparator", "DingDong.wav");
+		Set<Triple<LogicModuleView, EventType, Sound>> r = configurator.readSoundSelectConfigurations(properties);
 
 		Assert.assertEquals(1, r.size());
 		Triple<LogicModuleView, EventType, Sound> r1 = r.iterator().next();
@@ -78,8 +78,8 @@ public class SoundConfigurationReaderTest {
 		SoundConfigurationReader configurator = new SoundConfigurationReader();
 		Properties properties = new Properties();
 
-		properties.put("sound.configuration.RunOngoing.start", "ItsAKindOfMagic.wav");
-		Set<Triple<LogicModuleView, EventType, Sound>> r = configurator.readConfigurations(properties);
+		properties.put("sound.select.RunOngoing.start", "ItsAKindOfMagic.wav");
+		Set<Triple<LogicModuleView, EventType, Sound>> r = configurator.readSoundSelectConfigurations(properties);
 
 		Assert.assertEquals(1, r.size());
 		Triple<LogicModuleView, EventType, Sound> r1 = r.iterator().next();
@@ -92,8 +92,8 @@ public class SoundConfigurationReaderTest {
 		SoundConfigurationReader configurator = new SoundConfigurationReader();
 		Properties properties = new Properties();
 
-		properties.put("sound.configuration.RunOngoing.start", "NEW_RUN");
-		Set<Triple<LogicModuleView, EventType, Sound>> r = configurator.readConfigurations(properties);
+		properties.put("sound.select.RunOngoing.start", "NEW_RUN");
+		Set<Triple<LogicModuleView, EventType, Sound>> r = configurator.readSoundSelectConfigurations(properties);
 
 		Assert.assertEquals(1, r.size());
 		Triple<LogicModuleView, EventType, Sound> r1 = r.iterator().next();
@@ -104,13 +104,13 @@ public class SoundConfigurationReaderTest {
 	public void misspelledLogicModuleTest() {
 		SoundConfigurationReader configurator = new SoundConfigurationReader();
 		Properties properties = new Properties();
-		properties.put("sound.configuration.RunOngoingAAA.start", "NEW_RUN");
-		Set<Triple<LogicModuleView, EventType, Sound>> r = configurator.readConfigurations(properties);
+		properties.put("sound.select.RunOngoingAAA.start", "NEW_RUN");
+		Set<Triple<LogicModuleView, EventType, Sound>> r = configurator.readSoundSelectConfigurations(properties);
 		Assert.assertEquals(0, r.size());
 
 		// Other configurations will be read anyway
-		properties.put("sound.configuration.RunOngoing.start", "NEW_RUN");
-		Set<Triple<LogicModuleView, EventType, Sound>> r2 = configurator.readConfigurations(properties);
+		properties.put("sound.select.RunOngoing.start", "NEW_RUN");
+		Set<Triple<LogicModuleView, EventType, Sound>> r2 = configurator.readSoundSelectConfigurations(properties);
 		Assert.assertEquals(1, r2.size());
 	}
 
@@ -118,13 +118,13 @@ public class SoundConfigurationReaderTest {
 	public void misspelledTypeTest() {
 		SoundConfigurationReader configurator = new SoundConfigurationReader();
 		Properties properties = new Properties();
-		properties.put("sound.configuration.RunOngoing.startAA", "NEW_RUN");
-		Set<Triple<LogicModuleView, EventType, Sound>> r = configurator.readConfigurations(properties);
+		properties.put("sound.select.RunOngoing.startAA", "NEW_RUN");
+		Set<Triple<LogicModuleView, EventType, Sound>> r = configurator.readSoundSelectConfigurations(properties);
 		Assert.assertEquals(0, r.size());
 
 		// Other configurations will be read anyway
-		properties.put("sound.configuration.RunOngoing.start", "NEW_RUN");
-		Set<Triple<LogicModuleView, EventType, Sound>> r2 = configurator.readConfigurations(properties);
+		properties.put("sound.select.RunOngoing.start", "NEW_RUN");
+		Set<Triple<LogicModuleView, EventType, Sound>> r2 = configurator.readSoundSelectConfigurations(properties);
 		Assert.assertEquals(1, r2.size());
 	}
 
@@ -132,13 +132,13 @@ public class SoundConfigurationReaderTest {
 	public void misspelledSoundTest() {
 		SoundConfigurationReader configurator = new SoundConfigurationReader();
 		Properties properties = new Properties();
-		properties.put("sound.configuration.RunOngoing.start", "NEW_RUNAA");
-		Set<Triple<LogicModuleView, EventType, Sound>> r = configurator.readConfigurations(properties);
+		properties.put("sound.select.RunOngoing.start", "NEW_RUNAA");
+		Set<Triple<LogicModuleView, EventType, Sound>> r = configurator.readSoundSelectConfigurations(properties);
 		Assert.assertEquals(0, r.size());
 
 		// Other configurations will be read anyway
-		properties.put("sound.configuration.RunOngoing.start", "NEW_RUN");
-		Set<Triple<LogicModuleView, EventType, Sound>> r2 = configurator.readConfigurations(properties);
+		properties.put("sound.select.RunOngoing.start", "NEW_RUN");
+		Set<Triple<LogicModuleView, EventType, Sound>> r2 = configurator.readSoundSelectConfigurations(properties);
 		Assert.assertEquals(1, r2.size());
 	}
 
@@ -147,12 +147,12 @@ public class SoundConfigurationReaderTest {
 		SoundConfigurationReader configurator = new SoundConfigurationReader();
 		Properties properties = new Properties();
 		properties.put("notification.port", "55555");
-		Set<Triple<LogicModuleView, EventType, Sound>> r = configurator.readConfigurations(properties);
+		Set<Triple<LogicModuleView, EventType, Sound>> r = configurator.readSoundSelectConfigurations(properties);
 		Assert.assertEquals(0, r.size());
 
 		// Other configurations will be read anyway
-		properties.put("sound.configuration.RunOngoing.start", "NEW_RUN");
-		Set<Triple<LogicModuleView, EventType, Sound>> r2 = configurator.readConfigurations(properties);
+		properties.put("sound.select.RunOngoing.start", "NEW_RUN");
+		Set<Triple<LogicModuleView, EventType, Sound>> r2 = configurator.readSoundSelectConfigurations(properties);
 		Assert.assertEquals(1, r2.size());
 	}
 
@@ -160,13 +160,13 @@ public class SoundConfigurationReaderTest {
 	public void valueNotStringTest() {
 		SoundConfigurationReader configurator = new SoundConfigurationReader();
 		Properties properties = new Properties();
-		properties.put("sound.configuration.RunOngoing.start", 5);
-		Set<Triple<LogicModuleView, EventType, Sound>> r = configurator.readConfigurations(properties);
+		properties.put("sound.select.RunOngoing.start", 5);
+		Set<Triple<LogicModuleView, EventType, Sound>> r = configurator.readSoundSelectConfigurations(properties);
 		Assert.assertEquals(0, r.size());
 
 		// Other configurations will be read anyway
-		properties.put("sound.configuration.RunOngoing.start", "NEW_RUN");
-		Set<Triple<LogicModuleView, EventType, Sound>> r2 = configurator.readConfigurations(properties);
+		properties.put("sound.select.RunOngoing.start", "NEW_RUN");
+		Set<Triple<LogicModuleView, EventType, Sound>> r2 = configurator.readSoundSelectConfigurations(properties);
 		Assert.assertEquals(1, r2.size());
 	}
 
@@ -174,13 +174,13 @@ public class SoundConfigurationReaderTest {
 	public void wrongFormatOfConfiguration() {
 		SoundConfigurationReader configurator = new SoundConfigurationReader();
 		Properties properties = new Properties();
-		properties.put("sound.configuration.a.b.c.d", "a");
-		Set<Triple<LogicModuleView, EventType, Sound>> r = configurator.readConfigurations(properties);
+		properties.put("sound.select.a.b.c.d", "a");
+		Set<Triple<LogicModuleView, EventType, Sound>> r = configurator.readSoundSelectConfigurations(properties);
 		Assert.assertEquals(0, r.size());
 
 		// Other configurations will be read anyway
-		properties.put("sound.configuration.RunOngoing.start", "NEW_RUN");
-		Set<Triple<LogicModuleView, EventType, Sound>> r2 = configurator.readConfigurations(properties);
+		properties.put("sound.select.RunOngoing.start", "NEW_RUN");
+		Set<Triple<LogicModuleView, EventType, Sound>> r2 = configurator.readSoundSelectConfigurations(properties);
 		Assert.assertEquals(1, r2.size());
 	}
 

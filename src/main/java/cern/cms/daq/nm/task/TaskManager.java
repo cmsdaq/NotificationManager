@@ -58,13 +58,14 @@ public class TaskManager {
 			logger.error("Cannot parse sound port", e);
 		}
 
-		SoundTrigger configurator = new SoundTrigger();
+		SoundTrigger trigger = new SoundTrigger();
 		SoundSystemConnector connector = SoundSystemConnector.buildSoundSystemConnector();
 		SoundSelector selector = new SoundSelector();
 		SoundConfigurationReader reader = new SoundConfigurationReader();
-		selector.configure(reader.readConfigurations(Application.get().getProp()));
+		selector.configure(reader.readSoundSelectConfigurations(Application.get().getProp()));
+		trigger.configure(reader.readSoundTriggerConfigurations(Application.get().getProp()));
 
-		SoundDispatcher soundDispatcher = new SoundDispatcher(connector, configurator, selector, soundEnabled);
+		SoundDispatcher soundDispatcher = new SoundDispatcher(connector, trigger, selector, soundEnabled);
 
 		/*
 		 * initialize main tasks

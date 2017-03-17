@@ -1,19 +1,75 @@
 package cern.cms.daq.nm.sound;
 
 import java.util.HashMap;
+import java.util.Set;
+
+import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.lang3.tuple.Triple;
+import org.apache.log4j.Logger;
 
 import cern.cms.daq.nm.NotificationException;
 import cern.cms.daq.nm.persistence.Event;
+import cern.cms.daq.nm.persistence.EventType;
 import cern.cms.daq.nm.persistence.LogicModuleView;
 
 public class SoundTrigger {
 
-	private HashMap<LogicModuleView, ConditionPriority> configuration;
+	private final static Logger logger = Logger.getLogger(SoundTrigger.class);
+	private HashMap<LogicModuleView, Pair<ConditionPriority, ConditionPriority>> configuration;
 
 	public SoundTrigger() {
 		this.configuration = new HashMap<>();
 		for (LogicModuleView logicModule : LogicModuleView.values()) {
-			configuration.put(logicModule, ConditionPriority.IMPORTANT);
+			configuration.put(logicModule, Pair.of(ConditionPriority.IMPORTANT, ConditionPriority.CRITICAL));
+		}
+	}
+
+	public void configure(Set<Triple<LogicModuleView, EventType, ConditionPriority>> soundConfiguration) {
+
+		int sucessfullyConfigured = 0;
+
+		for (Triple<LogicModuleView, EventType, ConditionPriority> souncConfEntry : soundConfiguration) {
+
+			try {
+				updateConfiguration(souncConfEntry);
+				sucessfullyConfigured++;
+			} catch (NotificationException e) {
+				logger.warn("Could not update the configuration for the entry: " + souncConfEntry + ", problem: "
+						+ e.getMessage());
+			}
+		}
+		if (sucessfullyConfigured > 0) {
+			logger.info(sucessfullyConfigured + " sound TRIGGER configuration entries successfuly processed");
+		}
+
+	}
+
+	private void updateConfiguration(Triple<LogicModuleView, EventType, ConditionPriority> entry) {
+		if (configuration.containsKey(entry.getLeft())) {
+			Pair<ConditionPriority, ConditionPriority> defaultConfiguration = configuration.get(entry.getLeft());
+			ConditionPriority triggerForStart = defaultConfiguration.getLeft();
+			ConditionPriority triggerForEnd = defaultConfiguration.getRight();
+
+			switch (entry.getMiddle()) {
+			case Single:
+				triggerForStart = entry.getRight();
+				break;
+			case ConditionStart:
+				triggerForStart = entry.getRight();
+				break;
+			case ConditionUpdate:
+				// TODO: change the configuration for this case
+				break;
+			case ConditionEnd:
+				triggerForEnd = entry.getRight();
+				break;
+
+			}
+			configuration.put(entry.getLeft(), Pair.of(triggerForStart, triggerForEnd));
+
+		} else {
+			throw new NotificationException(
+					"Default configuration does not contain custom entry for LM: " + entry.getLeft());
 		}
 	}
 
@@ -50,10 +106,33 @@ public class SoundTrigger {
 					+ event.getId() + " from expert, cannot trigger the sound");
 		}
 
-		if (event.getPriority().ordinal() >= configuration.get(event.getLogicModule()).ordinal()) {
-			return true;
+		if (event.getEventType() == null) {
+			throw new NotificationException("missing event type");
 		}
-		return false;
+
+		switch (event.getEventType()) {
+		case ConditionStart:
+			if (event.getPriority().ordinal() >= configuration.get(event.getLogicModule()).getLeft().ordinal()) {
+				return true;
+			} else
+				return false;
+		case ConditionUpdate:
+			// TODO: change configuration to triple
+			return false;
+		case ConditionEnd:
+			if (event.getPriority().ordinal() >= configuration.get(event.getLogicModule()).getRight().ordinal()) {
+				return true;
+			} else
+				return false;
+		case Single:
+			if (event.getPriority().ordinal() >= configuration.get(event.getLogicModule()).getLeft().ordinal()) {
+				return true;
+			} else
+				return false;
+		default:
+			return false;
+		}
+
 	}
 
 	private boolean triggerExternalSound(Event event) {

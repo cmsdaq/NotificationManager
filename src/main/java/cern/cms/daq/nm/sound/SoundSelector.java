@@ -42,7 +42,7 @@ public class SoundSelector {
 			}
 		}
 		if (sucessfullyConfigured > 0) {
-			logger.info(sucessfullyConfigured + " sound configuration entries successfuly processed");
+			logger.info(sucessfullyConfigured + " sound SELECT configuration entries successfuly processed");
 		}
 
 	}
