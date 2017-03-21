@@ -26,14 +26,12 @@ public enum LogicModuleView {
 	Downtime("Downtime"),
 	Deadtime("Deadtime"),
 	CriticalDeadtime("Critical deadtime", 105),
-
 	FlowchartCase1("FC1", 10004),
 	FlowchartCase2("FC2", 10005),
 	FlowchartCase3("FC3", 10006),
 	FlowchartCase4("FC4", 10007),
 	FlowchartCase5("FC5", 10008),
 	FlowchartCase6("FC6", 10009),
-
 	SessionComparator("Session", 15),
 	LHCBeamModeComparator("LHC Beam Mode", 20),
 	LHCMachineModeComparator("LHC Machine Mode", 21),

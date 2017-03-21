@@ -13,12 +13,14 @@ import cern.cms.daq.nm.EventResource;
 import cern.cms.daq.nm.NotificationException;
 import cern.cms.daq.nm.Setting;
 import cern.cms.daq.nm.persistence.Event;
+import cern.cms.daq.nm.persistence.EventPersistor;
 import cern.cms.daq.nm.persistence.NotificationOccurrence;
 import cern.cms.daq.nm.sound.SoundConfigurationReader;
 import cern.cms.daq.nm.sound.SoundDispatcher;
 import cern.cms.daq.nm.sound.SoundSelector;
 import cern.cms.daq.nm.sound.SoundSystemConnector;
 import cern.cms.daq.nm.sound.SoundTrigger;
+import cern.cms.daq.nm.websocket.EventWebSocketServer;
 
 public class TaskManager {
 
@@ -70,11 +72,14 @@ public class TaskManager {
 		SoundDispatcher soundDispatcher = new SoundDispatcher(soundBuffer, trigger, selector, soundEnabled);
 
 		SoundSystemConnector connector = SoundSystemConnector.buildSoundSystemConnector();
-		
+
+		EventPersistor eventPersistor = new EventPersistor(notificationEMF);
+
 		/*
 		 * initialize main tasks
 		 */
-		receiverTask = new ReceiverTask(notificationEMF, eventResourceBuffer, eventBuffer, soundDispatcher);
+		receiverTask = new ReceiverTask( eventResourceBuffer, eventBuffer,eventPersistor, soundDispatcher,
+				EventWebSocketServer.sessionHandler);
 		dispatcherTask = new DispatcherTask(notificationEMF, shiftEMF, eventBuffer, notificationBuffer);
 		notificationTask = new NotificationTask(notificationEMF, notificationBuffer);
 		soundSendingTask = new SoundSenderTask(notificationEMF, soundBuffer, connector);
@@ -92,7 +97,7 @@ public class TaskManager {
 		timer.scheduleAtFixedRate(receiverTask, 1000, 1000);
 		timer.scheduleAtFixedRate(dispatcherTask, 1000 * 10, 1000 * 10);
 		timer.scheduleAtFixedRate(notificationTask, 1000 * 20, 1000 * 30);
-		timer.scheduleAtFixedRate(soundSendingTask, 1000 * 1 , 1000);
+		timer.scheduleAtFixedRate(soundSendingTask, 1000 * 1, 1000);
 
 		/*
 		 * other tasks

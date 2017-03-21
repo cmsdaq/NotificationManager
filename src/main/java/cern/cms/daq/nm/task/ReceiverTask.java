@@ -5,17 +5,14 @@ import java.util.Queue;
 import java.util.TimerTask;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-
 import org.apache.log4j.Logger;
-import org.hibernate.Session;
 
 import cern.cms.daq.nm.EventResource;
 import cern.cms.daq.nm.persistence.Event;
+import cern.cms.daq.nm.persistence.EventPersistor;
 import cern.cms.daq.nm.sound.Sound;
 import cern.cms.daq.nm.sound.SoundDispatcher;
-import cern.cms.daq.nm.websocket.EventWebSocketServer;
+import cern.cms.daq.nm.websocket.EventSessionHandler;
 
 /**
  * 
@@ -36,7 +33,6 @@ public class ReceiverTask extends TimerTask {
 
 	private static final Logger logger = Logger.getLogger(ReceiverTask.class);
 
-	private final SoundDispatcher soundDispatcher;
 	/**
 	 * Outcoming buffer
 	 */
@@ -47,14 +43,20 @@ public class ReceiverTask extends TimerTask {
 	 */
 	private ConcurrentLinkedQueue<EventResource> eventResourceBuffer;
 
-	private EntityManagerFactory emf;
+	private final EventPersistor eventPersistor;
 
-	public ReceiverTask(EntityManagerFactory emf, ConcurrentLinkedQueue<EventResource> eventResourceBuffer,
-			ConcurrentLinkedQueue<Event> eventBuffer, SoundDispatcher soundDispatcher) {
-		this.emf = emf;
+	private final SoundDispatcher soundDispatcher;
+
+	private final EventSessionHandler eventDashboard;
+
+	public ReceiverTask(ConcurrentLinkedQueue<EventResource> eventResourceBuffer,
+			ConcurrentLinkedQueue<Event> eventBuffer, EventPersistor eventPersistor, SoundDispatcher soundDispatcher,
+			EventSessionHandler eventDashboard) {
+		this.eventPersistor = eventPersistor;
 		this.eventBuffer = eventBuffer;
 		this.eventResourceBuffer = eventResourceBuffer;
 		this.soundDispatcher = soundDispatcher;
+		this.eventDashboard = eventDashboard;
 	}
 
 	@Override
@@ -65,16 +67,13 @@ public class ReceiverTask extends TimerTask {
 			logger.debug("Run receiver task " + size + " on queue");
 			int i = 0;
 
-			EntityManager em = emf.createEntityManager();
 			Queue<Event> tmpReceiverBuffer = new ArrayDeque<>();
-			em.getTransaction().begin();
-			Session session = em.unwrap(Session.class);
 
 			while (!eventResourceBuffer.isEmpty() && i < size) {
 				i++;
 				EventResource current = eventResourceBuffer.poll();
 				logger.debug("Received: " + current);
-				Event event = current.asEventOccurrence(session);
+				Event event = current.asEventOccurrence();
 
 				boolean audible = soundDispatcher.triggerSound(event);
 				event.setAudible(audible);
@@ -86,12 +85,12 @@ public class ReceiverTask extends TimerTask {
 
 				long start = System.currentTimeMillis();
 
-				em.persist(event);
+				eventPersistor.persist(event);
 
 				long end = System.currentTimeMillis();
 				logger.debug("Event persistence time: " + (end - start) + "ms");
-				EventWebSocketServer.sessionHandler.addEvent(event);
 
+				eventDashboard.addEvent(event);
 				soundDispatcher.dispatch(event);
 
 				// Add to temporary buffer - event occurrence cannot be added to
@@ -99,17 +98,6 @@ public class ReceiverTask extends TimerTask {
 				tmpReceiverBuffer.add(event);
 			}
 
-			try {
-				em.getTransaction().commit();
-				while (!tmpReceiverBuffer.isEmpty()) {
-					eventBuffer.add(tmpReceiverBuffer.poll());
-				}
-
-			} finally {
-				if (em.getTransaction().isActive())
-					em.getTransaction().rollback();
-				em.close();
-			}
 		}
 	}
 

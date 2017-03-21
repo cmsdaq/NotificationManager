@@ -11,7 +11,7 @@ public class SoundDispatcher {
 
 	private final static Logger logger = Logger.getLogger(SoundDispatcher.class);
 
-	private final ConcurrentLinkedQueue<Event> connector;
+	private final ConcurrentLinkedQueue<Event> soundBuffer;
 
 	private final SoundTrigger soundTrigger;
 
@@ -22,7 +22,7 @@ public class SoundDispatcher {
 	public SoundDispatcher(ConcurrentLinkedQueue<Event> audibleEventBuffer, SoundTrigger soundTrigger,
 			SoundSelector soundSelector, boolean soundEnabled) {
 		super();
-		this.connector = audibleEventBuffer;
+		this.soundBuffer = audibleEventBuffer;
 		this.soundTrigger = soundTrigger;
 		this.soundSelector = soundSelector;
 		this.soundEnabled = soundEnabled;
@@ -32,7 +32,7 @@ public class SoundDispatcher {
 		if (soundEnabled) {
 			try {
 				if (event.isAudible()) {
-					connector.add(event);
+					soundBuffer.add(event);
 				}
 			} catch (NotificationException e) {
 				logger.warn("Exception dispatching event " + event.getId() + ", caused by: " + e.getMessage());

@@ -6,7 +6,6 @@ import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
 
 import org.apache.log4j.Logger;
-import org.hibernate.Session;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -52,7 +51,7 @@ public class EventResource {
 
 	private LogicModuleView logicModule;
 
-	public Event asEventOccurrence(Session session) {
+	public Event asEventOccurrence() {
 
 		Event event = new Event();
 
@@ -83,8 +82,6 @@ public class EventResource {
 		if (this.textToSpeech != null && this.textToSpeech.length() > 200) {
 			textToSpeechTrimmed = this.textToSpeech.substring(0, 200);
 		}
-
-		logger.debug("Message ready to be persisted " + this.message.length());
 
 		event.setMessage(messageTrimmed);
 		event.setTitle(titleTrimmed);
