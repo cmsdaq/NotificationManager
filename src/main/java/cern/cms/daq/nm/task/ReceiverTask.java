@@ -9,7 +9,7 @@ import org.apache.log4j.Logger;
 
 import cern.cms.daq.nm.EventResource;
 import cern.cms.daq.nm.persistence.Event;
-import cern.cms.daq.nm.persistence.EventPersistor;
+import cern.cms.daq.nm.persistence.PersistenceManager;
 import cern.cms.daq.nm.sound.Sound;
 import cern.cms.daq.nm.sound.SoundDispatcher;
 import cern.cms.daq.nm.websocket.EventSessionHandler;
@@ -43,14 +43,14 @@ public class ReceiverTask extends TimerTask {
 	 */
 	private ConcurrentLinkedQueue<EventResource> eventResourceBuffer;
 
-	private final EventPersistor eventPersistor;
+	private final PersistenceManager eventPersistor;
 
 	private final SoundDispatcher soundDispatcher;
 
 	private final EventSessionHandler eventDashboard;
 
 	public ReceiverTask(ConcurrentLinkedQueue<EventResource> eventResourceBuffer,
-			ConcurrentLinkedQueue<Event> eventBuffer, EventPersistor eventPersistor, SoundDispatcher soundDispatcher,
+			ConcurrentLinkedQueue<Event> eventBuffer, PersistenceManager eventPersistor, SoundDispatcher soundDispatcher,
 			EventSessionHandler eventDashboard) {
 		this.eventPersistor = eventPersistor;
 		this.eventBuffer = eventBuffer;

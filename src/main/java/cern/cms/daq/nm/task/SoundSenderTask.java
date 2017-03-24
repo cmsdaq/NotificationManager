@@ -6,15 +6,12 @@ import java.util.Set;
 import java.util.TimerTask;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.log4j.Logger;
-import org.hibernate.Session;
 
 import cern.cms.daq.nm.persistence.Event;
 import cern.cms.daq.nm.persistence.EventSenderType;
+import cern.cms.daq.nm.persistence.PersistenceManager;
 import cern.cms.daq.nm.sound.DominantSelector;
 import cern.cms.daq.nm.sound.Sound;
 import cern.cms.daq.nm.sound.SoundSystemConnector;
@@ -37,11 +34,11 @@ public class SoundSenderTask extends TimerTask {
 	 */
 	private ConcurrentLinkedQueue<Event> audibleEventBuffer;
 
-	private EntityManagerFactory emf;
+	private PersistenceManager persistenceManager;
 
-	public SoundSenderTask(EntityManagerFactory emf, ConcurrentLinkedQueue<Event> audibleEventBuffer,
+	public SoundSenderTask(PersistenceManager emf, ConcurrentLinkedQueue<Event> audibleEventBuffer,
 			SoundSystemConnector soundSystemConnector) {
-		this.emf = emf;
+		this.persistenceManager = emf;
 		this.audibleEventBuffer = audibleEventBuffer;
 		this.soundSystemConnector = soundSystemConnector;
 		this.dominantSoundSelector = new DominantSelector();
@@ -97,6 +94,7 @@ public class SoundSenderTask extends TimerTask {
 								+ dominated.getLogicModule() + ", usefulness="
 								+ dominated.getLogicModule().getUsefulness() + ", title=" + dominated.getTitle());
 					}
+					persistenceManager.persistMuted();
 				}
 			}
 		}
@@ -125,23 +123,6 @@ public class SoundSenderTask extends TimerTask {
 			sent = true;
 		}
 
-	}
-
-	private void persistMuted(Event event) {
-
-		EntityManager em = emf.createEntityManager();
-		em.getTransaction().begin();
-		Session session = em.unwrap(Session.class);
-
-		em.persist(event);
-		try {
-			em.getTransaction().commit();
-
-		} finally {
-			if (em.getTransaction().isActive())
-				em.getTransaction().rollback();
-			em.close();
-		}
 	}
 
 }

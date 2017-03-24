@@ -7,6 +7,7 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.Date;
 import java.util.List;
 
@@ -31,9 +32,13 @@ public class ExternalSoundReceiver implements Runnable {
 		logger.info("Listening for external clients to connect");
 
 		while (true) {
-			Socket sock = ssock.accept();
-			logger.info("External client connected " + sock.getRemoteSocketAddress());
-			new Thread(new ExternalSoundReceiver(sock)).start();
+			try {
+				Socket sock = ssock.accept();
+				logger.info("External client connected " + sock.getRemoteSocketAddress());
+				new Thread(new ExternalSoundReceiver(sock)).start();
+			} catch (SocketException e) {
+				logger.warn("Socket exception: probably closing: " + e.getMessage());
+			}
 		}
 
 	}

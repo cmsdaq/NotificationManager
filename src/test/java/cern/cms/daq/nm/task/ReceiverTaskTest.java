@@ -26,7 +26,7 @@ import org.junit.Test;
 
 import cern.cms.daq.nm.EventResource;
 import cern.cms.daq.nm.persistence.Event;
-import cern.cms.daq.nm.persistence.EventPersistor;
+import cern.cms.daq.nm.persistence.PersistenceManager;
 import cern.cms.daq.nm.sound.Sound;
 import cern.cms.daq.nm.sound.SoundDispatcher;
 import cern.cms.daq.nm.websocket.EventSessionHandler;
@@ -124,7 +124,7 @@ class ConcurrentLinkedQueueStub<EventResource> extends ConcurrentLinkedQueue<Eve
 
 }
 
-class EventPersistorStub extends EventPersistor {
+class EventPersistorStub extends PersistenceManager {
 
 	public EventPersistorStub() {
 		super(new EntityManagerFactoryStub());

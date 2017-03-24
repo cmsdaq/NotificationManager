@@ -159,7 +159,7 @@ class DispatcherTaskStub extends DispatcherTask {
 
 	public DispatcherTaskStub(ConcurrentLinkedQueue<Event> eventBuffer,
 			ConcurrentLinkedQueue<NotificationOccurrence> notificationBuffer) {
-		super(null, null, eventBuffer, notificationBuffer);
+		super(eventBuffer, notificationBuffer);
 
 	}
 

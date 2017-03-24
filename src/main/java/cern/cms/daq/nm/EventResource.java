@@ -2,9 +2,6 @@ package cern.cms.daq.nm;
 
 import java.util.Date;
 
-import javax.persistence.Entity;
-import javax.validation.constraints.NotNull;
-
 import org.apache.log4j.Logger;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -17,28 +14,21 @@ import cern.cms.daq.nm.persistence.LogicModuleView;
 import cern.cms.daq.nm.sound.Priority;
 import cern.cms.daq.nm.sound.Sound;
 
-@Entity
 public class EventResource {
 
 	private static final Logger logger = Logger.getLogger(EventResource.class);
 
-	@NotNull
 	private String message;
 
-	@NotNull
 	private String title;
 
-	@NotNull
 	private EventType eventType;
 
-	@NotNull
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "CET")
 	private Date date;
 
-	@NotNull
 	private EventSenderType eventSenderType;
 
-	@NotNull
 	private String sender;
 
 	private String textToSpeech;

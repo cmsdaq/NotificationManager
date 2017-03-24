@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.bind.DatatypeConverter;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -21,6 +22,7 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 
+import cern.cms.daq.nm.Application;
 import cern.cms.daq.nm.persistence.Event;
 import cern.cms.daq.nm.persistence.EventType;
 import cern.cms.daq.nm.persistence.LogicModuleView;
@@ -90,44 +92,15 @@ public class EventArchiveServlet extends HttpServlet {
 			logger.info("Requested events: entriesPerPage: " + paginationEntriesPerPage + ", currentPage: "
 					+ paginationCurrentPage);
 
-			EntityManagerFactory emf = (EntityManagerFactory) getServletContext().getAttribute("emf");
-			EntityManager em = emf.createEntityManager();
+			Pair<List<Event>, Long> targetData = Application.get().getPersistenceManager().getEvents(startDate,
+					endDate,filteredTypes,filteredSources,page,entries);
 
-			Session session = em.unwrap(Session.class);
+			request.setAttribute("events", targetData.getLeft());
+			request.setAttribute("count", targetData.getRight());
+			request.setAttribute("sources", LogicModuleView.values());
+			request.setAttribute("eventTypes", EventType.values());
+			request.getRequestDispatcher("/archive.jsp").forward(request, response);
 
-			try {
-				Criteria eventCriteria = session.createCriteria(Event.class);
-				eventCriteria.addOrder(Order.desc("date"));
-				eventCriteria.add(Restrictions.in("eventType", filteredTypes));
-
-				if (!filteredSources.isEmpty()) {
-					eventCriteria.add(Restrictions.in("logicModule", filteredSources));
-				}
-				if (startDate != null && endDate != null)
-					eventCriteria.add(Restrictions.between("date", startDate, endDate));
-
-				/* process pagination */
-				eventCriteria.setFirstResult((page - 1) * entries);
-				eventCriteria.setMaxResults(entries);
-
-				@SuppressWarnings("unchecked")
-				List<Event> eventTypeList = eventCriteria.list();
-
-				eventCriteria.setProjection(Projections.rowCount());
-				eventCriteria.setFirstResult(0);
-				Long count = (Long) eventCriteria.uniqueResult();
-
-				request.setAttribute("events", eventTypeList);
-				request.setAttribute("count", count);
-				request.setAttribute("sources", LogicModuleView.values());
-				request.setAttribute("eventTypes", EventType.values());
-				request.getRequestDispatcher("/archive.jsp").forward(request, response);
-
-			} finally {
-				if (em.getTransaction().isActive())
-					em.getTransaction().rollback();
-				em.close();
-			}
 		} catch (NumberFormatException e) {
 			response.sendError(HttpServletResponse.SC_BAD_REQUEST,
 					"One or more parameters missing or could not be parsed: " + e);

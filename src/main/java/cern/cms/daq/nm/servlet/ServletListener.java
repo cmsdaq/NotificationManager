@@ -6,7 +6,6 @@ import java.sql.SQLException;
 import java.util.Enumeration;
 
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
@@ -38,14 +37,9 @@ public class ServletListener implements ServletContextListener {
 
 			final int externalNotificationPort = Integer
 					.parseInt(Application.get().getProp().getProperty(Setting.EXTERNAL_NOTIFICATION_PORT.getCode()));
-			// EntityManagerFactory emf2 =
-			// Persistence.createEntityManagerFactory("shifts");
-			EntityManagerFactory emf = Persistence.createEntityManagerFactory("notifications",
-					Application.get().getProp());
+			
 
-			e.getServletContext().setAttribute("emf", emf);
-			// e.getServletContext().setAttribute("emf-shifters", emf2);
-			TaskManager.initialize(emf, null);
+			TaskManager.initialize(Application.get().getPersistenceManager());
 			TaskManager.get().schedule();
 			(new Thread() {
 				public void run() {
