@@ -5,9 +5,16 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Properties;
 
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+
+import cern.cms.daq.nm.persistence.PersistenceManager;
+
 public class Application {
 
 	private final Properties prop;
+
+	private PersistenceManager persistenceManager;
 
 	public static Application get() {
 		if (instance == null) {
@@ -25,6 +32,15 @@ public class Application {
 				throw new RuntimeException("Required property missing " + setting.getCode());
 			}
 		}
+
+		EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("notifications",
+				instance.getProp());
+		// EntityManagerFactory emf2 =
+		// Persistence.createEntityManagerFactory("shifts");
+		instance.persistenceManager = new PersistenceManager(entityManagerFactory);
+
+		// e.getServletContext().setAttribute("emf", emf);
+		// e.getServletContext().setAttribute("emf-shifters", emf2);
 
 	}
 
@@ -54,5 +70,13 @@ public class Application {
 	public Properties getProp() {
 		return prop;
 	}
-	
+
+	public PersistenceManager getPersistenceManager() {
+		return persistenceManager;
+	}
+
+	public void setPersistenceManager(PersistenceManager persistenceManager) {
+		this.persistenceManager = persistenceManager;
+	}
+
 }

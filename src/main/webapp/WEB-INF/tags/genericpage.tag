@@ -11,15 +11,6 @@
 
 
 
-
-
-
-
-
-
-
-<script src="resources/websocket-nm.js"></script>
-<script src="resources/websocket-expert.js"></script>
 <!-- 
 <script
 	src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"
@@ -35,6 +26,10 @@
 <!-- jQuery -->
 <script type="text/javascript"
 	src="resources/external/jquery/jquery.min.js"></script>
+<script type="text/javascript"
+	src="resources/external/jquery/deparam.min.js"></script>
+
+
 
 <!-- bootstrap css -->
 <link rel="stylesheet"
@@ -83,6 +78,9 @@
 	src="resources/external/bootstrap-tour-0.10.3/bootstrap-tour.min.js"></script>
 
 
+<script src="resources/archive.js"></script>
+
+
 </head>
 <body>
 
@@ -114,8 +112,8 @@
 				id="bs-example-navbar-collapse-1">
 
 				<ul class="nav navbar-nav">
-				
-				
+
+
 					<!-- NM DASHBOARD -->
 					<li id="dashboard"><a href="dashboard.jsp"><i
 							class="glyphicon glyphicon-bell"></i> Dashboard</a></li>
@@ -127,9 +125,8 @@
 
 
 					<!-- NM NOTIFICATIONS -->
-					<!-- <li id="event_occurrences"><a href=archive><i
-							class="glyphicon glyphicon-calendar"></i> Notifications</a></li>
- -->
+					<li id="archive"><a href=archive><i
+							class="glyphicon glyphicon-calendar"></i> Archive</a></li>
 
 
 					<!-- Turned off for P5: DELIVERY REPORT -->

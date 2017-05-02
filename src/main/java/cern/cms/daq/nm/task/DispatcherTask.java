@@ -44,12 +44,12 @@ public class DispatcherTask extends TimerTask {
 
 	private final EventFilter eventFilter;
 
-	public DispatcherTask(EntityManagerFactory notificationEMF, EntityManagerFactory shiftEMF,
+	public DispatcherTask(
 			ConcurrentLinkedQueue<Event> eventBuffer,
 			ConcurrentLinkedQueue<NotificationOccurrence> notificationBuffer) {
 
-		this.notificationEMF = notificationEMF;
-		this.shiftEMF = shiftEMF;
+		this.notificationEMF = null;
+		this.shiftEMF = null;
 		this.eventBuffer = eventBuffer;
 		this.notificationBuffer = notificationBuffer;
 		this.eventFilter = new EventFilter(this.shiftEMF);

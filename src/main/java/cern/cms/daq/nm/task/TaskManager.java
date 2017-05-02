@@ -2,11 +2,7 @@ package cern.cms.daq.nm.task;
 
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.ConcurrentMap;
-
-import javax.persistence.EntityManagerFactory;
 
 import org.apache.log4j.Logger;
 
@@ -16,7 +12,13 @@ import cern.cms.daq.nm.NotificationException;
 import cern.cms.daq.nm.Setting;
 import cern.cms.daq.nm.persistence.Event;
 import cern.cms.daq.nm.persistence.NotificationOccurrence;
-import cern.cms.daq.nm.sound.SoundSystemManager;
+import cern.cms.daq.nm.persistence.PersistenceManager;
+import cern.cms.daq.nm.sound.SoundConfigurationReader;
+import cern.cms.daq.nm.sound.SoundDispatcher;
+import cern.cms.daq.nm.sound.SoundSelector;
+import cern.cms.daq.nm.sound.SoundSystemConnector;
+import cern.cms.daq.nm.sound.SoundTrigger;
+import cern.cms.daq.nm.websocket.EventWebSocketServer;
 
 public class TaskManager {
 
@@ -25,28 +27,34 @@ public class TaskManager {
 	private final ConcurrentLinkedQueue<EventResource> eventResourceBuffer;
 	private final ConcurrentLinkedQueue<Event> eventBuffer;
 	private final ConcurrentLinkedQueue<NotificationOccurrence> notificationBuffer;
+	private final ConcurrentLinkedQueue<Event> soundBuffer;
 
-	private final TimerTask notificationTask;
-	private final TimerTask dispatcherTask;
+	// private final TimerTask notificationTask;
+	// private final TimerTask dispatcherTask;
 	private final TimerTask receiverTask;
+	private final TimerTask soundSendingTask;
 
-	@SuppressWarnings("unused")
-	private final TimerTask generatorTask;
+	// @SuppressWarnings("unused")
+	// private final TimerTask generatorTask;
 	@SuppressWarnings("unused")
 	private final TimerTask monitoringTask;
 
-	private final SoundSystemManager soundSystemManager;
-
 	private final Logger logger = Logger.getLogger(TaskManager.class);
 
-	private TaskManager(EntityManagerFactory notificationEMF, EntityManagerFactory shiftEMF) {
+	private final Timer timer;
+
+	private final SoundSystemConnector connector;
+
+	private TaskManager(PersistenceManager persistenceManager) {
+
+		this.timer = new Timer();
 		eventResourceBuffer = new ConcurrentLinkedQueue<EventResource>();
 		eventBuffer = new ConcurrentLinkedQueue<Event>();
 		notificationBuffer = new ConcurrentLinkedQueue<NotificationOccurrence>();
+		soundBuffer = new ConcurrentLinkedQueue<Event>();
 
 		boolean soundEnabled = false;
-		String soundUrl = "";
-		int soundPort = 0;
+
 		String soundEnabledProp = (String) Application.get().getProp().get(Setting.SOUND_ENABLED.getCode());
 
 		try {
@@ -55,56 +63,52 @@ public class TaskManager {
 			logger.error("Cannot parse sound port", e);
 		}
 
-		if (soundEnabled) {
+		SoundTrigger trigger = new SoundTrigger();
+		SoundSelector selector = new SoundSelector();
+		SoundConfigurationReader reader = new SoundConfigurationReader();
+		selector.configure(reader.readSoundSelectConfigurations(Application.get().getProp()));
+		trigger.configure(reader.readSoundTriggerConfigurations(Application.get().getProp()));
 
-			logger.info("Sound enabled, parsing url and port");
-			String soundProp = (String) Application.get().getProp().get(Setting.SOUND_URL.getCode());
-			String soundPortProp = (String) Application.get().getProp().get(Setting.SOUND_PORT.getCode());
-			try {
-				soundPort = Integer.parseInt(soundPortProp);
-			} catch (NumberFormatException e) {
-				logger.error("Cannot parse sound port", e);
-			}
+		SoundDispatcher soundDispatcher = new SoundDispatcher(soundBuffer, trigger, selector, soundEnabled);
 
-			if (soundProp != "" && soundPort != 0) {
-				soundUrl = soundProp;
-			}
-
-			logger.info("Initializing sound system with url: " + soundUrl + ":" + soundPort);
-			this.soundSystemManager = new SoundSystemManager(soundUrl, soundPort);
-		} else {
-			logger.info("Sound system is disabled");
-			this.soundSystemManager = null;
-		}
+		connector = SoundSystemConnector.buildSoundSystemConnector();
 
 		/*
 		 * initialize main tasks
 		 */
-		receiverTask = new ReceiverTask(notificationEMF, eventResourceBuffer, eventBuffer, soundSystemManager,
-				soundEnabled);
-		dispatcherTask = new DispatcherTask(notificationEMF, shiftEMF, eventBuffer, notificationBuffer);
-		notificationTask = new NotificationTask(notificationEMF, notificationBuffer);
+		receiverTask = new ReceiverTask(eventResourceBuffer, eventBuffer, persistenceManager, soundDispatcher,
+				EventWebSocketServer.sessionHandler);
+		// dispatcherTask = new DispatcherTask(eventBuffer, notificationBuffer);
+		// notificationTask = new NotificationTask(notificationEMF,
+		// notificationBuffer);
+		soundSendingTask = new SoundSenderTask(persistenceManager, soundBuffer, connector);
 
-		generatorTask = new GeneratorTask(notificationEMF, eventBuffer);
+		// generatorTask = new GeneratorTask(persistenceManager, eventBuffer);
 		monitoringTask = new MonitoringTask();
 
 	}
 
 	public void schedule() {
-		Timer t = new Timer();
 
 		/*
 		 * schedule main tasks
 		 */
-		t.scheduleAtFixedRate(receiverTask, 1000, 1000);
-		t.scheduleAtFixedRate(dispatcherTask, 1000 * 10, 1000 * 10);
-		t.scheduleAtFixedRate(notificationTask, 1000 * 20, 1000 * 30);
+		timer.scheduleAtFixedRate(receiverTask, 1000, 1000);
+		// timer.scheduleAtFixedRate(dispatcherTask, 1000 * 10, 1000 * 10);
+		// timer.scheduleAtFixedRate(notificationTask, 1000 * 20, 1000 * 30);
+		timer.scheduleAtFixedRate(soundSendingTask, 1000 * 1, 1000);
 
 		/*
 		 * other tasks
 		 */
 		// t.scheduleAtFixedRate(monitoringTask, 1000 * 5, 1000 * 5);
 		// t.scheduleAtFixedRate(generatorTask, 0, 1000);
+	}
+
+	public void stopTasks() {
+		logger.info("Canceling scheduled tasks");
+		timer.cancel();
+		logger.info("Taskds canceled sucessfully");
 	}
 
 	public static TaskManager get() {
@@ -114,11 +118,11 @@ public class TaskManager {
 		return instance;
 	}
 
-	public static void initialize(EntityManagerFactory notificationEMF, EntityManagerFactory shiftEMF) {
+	public static void initialize(PersistenceManager persistenceManager) {
 		if (instance != null) {
 			throw new NotificationException("Task manager has been already initialized");
 		}
-		instance = new TaskManager(notificationEMF, shiftEMF);
+		instance = new TaskManager(persistenceManager);
 	}
 
 	public ConcurrentLinkedQueue<NotificationOccurrence> getNotificationBuffer() {
@@ -133,8 +137,8 @@ public class TaskManager {
 		return eventResourceBuffer;
 	}
 
-	public SoundSystemManager getSoundSystemManager() {
-		return soundSystemManager;
+	public SoundSystemConnector getConnector() {
+		return connector;
 	}
 
 }

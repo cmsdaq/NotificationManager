@@ -1,7 +1,11 @@
 package cern.cms.daq.nm.servlet;
 
+import java.sql.Driver;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.Enumeration;
+
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
@@ -33,14 +37,9 @@ public class ServletListener implements ServletContextListener {
 
 			final int externalNotificationPort = Integer
 					.parseInt(Application.get().getProp().getProperty(Setting.EXTERNAL_NOTIFICATION_PORT.getCode()));
-			// EntityManagerFactory emf2 =
-			// Persistence.createEntityManagerFactory("shifts");
-			EntityManagerFactory emf = Persistence.createEntityManagerFactory("notifications",
-					Application.get().getProp());
+			
 
-			e.getServletContext().setAttribute("emf", emf);
-			// e.getServletContext().setAttribute("emf-shifters", emf2);
-			TaskManager.initialize(emf, null);
+			TaskManager.initialize(Application.get().getPersistenceManager());
 			TaskManager.get().schedule();
 			(new Thread() {
 				public void run() {
@@ -59,11 +58,30 @@ public class ServletListener implements ServletContextListener {
 	}
 
 	public void contextDestroyed(ServletContextEvent e) {
+
+		logger.info("NM will go down now, starting shutdown sequence");
+		TaskManager.get().stopTasks();
+		
 		EntityManagerFactory emf = (EntityManagerFactory) e.getServletContext().getAttribute("emf");
 		// EntityManagerFactory emf2 = (EntityManagerFactory)
 		// e.getServletContext().getAttribute("emf-shifters");
 		emf.close();
 		// emf2.close();
+		
+		ExternalSoundReceiver.close();
+		
+		Enumeration<Driver> drivers = DriverManager.getDrivers();
+		while (drivers.hasMoreElements()) {
+			Driver driver = drivers.nextElement();
+			try {
+				DriverManager.deregisterDriver(driver);
+				logger.info(String.format("deregistering jdbc driver: %s", driver));
+			} catch (SQLException ex) {
+				logger.error(String.format("Error deregistering driver %s", driver), ex);
+			}
+
+		}
+		logger.info("Shutdown sequence completed, NM is down");
 	}
 
 }

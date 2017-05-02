@@ -11,6 +11,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import cern.cms.daq.nm.sound.Priority;
 import cern.cms.daq.nm.sound.Sound;
 
 @Entity
@@ -40,11 +41,17 @@ public class Event {
 	@Column(columnDefinition = "VARCHAR2(4000)")
 	private String message;
 
+	/** Sound or speech generated */
+	private boolean audible;
+
 	@Column(nullable = true)
 	private int conditionId;
 
 	@Enumerated(EnumType.ORDINAL)
 	private Sound sound;
+
+	@Enumerated(EnumType.ORDINAL)
+	private Priority priority;
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "DATETIME_FIELD")
@@ -53,14 +60,14 @@ public class Event {
 	@Enumerated(EnumType.ORDINAL)
 	private EventStatus status;
 
+	@Enumerated(EnumType.ORDINAL)
+	private LogicModuleView logicModule;
+
 	/** Flag indicating if this notification should be displayed */
 	private boolean display;
 
-	/** Flag indicating if this notification should be played */
-	private boolean play;
-
 	@Transient
-	private int soundId;
+	private String customSound;
 
 	public EventType getEventType() {
 		return eventType;
@@ -108,22 +115,6 @@ public class Event {
 
 	public void setDisplay(boolean display) {
 		this.display = display;
-	}
-
-	public boolean isPlay() {
-		return play;
-	}
-
-	public void setPlay(boolean play) {
-		this.play = play;
-	}
-
-	public int getSoundId() {
-		return soundId;
-	}
-
-	public void setSoundId(int soundId) {
-		this.soundId = soundId;
 	}
 
 	public int getConditionId() {
@@ -179,6 +170,38 @@ public class Event {
 		return "Event [id=" + id + ", eventType=" + eventType + ", eventSenderType=" + eventSenderType + ", title="
 				+ title + ", textToSpeech=" + textToSpeech + ", sender=" + sender + ", message=" + message
 				+ ", conditionId=" + conditionId + ", sound=" + sound + ", date=" + date + ", status=" + status
-				+ ", display=" + display + ", play=" + play + ", soundId=" + soundId + "]";
+				+ ", display=" + display + "]";
+	}
+
+	public LogicModuleView getLogicModule() {
+		return logicModule;
+	}
+
+	public void setLogicModule(LogicModuleView logicModule) {
+		this.logicModule = logicModule;
+	}
+
+	public Priority getPriority() {
+		return priority;
+	}
+
+	public void setPriority(Priority priority) {
+		this.priority = priority;
+	}
+
+	public boolean isAudible() {
+		return audible;
+	}
+
+	public void setAudible(boolean audible) {
+		this.audible = audible;
+	}
+
+	public String getCustomSound() {
+		return customSound;
+	}
+
+	public void setCustomSound(String customSound) {
+		this.customSound = customSound;
 	}
 }

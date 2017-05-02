@@ -7,6 +7,7 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.Date;
 import java.util.List;
 
@@ -18,6 +19,7 @@ import cern.cms.daq.nm.persistence.EventType;
 import cern.cms.daq.nm.task.TaskManager;
 
 public class ExternalSoundReceiver implements Runnable {
+	private static ServerSocket ssock;
 	private final Socket csocket;
 	private final static Logger logger = Logger.getLogger(ExternalSoundReceiver.class);
 
@@ -26,15 +28,28 @@ public class ExternalSoundReceiver implements Runnable {
 	}
 
 	public static void startSoundReceiver(int socketPort) throws Exception {
-		ServerSocket ssock = new ServerSocket(socketPort);
+		ssock = new ServerSocket(socketPort);
 		logger.info("Listening for external clients to connect");
 
 		while (true) {
-			Socket sock = ssock.accept();
-			logger.info("External client connected " + sock.getRemoteSocketAddress());
-			new Thread(new ExternalSoundReceiver(sock)).start();
+			try {
+				Socket sock = ssock.accept();
+				logger.info("External client connected " + sock.getRemoteSocketAddress());
+				new Thread(new ExternalSoundReceiver(sock)).start();
+			} catch (SocketException e) {
+				logger.warn("Socket exception: probably closing: " + e.getMessage());
+			}
 		}
 
+	}
+
+	public static void close() {
+		try {
+			logger.info("Closing external sound receiver");
+			ssock.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void run() {
@@ -49,20 +64,7 @@ public class ExternalSoundReceiver implements Runnable {
 			if (alarms != null) {
 
 				for (Alarm alarm : alarms) {
-					EventResource eventResource = new EventResource();
-					eventResource.setMessage(alarm.getText());
-					eventResource.setTextToSpeech(alarm.getTalk());
-					eventResource.setSender(alarm.getSender());
-					eventResource.setTitle(alarm.getSender() + " alarm");
-					//TODO: save the sound
-					eventResource.setDate(new Date());
-					eventResource.setPlay(true);
-					eventResource.setDisplay(false);
-					
-
-					eventResource.setEventType(EventType.Single);
-					eventResource.setEventSenderType(EventSenderType.External);
-					// eventOccurrenceResource.setId(1L);
+					EventResource eventResource = convertAlarmToEvent(alarm);
 					TaskManager.get().getEventResourceBuffer().add(eventResource);
 				}
 
@@ -84,5 +86,25 @@ public class ExternalSoundReceiver implements Runnable {
 			}
 		}
 	}
-	
+
+	private EventResource convertAlarmToEvent(Alarm alarm) {
+		EventResource eventResource = new EventResource();
+		if (alarm.getSender() != null) {
+			eventResource.setTitle(alarm.getSender() + " alarm");
+		} else {
+			eventResource.setTitle("External alarm");
+		}
+		eventResource.setMessage(alarm.getText());
+		eventResource.setTextToSpeech(alarm.getTalk());
+		eventResource.setSender(alarm.getSender());
+
+		eventResource.setDate(new Date());
+		eventResource.setSound(alarm.getSound());
+
+		eventResource.setEventType(EventType.Single);
+		eventResource.setEventSenderType(EventSenderType.External);
+		// eventOccurrenceResource.setId(1L);
+		return eventResource;
+	}
+
 }
