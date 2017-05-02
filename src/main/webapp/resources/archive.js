@@ -79,24 +79,27 @@ function initLogicModuleSelector() {
 	                 },
 	                 {
 	                     label: 'Other Conditions', children: [
-	                         {label: 'No rate', value: 'NoRate'},
+	                         {label: 'Deadtime', value: 'Deadtime'},
+	                         {label: 'Critical deadtime', value: 'CriticalDeadtime'},
+	                         {label: 'Downtime', value: 'Downtime'},
+	                         
 	                         {label: 'Rate out of range', value: 'RateOutOfRange'},
-	                         {label: 'Beam active', value: 'BeamActive'},
-	                         {label: 'Run ongoing', value: 'RunOngoing'},
-	                         {label: 'Expected rate', value: 'ExpectedRate'},
-	                         {label: 'Transition ', value: 'Transition'},
-	                         {label: 'Long transition', value: 'LongTransition'},
+	                         {label: 'No rate when expected', value: 'NoRateWhenExpected'},
+	                         {label: 'No rate', value: 'NoRate'},
+	                         
 	                         {label: 'Warning in sub system', value: 'WarningInSubsystem'},
 	                         {label: 'Subsyss running degraded', value: 'SubsystemRunningDegraded'},
 	                         {label: 'Subsystem error', value: 'SubsystemError'},
 	                         {label: 'Subsystem soft error', value: 'SubsystemSoftError'},
 	                         {label: 'Fed deadtime', value: 'FEDDeadtime'},
 	                         {label: 'Partition deadtime', value: 'PartitionDeadtime'},
+	                         
 	                         {label: 'Stable beams', value: 'StableBeams'},
-	                         {label: 'No rate when expected', value: 'NoRateWhenExpected'},
-	                         {label: 'Downtime', value: 'Downtime'},
-	                         {label: 'Deadtime', value: 'Deadtime'},
-	                         {label: 'Critical deadtime', value: 'CriticalDeadtime'}
+	                         {label: 'Beam active', value: 'BeamActive'},
+	                         {label: 'Run ongoing', value: 'RunOngoing'},
+	                         {label: 'Expected rate', value: 'ExpectedRate'},
+	                         {label: 'Transition ', value: 'Transition'},
+	                         {label: 'Long transition', value: 'LongTransition'},
 	                     ]
 	                 }
 	             ];
