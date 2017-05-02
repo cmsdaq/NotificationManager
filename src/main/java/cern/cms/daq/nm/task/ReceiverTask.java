@@ -85,12 +85,13 @@ public class ReceiverTask extends TimerTask {
 					event.setSound(selected);
 				}
 
-				eventDashboard.addEvent(event);
-				soundDispatcher.dispatch(event);
 				long start = System.currentTimeMillis();
 				eventPersistor.persist(event);
 				long end = System.currentTimeMillis();
 				logger.debug("Event persistence time: " + (end - start) + "ms");
+
+				eventDashboard.addEvent(event);
+				soundDispatcher.dispatch(event);
 
 				// Add to temporary buffer - event occurrence cannot be
 				// added to
