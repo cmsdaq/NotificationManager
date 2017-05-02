@@ -1,5 +1,7 @@
 package cern.cms.daq.nm.task;
 
+import java.sql.SQLException;
+import java.sql.SQLRecoverableException;
 import java.util.ArrayDeque;
 import java.util.Queue;
 import java.util.TimerTask;
@@ -50,8 +52,8 @@ public class ReceiverTask extends TimerTask {
 	private final EventSessionHandler eventDashboard;
 
 	public ReceiverTask(ConcurrentLinkedQueue<EventResource> eventResourceBuffer,
-			ConcurrentLinkedQueue<Event> eventBuffer, PersistenceManager eventPersistor, SoundDispatcher soundDispatcher,
-			EventSessionHandler eventDashboard) {
+			ConcurrentLinkedQueue<Event> eventBuffer, PersistenceManager eventPersistor,
+			SoundDispatcher soundDispatcher, EventSessionHandler eventDashboard) {
 		this.eventPersistor = eventPersistor;
 		this.eventBuffer = eventBuffer;
 		this.eventResourceBuffer = eventResourceBuffer;
@@ -83,17 +85,15 @@ public class ReceiverTask extends TimerTask {
 					event.setSound(selected);
 				}
 
+				eventDashboard.addEvent(event);
+				soundDispatcher.dispatch(event);
 				long start = System.currentTimeMillis();
-
 				eventPersistor.persist(event);
-
 				long end = System.currentTimeMillis();
 				logger.debug("Event persistence time: " + (end - start) + "ms");
 
-				eventDashboard.addEvent(event);
-				soundDispatcher.dispatch(event);
-
-				// Add to temporary buffer - event occurrence cannot be added to
+				// Add to temporary buffer - event occurrence cannot be
+				// added to
 				// buffer before tranaction has successfully commited.
 				tmpReceiverBuffer.add(event);
 			}

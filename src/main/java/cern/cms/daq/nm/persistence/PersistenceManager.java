@@ -1,14 +1,13 @@
 package cern.cms.daq.nm.persistence;
 
+import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
-import java.util.Properties;
 import java.util.Set;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
-import javax.persistence.Persistence;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.hibernate.Criteria;
@@ -20,12 +19,10 @@ import org.hibernate.criterion.Restrictions;
 public class PersistenceManager {
 
 	private EntityManagerFactory entityManagerFactory;
-	private EntityManager entryEntityManager;
 
 	public PersistenceManager(EntityManagerFactory entityManagerFactory) {
 
 		this.entityManagerFactory = entityManagerFactory;
-		this.entryEntityManager = entityManagerFactory.createEntityManager();
 	}
 
 	public Pair<List<Event>, Long> getEvents(Date startDate, Date endDate, List<EventType> filteredTypes,
@@ -74,12 +71,14 @@ public class PersistenceManager {
 	 */
 	public void persist(Set<Event> events) {
 
+		EntityManager entryEntityManager = entityManagerFactory.createEntityManager();
 		EntityTransaction tx = entryEntityManager.getTransaction();
 		tx.begin();
 		for (Event event : events) {
 			entryEntityManager.persist(event);
 		}
 		tx.commit();
+		entryEntityManager.close();
 	}
 
 	/**
@@ -88,10 +87,13 @@ public class PersistenceManager {
 	 * @param event
 	 */
 	public void persist(Event event) {
+		EntityManager entryEntityManager = entityManagerFactory.createEntityManager();
 		EntityTransaction tx = entryEntityManager.getTransaction();
 		tx.begin();
 		entryEntityManager.persist(event);
 		tx.commit();
+		entryEntityManager.close();
+			
 	}
 
 	/**
