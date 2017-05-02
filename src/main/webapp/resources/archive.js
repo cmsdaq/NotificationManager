@@ -19,9 +19,11 @@ $(document).ready(function() {
 
 function initTypeSelector() {
 
+	
 	$('#event-type-multiselect').multiselect({
 		buttonWidth : '200px',
 		nonSelectedText : 'showing all',
+        enableCollapsibleOptGroups: true,
 		onDropdownHidden : function(event) {
 			var types = $('select#event-type-multiselect').val();
 			// console.log("Types: " + types);
@@ -31,6 +33,7 @@ function initTypeSelector() {
 			location.search = $.param(queryParameters); // reload
 		}
 	});
+	
 	selected = [];
 	if (queryParameters['type']) {
 		// console.log("Exists type query: " + queryParameters['type']);
@@ -44,11 +47,67 @@ function initTypeSelector() {
 }
 
 function initLogicModuleSelector() {
+	
+	var optgroups = [
+	                  {
+	                     label: 'Identified downtime', children: [
+	                         {label: 'Out of sequence data received', value: 'FlowchartCase1'},
+	                         {label: 'Corrupted data received', value: 'FlowchartCase2'},
+	                         {label: 'Partition problem', value: 'FlowchartCase3'},
+	                         {label: 'Fed stuck', value: 'FlowchartCase5'},
+	                         {label: 'Backpressure detected', value: 'FlowchartCase6'},
+	                         {label: 'PI disconnected', value: 'PiDisconnected'},
+	                         {label: 'PI problem', value: 'PiProblem'},
+	                         {label: 'FED disconnected', value: 'FEDDisconnected'},
+	                         {label: 'FMM problem', value: 'FMMProblem'},
+	                     ]
+	                 },
+	                 {
+	                     label: 'Missed downtime', disabled:true, children: [
+	                         {label: 'Unidentified failure', disabled:true, value: 'UnidentifiedFailure'}]
+	                 },
+	                 {
+	                     label: 'All Transitions', children: [
+	                         {label: 'Session transitions', value: 'SessionComparator'},
+	                         {label: 'LHC beam mode transitions', value: 'LHCBeamModeComparator'},
+	                         {label: 'LHC machine mode transitions', value: 'LHCMachineModeComparator'},
+	                         {label: 'Run transitions', value: 'RunComparator'},
+	                         {label: 'L0 state transitions', value: 'LevelZeroStateComparator'},
+	                         {label: 'TCDS state transitions ', value: 'TCDSStateComparator'},
+	                         {label: 'DAQ state transitions', value: 'DAQStateComparator'}
+	                     ]
+	                 },
+	                 {
+	                     label: 'Other Conditions', children: [
+	                         {label: 'Deadtime', value: 'Deadtime'},
+	                         {label: 'Critical deadtime', value: 'CriticalDeadtime'},
+	                         {label: 'Downtime', value: 'Downtime'},
+	                         
+	                         {label: 'Rate out of range', value: 'RateOutOfRange'},
+	                         {label: 'No rate when expected', value: 'NoRateWhenExpected'},
+	                         {label: 'No rate', value: 'NoRate'},
+	                         
+	                         {label: 'Warning in sub system', value: 'WarningInSubsystem'},
+	                         {label: 'Subsyss running degraded', value: 'SubsystemRunningDegraded'},
+	                         {label: 'Subsystem error', value: 'SubsystemError'},
+	                         {label: 'Subsystem soft error', value: 'SubsystemSoftError'},
+	                         {label: 'Fed deadtime', value: 'FEDDeadtime'},
+	                         {label: 'Partition deadtime', value: 'PartitionDeadtime'},
+	                         
+	                         {label: 'Stable beams', value: 'StableBeams'},
+	                         {label: 'Beam active', value: 'BeamActive'},
+	                         {label: 'Run ongoing', value: 'RunOngoing'},
+	                         {label: 'Expected rate', value: 'ExpectedRate'},
+	                         {label: 'Transition ', value: 'Transition'},
+	                         {label: 'Long transition', value: 'LongTransition'},
+	                     ]
+	                 }
+	             ];
 
 	$('#event-source-multiselect').multiselect({
 		buttonWidth : '200px',
 		nonSelectedText : 'showing all',
-		enableFiltering: true,
+		enableCaseInsensitiveFiltering: true,
         filterPlaceholder: 'Search for LM...',
 		maxHeight : 500,
 		onDropdownHidden : function(event) {
@@ -59,8 +118,12 @@ function initLogicModuleSelector() {
 
 			console.log($.param(queryParameters));
 			location.search = $.param(queryParameters); // reload
-		}
+		},
+		 enableClickableOptGroups: true
 	});
+	
+	$('#event-source-multiselect').multiselect('dataprovider', optgroups);
+	
 	selected = [];
 	if (queryParameters['source']) {
 		// console.log("Exists type query: " + queryParameters['type']);

@@ -38,7 +38,11 @@ public enum LogicModuleView {
 	RunComparator("Run", 14),
 	LevelZeroStateComparator("Level Zero State", 13),
 	TCDSStateComparator("TCDS State", 12),
-	DAQStateComparator("DAQ state", 11);
+	DAQStateComparator("DAQ state", 11),
+	PiDisconnected(  "PI Disconnected", 10014),
+	PiProblem(  "PI Problem", 10014),
+	FEDDisconnected(  "FED Disconnected", 10014),
+	FMMProblem(  "FMM Problem", 10014),;
 
 	private final String displayedName;
 

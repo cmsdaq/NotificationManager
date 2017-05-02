@@ -14,17 +14,10 @@
 			<form class="form-inline pull-right " method="POST">
 					
 				<div class="input-group" id="source-picker-group">
-				<span class="input-group-addon">source</span>
+				<span class="input-group-addon">ssource</span>
 				  <select name="select" id="event-source-multiselect"
 							multiple="multiple" class="multiselect form-control">
 				  
-						<c:forEach items="${sources}" var="logicModule">
-					 		<option name="type" value="<c:out value="${logicModule }"/>">
-					 		
-					 		<c:out value="${logicModule.displayedName }" />
-										
-		 					</option>
-				   		</c:forEach>
 				   		
 				  </select>
 			   </div>
@@ -95,9 +88,8 @@
 		 <tr>
 			<th>Date</th>
 			<th>Event Type</th>
-			<th>Sender Type</th>
-			<th>Title</th>
 			<th>Sender</th>
+			<th>Title</th>
 			<th>Displayed message</th>
 			<th>Source LM</th>
 			<th>Audible</th>
@@ -108,11 +100,10 @@
 		 <tbody>
 				<c:forEach items="${events}" var="event">
 					 		<tr>
-					 		<td><fmt:formatDate type="both" value="${event.date}" /></td>
+					 		<td><fmt:formatDate pattern="yyyy-MM-dd HH:mm:ss"  value="${event.date}" /></td>
 					 		<td><c:out value="${event.eventType }" /></td>
-					 		<td><c:out value="${event.eventSenderType }" /></td>
+					 		<td><c:out value="${event.eventSenderType }" /> <i><c:out value="${event.sender }" /></i></td>
 					 		<td><c:out value="${event.title }" /></td>
-					 		<td><c:out value="${event.sender }" /></td>
 					 		<td><c:out value="${event.message }" /></td>
 							<td>
 								<c:choose>
