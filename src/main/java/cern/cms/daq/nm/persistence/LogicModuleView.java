@@ -26,12 +26,12 @@ public enum LogicModuleView {
 	Downtime("Downtime"),
 	Deadtime("Deadtime"),
 	CriticalDeadtime("Critical deadtime", 105),
-	FlowchartCase1("FC1", 10004),
-	FlowchartCase2("FC2", 10005),
-	FlowchartCase3("FC3", 10006),
-	FlowchartCase4("FC4", 10007),
-	FlowchartCase5("FC5", 10008),
-	FlowchartCase6("FC6", 10009),
+	FlowchartCase1("Out of sequence data", 10004),
+	FlowchartCase2("Corrupted data", 10005),
+	FlowchartCase3("Partition problem", 10006),
+	FlowchartCase4("FC4 (deprecated)", 10007),
+	FlowchartCase5("Fed stuck", 10008),
+	FlowchartCase6("Backpressure", 10009),
 	SessionComparator("Session", 15),
 	LHCBeamModeComparator("LHC Beam Mode", 20),
 	LHCMachineModeComparator("LHC Machine Mode", 21),
@@ -42,7 +42,8 @@ public enum LogicModuleView {
 	PiDisconnected(  "PI Disconnected", 10014),
 	PiProblem(  "PI Problem", 10014),
 	FEDDisconnected(  "FED Disconnected", 10014),
-	FMMProblem(  "FMM Problem", 10014),;
+	FMMProblem(  "FMM Problem", 10014),
+	UnidentifiedFailure("Unidentified failure", 10000);
 
 	private final String displayedName;
 
