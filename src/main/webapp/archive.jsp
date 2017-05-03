@@ -14,7 +14,7 @@
 			<form class="form-inline pull-right " method="POST">
 					
 				<div class="input-group" id="source-picker-group">
-				<span class="input-group-addon">ssource</span>
+				<span class="input-group-addon">source</span>
 				  <select name="select" id="event-source-multiselect"
 							multiple="multiple" class="multiselect form-control">
 				  
@@ -93,8 +93,7 @@
 			<th>Displayed message</th>
 			<th>Source LM</th>
 			<th>Audible</th>
-			<%-- <th>Display</th>--%>
-			<%-- <th>Link</th> --%>
+			<th>Link</th>
 		 </tr>
 		 </thead>
 		 <tbody>
@@ -119,8 +118,7 @@
 									class="glyphicon glyphicon-music"></span> ${event.sound.displayName}</span>
 							</c:if> 
 					 		<c:if test="${event.textToSpeech != null}">${event.textToSpeech}</c:if> 
-					 		<%-- <td>-</td>
-					 		<td>-</td> --%>
+					 		<td><a href="#" class="expert-link" data-date="<fmt:formatDate pattern="yyyy-MM-dd'T'HH:mm:ss Z"  value="${event.date}" />"><span class="glyphicon glyphicon-link"></span></a></td>
 				
 					</tr>   		
 				

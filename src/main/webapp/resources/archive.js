@@ -15,6 +15,7 @@ $(document).ready(function() {
 	initDatePicker();
 	initPagination();
 	initTour();
+	initExpertLinks();
 });
 
 function initTypeSelector() {
@@ -225,7 +226,7 @@ function initDatePicker() {
 
 function initPagination() {
 	var all_entries = $('#count').attr("data-value");
-	console.log(all_entries);
+	//console.log(all_entries);
 	var curr_entries = 20;
 	if (queryParameters['entries']) {
 		curr_entries = queryParameters['entries']
@@ -323,4 +324,22 @@ function initTour() {
 
 	});
 
+}
+
+function initExpertLinks() {
+	$('.expert-link').click(function(e) {
+		var date = $(this).data("date");
+		var base = $.trim($('#expertLink').attr("href"));
+		var isoFormat = "YYYY-MM-DDTHH:mm:ssZ";
+		console.log("'" + base + "'");
+		
+		var start = moment(date).add(-120,"second");
+		var fakeEnd = moment(date).add(120,"second");
+
+		var link =  base + "?start=" +  start.format(isoFormat) + "&end=" + fakeEnd.format(isoFormat);
+		console.log("Expert link clicked: " + link);
+		
+		window.open(link);
+
+	});
 }
