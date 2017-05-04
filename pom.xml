@@ -14,6 +14,18 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
+
+	<repositories>
+		<repository>
+			<id>libs-release-local</id>
+			<url>http://dev-daq-expert.cern.ch/artifactory/ext-release-local</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+
+
 	<dependencies>
 
 		<!-- JSP -->
@@ -106,12 +118,12 @@
 			<artifactId>spring-webmvc</artifactId>
 			<version>4.2.5.RELEASE</version>
 		</dependency>
+
 		<dependency>
 			<groupId>com.oracle</groupId>
-			<artifactId>ojdbc</artifactId>
-			<version>6</version>
+			<artifactId>oracle6</artifactId>
+			<version>1.0</version>
 		</dependency>
-
 
 
 		<dependency>
