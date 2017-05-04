@@ -64,8 +64,8 @@ function initLogicModuleSelector() {
 	                     ]
 	                 },
 	                 {
-	                     label: 'Missed downtime', disabled:true, children: [
-	                         {label: 'Unidentified failure', disabled:true, value: 'UnidentifiedFailure'}]
+	                     label: 'Missed downtime', children: [
+	                         {label: 'Unidentified failure', value: 'UnidentifiedFailure'}]
 	                 },
 	                 {
 	                     label: 'All Transitions', children: [
