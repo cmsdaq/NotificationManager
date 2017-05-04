@@ -83,9 +83,10 @@
 	</jsp:attribute>
 
 	<jsp:body>
-	  <table id="event_occurrences_table" class="table well">
+	  <table id="event_occurrences_table" class="table ">
 	  	<thead>
 		 <tr>
+			<th></th>
 			<th>Date</th>
 			<th>Event Type</th>
 			<th>Sender</th>
@@ -93,21 +94,37 @@
 			<th>Displayed message</th>
 			<th>Source LM</th>
 			<th>Audible</th>
-			<th>Link</th>
 		 </tr>
 		 </thead>
 		 <tbody>
 				<c:forEach items="${events}" var="event">
 					 		<tr>
-					 		<td><fmt:formatDate pattern="yyyy-MM-dd HH:mm:ss"  value="${event.date}" /></td>
-					 		<td><c:out value="${event.eventType }" /></td>
-					 		<td><c:out value="${event.eventSenderType }" /> <i><c:out value="${event.sender }" /></i></td>
+					 		<td><a href="#" class="expert-link" data-toggle="tooltip" title="See this event in browser"
+							data-date="<fmt:formatDate pattern="yyyy-MM-dd'T'HH:mm:ss Z"  value="${event.date}" />"><span
+								class="glyphicon glyphicon-link"></span></a></td>
+					 		<td><fmt:formatDate pattern="yyyy-MM-dd HH:mm:ss"
+								value="${event.date}" /></td>
+					 		<td>
+					 		
+					 		<span class="label label-default" data-toggle="tooltip" title="${event.eventType.description}">
+					 		<c:choose>
+									<c:when test="${event.eventType eq 'ConditionStart'}"><span class="glyphicon glyphicon-log-out"></span></c:when> 
+									<c:when test="${event.eventType eq 'ConditionEnd'}"><span class="glyphicon glyphicon-log-in"></span></c:when> 
+									<c:when test="${event.eventType eq 'Single'}"><span class="glyphicon glyphicon-unchecked"></span></c:when> 
+									<c:when test="${event.eventType eq 'ConditionUpdate'}"><span class="glyphicon glyphicon-collapse-up"></span></c:when> 
+									<c:otherwise></c:otherwise>
+							</c:choose>
+					 		<c:out value="${event.eventType.name }" />
+					 		</span>
+					 		</td>
+					 		<td><c:out value="${event.eventSenderType }" /> <i><c:out
+									value="${event.sender }" /></i></td>
 					 		<td><c:out value="${event.title }" /></td>
 					 		<td><c:out value="${event.message }" /></td>
 							<td>
 								<c:choose>
-									<c:when test="${event.logicModule != null}">${event.logicModule}</c:when> 
-									<c:otherwise>n/a</c:otherwise>  
+									<c:when test="${event.logicModule != null}"><span class="label label-default" data-toggle="tooltip" title="${event.logicModule}">${event.logicModule.displayedName}</span></span></c:when> 
+									<c:otherwise>n/a</c:otherwise>
 								</c:choose>
 							</td>
 					 		<td>
@@ -118,7 +135,10 @@
 									class="glyphicon glyphicon-music"></span> ${event.sound.displayName}</span>
 							</c:if> 
 					 		<c:if test="${event.textToSpeech != null}">${event.textToSpeech}</c:if> 
-					 		<td><a href="#" class="expert-link" data-date="<fmt:formatDate pattern="yyyy-MM-dd'T'HH:mm:ss Z"  value="${event.date}" />"><span class="glyphicon glyphicon-link"></span></a></td>
+					 		
+						
+						
+						
 				
 					</tr>   		
 				
