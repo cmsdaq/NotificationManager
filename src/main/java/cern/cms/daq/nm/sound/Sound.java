@@ -16,7 +16,10 @@ public enum Sound {
 	END("U2SingelBell.wav", "End"),
 
 	KNOWN("added-info.wav", "Known"),
-	DEADTIME("added-pulse.wav", "Deadtime"),
+	DEADTIME("BigDisgrace.wav", "Deadtime"),
+	NO_RATE_WHEN_EXPECTED("SadThatItTurnedOutBad.wav","No rate when expected"),
+	NO_RATE_WHEN_EXPECTED2("SadWorldWithoutYou.wav","No rate when expected"),
+	SUBSYSTEM_RUNNING_DEGRADED("AnotherOneBitesTheDust.wav","Subsystem running degraded"),
 	COMPLETED("added-complete.wav", "Completed"),
 	DARK_CHANGE("added-dark3.wav", "Dark change"),
 	CROW("added-crow.wav", "Crow"),
