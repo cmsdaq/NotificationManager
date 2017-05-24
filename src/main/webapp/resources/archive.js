@@ -81,7 +81,7 @@ function initLogicModuleSelector() {
 	                 {
 	                     label: 'Other Conditions', children: [
 	                         //{label: 'Deadtime', value: 'Deadtime'},
-	                         //{label: 'Critical deadtime', value: 'CriticalDeadtime'},
+	                         {label: 'Deadtime during run', value: 'CriticalDeadtime'},
 	                         //{label: 'Downtime', value: 'Downtime'},
 	                         
 	                         //{label: 'Rate out of range', value: 'RateOutOfRange'},

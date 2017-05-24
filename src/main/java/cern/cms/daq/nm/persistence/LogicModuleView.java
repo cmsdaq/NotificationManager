@@ -25,7 +25,7 @@ public enum LogicModuleView {
 	NoRateWhenExpected("No rate when expected", 104),
 	Downtime("Downtime"),
 	Deadtime("Deadtime"),
-	CriticalDeadtime("Critical deadtime", 105),
+	CriticalDeadtime("Deadtime during run", 105),
 	FlowchartCase1("Out of sequence data", 10004),
 	FlowchartCase2("Corrupted data", 10005),
 	FlowchartCase3("Partition problem", 10006),
