@@ -43,7 +43,8 @@ public enum LogicModuleView {
 	PiProblem(  "PI Problem", 10014),
 	FEDDisconnected(  "FED Disconnected", 10014),
 	FMMProblem(  "FMM Problem", 10014),
-	UnidentifiedFailure("Unidentified failure", 10000);
+	UnidentifiedFailure("Unidentified failure", 10000),
+	FEROLFifoStuck("Ferol FIFO stuck", 10500);
 
 	private final String displayedName;
 
