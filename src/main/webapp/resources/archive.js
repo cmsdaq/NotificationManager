@@ -61,6 +61,7 @@ function initLogicModuleSelector() {
 	                         {label: 'PI problem', value: 'PiProblem'},
 	                         {label: 'FED disconnected', value: 'FEDDisconnected'},
 	                         {label: 'FMM problem', value: 'FMMProblem'},
+	                         {label: 'Ferol FIFO stuck ', value: 'FEROLFifoStuck'},
 	                     ]
 	                 },
 	                 {
