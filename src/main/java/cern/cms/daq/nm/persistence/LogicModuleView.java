@@ -32,19 +32,38 @@ public enum LogicModuleView {
 	FlowchartCase4("FC4 (deprecated)", 10007),
 	FlowchartCase5("Fed stuck", 10008),
 	FlowchartCase6("Backpressure", 10009),
+	
 	SessionComparator("Session", 15),
 	LHCBeamModeComparator("LHC Beam Mode", 20),
 	LHCMachineModeComparator("LHC Machine Mode", 21),
 	RunComparator("Run", 14),
 	LevelZeroStateComparator("Level Zero State", 13),
 	TCDSStateComparator("TCDS State", 12),
+	
 	DAQStateComparator("DAQ state", 11),
+	
 	PiDisconnected(  "PI Disconnected", 10014),
 	PiProblem(  "PI Problem", 10014),
 	FEDDisconnected(  "FED Disconnected", 10014),
 	FMMProblem(  "FMM Problem", 10014),
-	UnidentifiedFailure("Unidentified failure", 10000),
-	FEROLFifoStuck("Ferol FIFO stuck", 10500);
+	UnidentifiedFailure("Unidentified failure", 9000),
+	
+	FEROLFifoStuck("Ferol FIFO stuck", 10500),
+	
+	RuFailed("Ferol FIFO stuck", 9500),
+	
+	
+	
+	LinkProblem("Link problem", 10010),
+	RuStuckWaiting("RU stuck waiting", 10010),
+	RuStuck("RU stuck", 10010),
+	RuStuckWaitingOther("RU stuck wating for other", 10010),
+	HLTProblem("HLT problem", 10010),
+	BugInFilterfarm("Bug in filter farm", 10010),
+	OnlyFedStoppedSendingData("The only FEE stopped sending data", 10010),
+	OutOfSequenceData("Out of sequence data received", 10010),
+	CorruptedData("Corrupted data received", 10010),
+	;
 
 	private final String displayedName;
 

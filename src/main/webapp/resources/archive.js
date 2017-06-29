@@ -52,16 +52,29 @@ function initLogicModuleSelector() {
 	var optgroups = [
 	                  {
 	                     label: 'Identified downtime', children: [
-	                         {label: 'Out of sequence data received', value: 'FlowchartCase1'},
-	                         {label: 'Corrupted data received', value: 'FlowchartCase2'},
 	                         {label: 'Partition problem', value: 'FlowchartCase3'},
 	                         {label: 'Fed stuck', value: 'FlowchartCase5'},
-	                         {label: 'Backpressure detected', value: 'FlowchartCase6'},
 	                         {label: 'PI disconnected', value: 'PiDisconnected'},
 	                         {label: 'PI problem', value: 'PiProblem'},
 	                         {label: 'FED disconnected', value: 'FEDDisconnected'},
 	                         {label: 'FMM problem', value: 'FMMProblem'},
-	                         {label: 'Ferol FIFO stuck ', value: 'FEROLFifoStuck'},
+	                         {label: 'Ferol FIFO stuck', value: 'FEROLFifoStuck'},
+	                         
+
+	                         {label: 'Link problem', value: 'LinkProblem'},
+	                         {label: 'RU stuck waiting', value: 'RuStuckWaiting'},
+	                         {label: 'RU stuck', value: 'RuStuck'},
+	                         {label: 'RU stuck wating for other', value: 'RuStuckWaitingOther'},
+	                         {label: 'HLT problem', value: 'HLTProblem'},
+	                         {label: 'Bug in filter farm', value: 'BugInFilterfarm'},
+	                         {label: 'The only FEE stopped sending data', value: 'OnlyFedStoppedSendingData'},
+	                         {label: 'Out of sequence data received', value: 'OutOfSequenceData'},
+	                         {label: 'Corrupted data received', value: 'CorruptedData'},
+	                         
+	                         {label: 'Out of sequence data received (legacy)', value: 'FlowchartCase1'},
+	                         {label: 'Corrupted data received (legacy)', value: 'FlowchartCase2'},
+	                         {label: 'Backpressure detected (legacy)', value: 'FlowchartCase6'},
+	                         
 	                     ]
 	                 },
 	                 {
