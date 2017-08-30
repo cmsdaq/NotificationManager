@@ -1,5 +1,6 @@
 package cern.cms.daq.nm.persistence;
 
+
 /**
  * NOTE: do not change the order of this enums as ordinal number is used for db
  * mapping, add only in the end - sync with expert
@@ -44,7 +45,9 @@ public enum LogicModuleView {
 	FEDDisconnected(  "FED Disconnected", 10014),
 	FMMProblem(  "FMM Problem", 10014),
 	UnidentifiedFailure("Unidentified failure", 10000),
-	FEROLFifoStuck("Ferol FIFO stuck", 10500);
+	FEROLFifoStuck("Ferol FIFO stuck", 10500),
+	RateTooHigh("Rate too high", 10501),
+	;
 
 	private final String displayedName;
 
