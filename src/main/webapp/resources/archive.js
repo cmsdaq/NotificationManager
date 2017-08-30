@@ -90,7 +90,7 @@ function initLogicModuleSelector() {
 	                         //{label: 'No rate', value: 'NoRate'},
 	                         
 	                         {label: 'Warning in sub system', value: 'WarningInSubsystem'},
-	                         {label: 'Subsyss running degraded', value: 'SubsystemRunningDegraded'},
+	                         {label: 'Subsys running degraded', value: 'SubsystemRunningDegraded'},
 	                         {label: 'Subsystem error', value: 'SubsystemError'},
 	                         {label: 'Subsystem soft error', value: 'SubsystemSoftError'},
 	                         {label: 'Fed deadtime', value: 'FEDDeadtime'},
