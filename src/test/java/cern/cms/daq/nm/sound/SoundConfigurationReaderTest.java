@@ -5,6 +5,7 @@ import java.util.Set;
 
 import org.apache.commons.lang3.tuple.Triple;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import cern.cms.daq.nm.persistence.EventType;
@@ -98,6 +99,23 @@ public class SoundConfigurationReaderTest {
 		Assert.assertEquals(1, r.size());
 		Triple<LogicModuleView, EventType, Sound> r1 = r.iterator().next();
 		Assert.assertEquals(Sound.NEW_RUN, r1.getRight());
+	}
+	
+	@Test
+	@Ignore
+	public void rateTooHighTest() {
+
+		SoundConfigurationReader configurator = new SoundConfigurationReader();
+		Properties properties = new Properties();
+
+		properties.put("sound.select.RateTooHigh.start", "ATrickySituation.wav");
+		Set<Triple<LogicModuleView, EventType, Sound>> r = configurator.readSoundSelectConfigurations(properties);
+
+		Assert.assertEquals(1, r.size());
+		Triple<LogicModuleView, EventType, Sound> r1 = r.iterator().next();
+		Assert.assertEquals(LogicModuleView.RateTooHigh, r1.getLeft());
+		Assert.assertEquals(EventType.ConditionStart, r1.getMiddle());
+		Assert.assertEquals(Sound.DEADTIME, r1.getRight());
 	}
 
 	@Test
