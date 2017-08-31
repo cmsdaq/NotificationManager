@@ -52,15 +52,29 @@ function initLogicModuleSelector() {
 	var optgroups = [
 	                  {
 	                     label: 'Identified downtime', children: [
-	                         {label: 'Out of sequence data received', value: 'FlowchartCase1'},
-	                         {label: 'Corrupted data received', value: 'FlowchartCase2'},
 	                         {label: 'Partition problem', value: 'FlowchartCase3'},
 	                         {label: 'Fed stuck', value: 'FlowchartCase5'},
-	                         {label: 'Backpressure detected', value: 'FlowchartCase6'},
 	                         {label: 'PI disconnected', value: 'PiDisconnected'},
 	                         {label: 'PI problem', value: 'PiProblem'},
 	                         {label: 'FED disconnected', value: 'FEDDisconnected'},
 	                         {label: 'FMM problem', value: 'FMMProblem'},
+	                         {label: 'Ferol FIFO stuck', value: 'FEROLFifoStuck'},
+	                         
+
+	                         {label: 'Link problem', value: 'LinkProblem'},
+	                         {label: 'RU stuck waiting', value: 'RuStuckWaiting'},
+	                         {label: 'RU stuck', value: 'RuStuck'},
+	                         {label: 'RU stuck wating for other', value: 'RuStuckWaitingOther'},
+	                         {label: 'HLT problem', value: 'HLTProblem'},
+	                         {label: 'Bug in filter farm', value: 'BugInFilterfarm'},
+	                         {label: 'The only FEE stopped sending data', value: 'OnlyFedStoppedSendingData'},
+	                         {label: 'Out of sequence data received', value: 'OutOfSequenceData'},
+	                         {label: 'Corrupted data received', value: 'CorruptedData'},
+	                         
+	                         {label: 'Out of sequence data received (legacy)', value: 'FlowchartCase1'},
+	                         {label: 'Corrupted data received (legacy)', value: 'FlowchartCase2'},
+	                         {label: 'Backpressure detected (legacy)', value: 'FlowchartCase6'},
+	                         
 	                     ]
 	                 },
 	                 {
@@ -81,6 +95,7 @@ function initLogicModuleSelector() {
 	                 {
 	                     label: 'Other Conditions', children: [
 	                         //{label: 'Deadtime', value: 'Deadtime'},
+	                    	 {label: 'Rate too high', value: 'RateTooHigh'},
 	                         {label: 'Deadtime during run', value: 'CriticalDeadtime'},
 	                         //{label: 'Downtime', value: 'Downtime'},
 	                         
@@ -89,7 +104,7 @@ function initLogicModuleSelector() {
 	                         //{label: 'No rate', value: 'NoRate'},
 	                         
 	                         {label: 'Warning in sub system', value: 'WarningInSubsystem'},
-	                         {label: 'Subsyss running degraded', value: 'SubsystemRunningDegraded'},
+	                         {label: 'Subsys running degraded', value: 'SubsystemRunningDegraded'},
 	                         {label: 'Subsystem error', value: 'SubsystemError'},
 	                         {label: 'Subsystem soft error', value: 'SubsystemSoftError'},
 	                         {label: 'Fed deadtime', value: 'FEDDeadtime'},
