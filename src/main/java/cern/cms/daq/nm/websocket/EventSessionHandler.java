@@ -7,7 +7,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.json.JsonArray;
 import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
 import javax.json.spi.JsonProvider;
 import javax.websocket.Session;
 
@@ -22,7 +24,7 @@ public class EventSessionHandler {
 	private final Set<Session> sessions = new HashSet<>();
 	private final List<Event> events = new ArrayList<>();
 
-	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z");
+	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 	public EventSessionHandler() {
 		final EventSessionHandler handler = this;
@@ -83,17 +85,29 @@ public class EventSessionHandler {
 		JsonProvider provider = JsonProvider.provider();
 		logger.debug("is provider null? " + provider == null);
 		logger.debug("Creating message for event: " + event);
+		
+		JsonObjectBuilder objectBuilder = provider.createObjectBuilder();
+		
+		if(event.getTextToSpeech() !=null){
+			//objectBuilder
+		}
 
 		String tts = event.getTextToSpeech() != null ? event.getTextToSpeech() : "";
 		String message = event.getMessage() != null ? event.getMessage() : "";
 		String title = event.getTitle() != null ? event.getTitle() : "";
 
 		String soundPlayed = event.getSound() != null ? event.getSound().getDisplayName() : "";
-
-		JsonObject addMessage = provider.createObjectBuilder().add("action", "add").add("id", event.getId())
-				.add("name", title).add("type", dateFormat.format(event.getDate())).add("tts", tts)
+		
+		
+		JsonObject object = provider.createObjectBuilder().add("id", event.getId())
+				.add("title", title).add("timestamp", dateFormat.format(event.getDate())).add("tts", tts)
 				.add("sound", soundPlayed).add("description", message).build();
 
+
+		JsonArray objects = provider.createArrayBuilder().add(object).build();
+		JsonObject addMessage = provider.createObjectBuilder().add("action", "add").add("objects",objects).build();
+				
+				
 		logger.debug("Created message for event: " + addMessage);
 		return addMessage;
 	}
