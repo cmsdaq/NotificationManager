@@ -103,7 +103,6 @@ public class ConditionSessionHandler {
 		JsonProvider provider = JsonProvider.provider();
 		logger.info("Creating current condition message for : " + condition);
 
-		String message = condition.getActionSteps() != null ? condition.getActionSteps().toString() : "";
 		String description = condition.getDescription() != null ? condition.getDescription() : "";
 		String title = condition.getTitle() != null ? condition.getTitle() : "#" + condition.getId();
 		String duration = condition.getEnd() == null ? "Ongoing" : "finished";
