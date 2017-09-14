@@ -1,14 +1,17 @@
-var eventsToKeep = 12;
-var conditionsToKeep = 8;
+var eventsToKeep = 10;
+var conditionsToKeep = 5;
 
 var eventsData = [];
 var conditionsData = [];
 var currentConditionId = null;
 var currentConditionObject = null;
-
 var lastDominatingConditionId = null;
+
 var currentVersion = null;
 var websocketDeclaredVersion = null;
+var durationSinceLastOngoingCondition = 0;
+
+var timeToKeepTheLastSuggestion = 20000;
 
 
 $(document).ready(function () {
@@ -366,21 +369,21 @@ function renderApp() {
 
     var current = null;
     var dataToShow = [];
-    
+
     var idToUse = currentConditionId;
     if(idToUse == null || idToUse == 0){
-    	idToUse = lastDominatingConditionId;
+        idToUse = lastDominatingConditionId;
     }
 
-        conditionsData.forEach(function (item) {
-            if (idToUse && idToUse > 0 && item.id === idToUse) {
-                item.focused = true;
-                current = item;
-                currentConditionObject = current;
-            } else{
-                dataToShow.push(item);
-            }
-        });
+    conditionsData.forEach(function (item) {
+        if (idToUse && idToUse > 0 && item.id === idToUse) {
+            item.focused = true;
+            current = item;
+            currentConditionObject = current;
+        } else{
+            dataToShow.push(item);
+        }
+    });
 
 
     ReactDOM.render(React.createElement(Dashboard, {
@@ -391,7 +394,6 @@ function renderApp() {
         document.getElementById('react-list-container')
     );
 }
-
 
 function newEventsDataArrived(event) {
     eventsData.push.apply(eventsData, event);
@@ -446,40 +448,6 @@ function newVersionDataArrived(version) {
 }
 
 
-function updateSelected(id){
-	lastDominatingConditionId = currentConditionId;
-	currentConditionId = id;
-	
-	if(id != 0){
-		
-		durationSinceLastOngoingCondition = 0;
-		console.log("non 0 received ");
-	} else{
-		console.log("ignoring 0 dominating ");
-	}
-	
-	renderApp();
-}
-
-
-
-var durationSinceLastOngoingCondition = 0;
-
-
-setInterval(function () {
-	if(currentConditionId == null || currentConditionId == 0){
-		durationSinceLastOngoingCondition += 5000;
-		console.log("Nothing happening for " + durationSinceLastOngoingCondition + " ms");
-		
-		if(lastDominatingConditionId != 0 && durationSinceLastOngoingCondition > 10000){
-			console.log("Last condition is no longer needed");
-			lastDominatingConditionId = 0;
-			renderApp();
-		}
-	}
-	
-}, 5000);
-
 
 setInterval(function () {
     updateDuration();
@@ -507,3 +475,32 @@ function updateDuration() {
 
 
 }
+
+
+
+function updateSelected(id){
+    console.log("Updating selected condition, id= " + id);
+    lastDominatingConditionId = currentConditionId;
+    currentConditionId = id;
+
+    if(id != 0){
+        durationSinceLastOngoingCondition = 0;
+    }
+
+    renderApp();
+}
+
+setInterval(function () {
+    if(currentConditionId == null || currentConditionId == 0){
+        durationSinceLastOngoingCondition += 5000;
+        console.log("Nothing happening for " + durationSinceLastOngoingCondition + " ms");
+
+        if(lastDominatingConditionId != 0 && durationSinceLastOngoingCondition > timeToKeepTheLastSuggestion){
+            console.log("Last condition is no longer needed");
+            lastDominatingConditionId = 0;
+            renderApp();
+        }
+    }
+
+}, 5000);
+
