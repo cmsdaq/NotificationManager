@@ -92,13 +92,39 @@ function ConditionElement(condition) {
     const statusElement = React.createElement(Duration, condition);
 
     const descriptionElement = React.createElement('small', {className: ""}, updatedMessage);
+
+
+    action = React.createElement(ListPanel,
+        {
+            elements: generateConditionActionIds(condition),
+            childType: ActionElement,
+            emptyMessage: "No recovery suggestion",
+        });
+
+    const buttonRequestShowAction = React.createElement('small', {}, React.createElement('a', {
+        className: (condition.requestedShow ? "collapse": ""),
+        onClick: function () {
+            newUpdateDataArrived({id:condition.id, requestedShow: true});
+        }
+    }, " Show steps"));
+    const buttonRequestHideAction = React.createElement('small', {}, React.createElement('a', {
+        className: (condition.requestedShow ? "": "collapse"),
+        onClick: function () {
+            newUpdateDataArrived({id:condition.id, requestedShow: false});
+        }
+    }, " Hide steps"));
+
+
+    const actionElement = React.createElement('small', {className: (condition.requestedShow ? "" : "collapse")}, action);
+
+
     const dateElement = React.createElement(FormattedDate, {date: condition.timestamp})
 
 
     const rightCornerInfo = React.createElement('span', {className: "pull-right"}, dateElement, " ", statusElement);
 
     const headElement = React.createElement('div', {className: "row"}, titleElement, rightCornerInfo);
-    const bottomElement = React.createElement('div', {className: "row"}, descriptionElement);
+    const bottomElement = React.createElement('div', {className: "row"}, descriptionElement, buttonRequestShowAction, buttonRequestHideAction, actionElement);
 
     var highlight = '';
     if (condition.announced === false) {
@@ -156,9 +182,9 @@ function ListPanel(props) {
         props.elements.forEach(function (event) {
 
             const element = React.createElement(props.childType, Object.assign({}, event, {key: event.id}));
-            if(props.reverse)
+            if (props.reverse)
                 elementsList.unshift(element);
-            else{
+            else {
                 elementsList.push(element);
             }
         });
@@ -245,17 +271,16 @@ function Duration(props) {
     }
 
     const icon = React.createElement('span', {className: 'glyphicon glyphicon-time'});
-    return React.createElement('span', {className: "label " + statusLabel}, icon," ", duration);
+    return React.createElement('span', {className: "label " + statusLabel}, icon, " ", duration);
 }
 
 function ActionElement(action) {
 
     const icon = React.createElement('span', {className: 'glyphicon glyphicon-hand-right'});
-    const rightCornerInfo = React.createElement('span', {className: "pull-right"}, "checkbox");
 
     const actionStep = React.createElement('span', {}, icon, " ", action.text);
 
-    const element = React.createElement('div', {className: "row"}, actionStep, rightCornerInfo);
+    const element = React.createElement('div', {className: "row"}, actionStep);
 
 
     return React.createElement('li', {
@@ -265,11 +290,11 @@ function ActionElement(action) {
     );
 }
 
-function generateConditionActionIds(condition){
+function generateConditionActionIds(condition) {
     var actionWithIds = [];
-    if(condition.action){
+    if (condition.action) {
 
-        for(var i = 0 ; i < condition.action.length; i++){
+        for (var i = 0; i < condition.action.length; i++) {
             var element = {};
             element.text = condition.action[i];
             element.id = condition.id + "-" + i;
@@ -298,7 +323,7 @@ function CurrentPanel(props) {
         const finishedSymbol = React.createElement('span', {className: 'glyphicon glyphicon-ok'});
         const ongoingSymbol = React.createElement('span', {className: 'glyphicon glyphicon-exclamation-sign'});
 
-        stateIndicator = React.createElement('span', {className: ('label ' + (active(props.current) ? " label-danger " : " label-success"))}, ((active(props.current) ? ongoingSymbol : finishedSymbol ))," ",(active(props.current) ? "CURRENT PROBLEM" : "FINISHED" ));
+        stateIndicator = React.createElement('span', {className: ('label ' + (active(props.current) ? " label-danger " : " label-success"))}, ((active(props.current) ? ongoingSymbol : finishedSymbol )), " ", (active(props.current) ? "CURRENT PROBLEM" : "FINISHED" ));
 
 
         title = React.createElement('h1', {className: 'display-5'}, props.current.title);
@@ -371,7 +396,7 @@ function renderApp() {
     var dataToShow = [];
 
     var idToUse = currentConditionId;
-    if(idToUse == null || idToUse == 0){
+    if (idToUse == null || idToUse == 0) {
         idToUse = lastDominatingConditionId;
     }
 
@@ -380,7 +405,7 @@ function renderApp() {
             item.focused = true;
             current = item;
             currentConditionObject = current;
-        } else{
+        } else {
             dataToShow.push(item);
         }
     });
@@ -404,7 +429,7 @@ function newEventsDataArrived(event) {
 function newConditionsDataArrived(condition) {
 
 
-    console.log("New Condition data arrived to REACT: " + JSON.stringify(condition));
+    //console.log("New Condition data arrived to REACT: " + JSON.stringify(condition));
     conditionsData.push.apply(conditionsData, condition);
     conditionsData = conditionsData.splice(-conditionsToKeep, conditionsToKeep);
     renderApp();
@@ -439,14 +464,13 @@ function newUpdateDataArrived(update) {
 }
 
 function newVersionDataArrived(version) {
-    console.log("New version available: " + version);
+    //console.log("New version available: " + version);
     websocketDeclaredVersion = version;
     if (currentVersion == null) {
-        console.log("First connect to websocket, establishing current version as " + version);
+        //console.log("First connect to websocket, establishing current version as " + version);
         currentVersion = websocketDeclaredVersion;
     }
 }
-
 
 
 setInterval(function () {
@@ -477,13 +501,12 @@ function updateDuration() {
 }
 
 
-
-function updateSelected(id){
-    console.log("Updating selected condition, id= " + id);
+function updateSelected(id) {
+    //console.log("Updating selected condition, id= " + id);
     lastDominatingConditionId = currentConditionId;
     currentConditionId = id;
 
-    if(id != 0){
+    if (id != 0) {
         durationSinceLastOngoingCondition = 0;
     }
 
@@ -491,12 +514,12 @@ function updateSelected(id){
 }
 
 setInterval(function () {
-    if(currentConditionId == null || currentConditionId == 0){
+    if (currentConditionId == null || currentConditionId == 0) {
         durationSinceLastOngoingCondition += 5000;
-        console.log("Nothing happening for " + durationSinceLastOngoingCondition + " ms");
+        //console.log("Nothing happening for " + durationSinceLastOngoingCondition + " ms");
 
-        if(lastDominatingConditionId != 0 && durationSinceLastOngoingCondition > timeToKeepTheLastSuggestion){
-            console.log("Last condition is no longer needed");
+        if (lastDominatingConditionId != 0 && durationSinceLastOngoingCondition > timeToKeepTheLastSuggestion) {
+            //console.log("Last condition is no longer needed");
             lastDominatingConditionId = 0;
             renderApp();
         }
