@@ -70,11 +70,11 @@ function EventElement(event) {
     if (event.tts) {
         const textToSpeechInfo = React.createElement('span', {className: "text-muted"}, event.tts);
         const icon = React.createElement('span', {className: 'glyphicon glyphicon-volume-up text-info'});
-        extraRow = React.createElement('div', {className: "row"}, icon, " ", textToSpeechInfo);
+        extraRow = React.createElement('div', {className: ""}, icon, " ", textToSpeechInfo);
     }
 
-    const headElement = React.createElement('div', {className: "row"}, titleElement, rightCornerInfo);
-    const bottomElement = React.createElement('div', {className: "row"}, descriptionElement);
+    const headElement = React.createElement('div', {className: ""}, titleElement, rightCornerInfo);
+    const bottomElement = React.createElement('div', {className: ""}, descriptionElement);
 
     return React.createElement('li', {
             className: 'list-group-item highlight-info'
@@ -123,8 +123,8 @@ function ConditionElement(condition) {
 
     const rightCornerInfo = React.createElement('span', {className: "pull-right"}, dateElement, " ", statusElement);
 
-    const headElement = React.createElement('div', {className: "row"}, titleElement, rightCornerInfo);
-    const bottomElement = React.createElement('div', {className: "row"}, descriptionElement, buttonRequestShowAction, buttonRequestHideAction, actionElement);
+    const headElement = React.createElement('div', {className: ""}, titleElement, rightCornerInfo);
+    const bottomElement = React.createElement('div', {className: ""}, descriptionElement, buttonRequestShowAction, buttonRequestHideAction, actionElement);
 
     var highlight = '';
     if (condition.announced === false) {
@@ -280,7 +280,7 @@ function ActionElement(action) {
 
     const actionStep = React.createElement('span', {}, icon, " ", action.text);
 
-    const element = React.createElement('div', {className: "row"}, actionStep);
+    const element = React.createElement('div', {className: ""}, actionStep);
 
 
     return React.createElement('li', {
