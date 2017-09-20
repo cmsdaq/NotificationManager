@@ -13,8 +13,11 @@ var durationSinceLastOngoingCondition = 0;
 
 var timeToKeepTheLastSuggestion = 20000;
 
+var daqViewUrl;
 
 $(document).ready(function () {
+    daqViewUrl = document.getElementById(
+        "daq-view-url");
     renderApp();
 });
 
@@ -22,18 +25,46 @@ $(document).ready(function () {
 function UpdatedMessage(props) {
     var split = props.element.description.split(/[\b>>\b|\b<<\b]+/);
     var key = props.element.id;
+    var preventHighlight = props.element.preventHighlight;
+
 
     var partsOfMessage = [];
     var highlight = false;
 
     $.each(split, function (index, item) {
+        var formattedItem = item;
         props = {key: ('m' + key + '-' + index)};
         if (highlight) {
-            props = Object.assign({}, props, {className: 'highlight'});
+
+            var tinyFontSplit = item.split(/[\b**\b]+/);
+
+            var partsOfUpdatedElement = [];
+            var makeFontTiny = false;
+            $.each(tinyFontSplit, function (insideIndex, item) {
+
+                var updatedElementProps = {key: ('m' + key + '-' + index + '-' + insideIndex)};
+                if(makeFontTiny) {
+                    updatedElementProps = Object.assign({}, updatedElementProps, {className: 'small text-muted'});
+                }
+                partsOfUpdatedElement.push(
+
+                    React.createElement('span',
+                        updatedElementProps, item
+                    )
+                );
+                makeFontTiny = !makeFontTiny;
+            });
+            formattedItem = partsOfUpdatedElement;
+
+            if(!preventHighlight) {
+                props = Object.assign({}, props, {className: 'highlight'});
+            }
+        }else{
+            props = Object.assign({}, props, {className:''});
         }
         partsOfMessage.push(
             React.createElement('span',
-                props, item
+                props, formattedItem
             )
         );
         highlight = !highlight;
@@ -43,16 +74,27 @@ function UpdatedMessage(props) {
 
 function FormattedDate(props) {
     var dateString = '-';
+    var dateLink = null;
+    var linkAvailable = false;
     if (props && props.date) {
         dateString = moment(props.date).format('YYYY-MM-DD HH:mm:ss');
+
+        if(daqViewUrl){
+            dateLink = React.createElement('a',{
+                href:(daqViewUrl+'?setup=cdaq&time='+moment(props.date).format('YYYY-MM-DD\'T\'HH:mm:ss')),
+                target:"_blank"
+            },dateString);
+            linkAvailable = true;
+        }
     }
-    return React.createElement('small', {className: "text-muted"}, dateString);
+
+    return React.createElement('small', {className: "text-muted"}, (props.link && linkAvailable)?dateLink:dateString);
 }
 
 
 function EventElement(event) {
     const updatedMessage = React.createElement(UpdatedMessage, {element: event});
-    const dateElement = React.createElement(FormattedDate, {date: event.timestamp});
+    const dateElement = React.createElement(FormattedDate, {date: event.timestamp, link: false});
 
 
     const titleElement = React.createElement('span', {className: ""}, event.title);
@@ -118,7 +160,7 @@ function ConditionElement(condition) {
     const actionElement = React.createElement('small', {className: (condition.requestedShow ? "" : "collapse")}, action);
 
 
-    const dateElement = React.createElement(FormattedDate, {date: condition.timestamp})
+    const dateElement = React.createElement(FormattedDate, {date: condition.timestamp, link: true});
 
 
     const rightCornerInfo = React.createElement('span', {className: "pull-right"}, dateElement, " ", statusElement);
@@ -444,23 +486,38 @@ function newUpdateDataArrived(update) {
     var foundItem;
     conditionsData.forEach(function (item) {
         if (item.id == update.id) {
-            //item = Object.assign({}, item, update);
-            $.extend(item, update);
-            //item.description = update.description;
+            $.extend(item, {preventHighlight:true});
             found = true;
-            foundItem = item;
-        }
-    });
-    eventsData.forEach(function (item) {
-        if (item.id == update.id) {
-            $.extend(item, update);
-            found = true;
-            foundItem = item;
         }
     });
     if (found) {
         renderApp();
     }
+
+    setTimeout(function () {
+
+        conditionsData.forEach(function (item) {
+            if (item.id == update.id) {
+                //item = Object.assign({}, item, update);
+                $.extend(item, update);
+                $.extend(item, {preventHighlight:false});
+                //item.description = update.description;
+                found = true;
+                foundItem = item;
+            }
+        });
+        eventsData.forEach(function (item) {
+            if (item.id == update.id) {
+                $.extend(item, update);
+                found = true;
+                foundItem = item;
+            }
+        });
+        if (found) {
+            renderApp();
+        }
+
+    }, 10);
 }
 
 function newVersionDataArrived(version) {
@@ -476,6 +533,7 @@ function newVersionDataArrived(version) {
 setInterval(function () {
     updateDuration();
 }, 100);
+
 
 
 function updateDuration() {
@@ -499,6 +557,7 @@ function updateDuration() {
 
 
 }
+
 
 
 function updateSelected(id) {
