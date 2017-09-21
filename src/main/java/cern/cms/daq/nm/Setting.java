@@ -8,6 +8,8 @@ public enum Setting {
 	SOUND_PORT("sound.port"),
 	SOUND_ENABLED("sound.enabled"),
 	EXTERNAL_NOTIFICATION_PORT("external.notification.port"),
+	DAQVIEW_LINK("daqview.link"),
+	DAQVIEW_SETUP("daqview.setup"),
 	
 	DATABASE_USER("hibernate.connection.username"),
 	DATABASE_PASSWORD("hibernate.connection.password"),

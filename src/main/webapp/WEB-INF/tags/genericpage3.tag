@@ -122,6 +122,10 @@
 					url="<%out.println(Application.get().getProp().getProperty(Setting.WEBSOCKET_NM.getCode()));%>"></div>
 				<div style="display: none;" id="expert-socket-address"
 					url="<%out.println(Application.get().getProp().getProperty(Setting.WEBSOCKET_EXPERT.getCode()));%>"></div>
+
+				<div style="display: none;" id="daq-view-url"
+					 data-url="<%out.println(Application.get().getProp().getProperty(Setting.DAQVIEW_LINK.getCode()));%>"
+					 data-setup="<%out.println(Application.get().getProp().getProperty(Setting.DAQVIEW_SETUP.getCode()));%>"></div>
 			</div>
 
 			<!-- Collect the nav links, forms, and other content for toggling -->
