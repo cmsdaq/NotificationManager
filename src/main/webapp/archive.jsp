@@ -120,7 +120,7 @@
 					 		<td><c:out value="${event.eventSenderType }" /> <i><c:out
 									value="${event.sender }" /></i></td>
 					 		<td><c:out value="${event.title }" /></td>
-					 		<td><c:out value="${event.message }" /></td>
+					 		<td><c:out escapeXml='false' value="${event.message }" /></td>
 							<td>
 								<c:choose>
 									<c:when test="${event.logicModule != null}"><span class="label label-default" data-toggle="tooltip" title="${event.logicModule}">${event.logicModule.displayedName}</span></span></c:when> 

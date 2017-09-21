@@ -16,60 +16,21 @@ var timeToKeepTheLastSuggestion = 20000;
 var daqViewUrl;
 
 $(document).ready(function () {
-    daqViewUrl = document.getElementById(
-        "daq-view-url");
+    daqViewUrl = $('#daq-view-url').data('url');
     renderApp();
 });
 
 
 function UpdatedMessage(props) {
-    var split = props.element.description.split(/[\b>>\b|\b<<\b]+/);
-    var key = props.element.id;
+
+    var highlighted = props.element.description;
     var preventHighlight = props.element.preventHighlight;
 
+    if(!preventHighlight) {
+        highlighted = highlighted.replace(/<strong>/g,'<strong class="highlight">');
+    }
 
-    var partsOfMessage = [];
-    var highlight = false;
-
-    $.each(split, function (index, item) {
-        var formattedItem = item;
-        props = {key: ('m' + key + '-' + index)};
-        if (highlight) {
-
-            var tinyFontSplit = item.split(/[\b**\b]+/);
-
-            var partsOfUpdatedElement = [];
-            var makeFontTiny = false;
-            $.each(tinyFontSplit, function (insideIndex, item) {
-
-                var updatedElementProps = {key: ('m' + key + '-' + index + '-' + insideIndex)};
-                if(makeFontTiny) {
-                    updatedElementProps = Object.assign({}, updatedElementProps, {className: 'small text-muted'});
-                }
-                partsOfUpdatedElement.push(
-
-                    React.createElement('span',
-                        updatedElementProps, item
-                    )
-                );
-                makeFontTiny = !makeFontTiny;
-            });
-            formattedItem = partsOfUpdatedElement;
-
-            if(!preventHighlight) {
-                props = Object.assign({}, props, {className: 'highlight'});
-            }
-        }else{
-            props = Object.assign({}, props, {className:''});
-        }
-        partsOfMessage.push(
-            React.createElement('span',
-                props, formattedItem
-            )
-        );
-        highlight = !highlight;
-    });
-    return React.createElement('span', {className: ""}, partsOfMessage);
+    return React.createElement('span', {dangerouslySetInnerHTML: {__html: highlighted}});
 }
 
 function FormattedDate(props) {
@@ -322,7 +283,7 @@ function ActionElement(action) {
 
     const actionStep = React.createElement('span', {}, icon, " ", action.text);
 
-    const element = React.createElement('div', {className: ""}, actionStep);
+    const element = React.createElement('div', {className: ""}, React.createElement(UpdatedMessage, {element:{description:action.text,id:action.key}}));
 
 
     return React.createElement('li', {
