@@ -114,12 +114,12 @@ public class SoundSenderTask extends TimerTask {
 						+ soundFilename + ", TTS: " + event.getTextToSpeech() + " from sender: " + event.getSender());
 		if (sound != null) {
 			String r = soundSystemConnector.play(soundFilename);
-			logger.debug("Result of sending play command: " + r);
+			logger.info("Result of sending play command: " + r);
 			sent = true;
 		}
 		if (event.getTextToSpeech() != null && !"".equals(event.getTextToSpeech())) {
 			String r = soundSystemConnector.sayAndListen(event.getTextToSpeech());
-			logger.debug("Result of sending speak command: " + r);
+			logger.info("Result of sending speak command: " + r);
 			sent = true;
 		}
 
