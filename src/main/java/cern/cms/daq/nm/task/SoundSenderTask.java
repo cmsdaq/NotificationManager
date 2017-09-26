@@ -124,7 +124,7 @@ public class SoundSenderTask extends TimerTask {
 			logger.info("TALK command sent. CMS-WOW response: " + cmsWowResponse);
 		}
 		cmsWowResponse = cmsWowResponse != null? cmsWowResponse.trim(): cmsWowResponse;
-		logger.info("All ok".equalsIgnoreCase(cmsWowResponse) ? "Response: All ok" : "Response non-all-ok");
+		logger.info("All ok".equalsIgnoreCase(cmsWowResponse) ? "Successful request to CMS-WOW" : "Unsuccessful request to CMS-WOW");
 
 	}
 
