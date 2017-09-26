@@ -121,7 +121,7 @@ public class SoundSenderTaskTest {
 			if (fakeProblem) {
 				throw new IOException("Network problem");
 			}
-			return "All ok";
+			return "All ok\n";
 		}
 
 	}
