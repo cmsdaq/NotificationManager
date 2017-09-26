@@ -103,6 +103,7 @@ public class SoundSenderTask extends TimerTask {
 
 	private void sendDominant(Event event) throws IOException {
 		boolean sent = false;
+		String cmsWowResponse = null;
 		Sound sound = event.getSound();
 		String soundFilename = "";
 		if (sound != null && sound != Sound.OTHER) {
@@ -114,17 +115,16 @@ public class SoundSenderTask extends TimerTask {
 				"Dispatching event with id: " + event.getId() + " to sound system. Sound: " + sound + ", sound file: "
 						+ soundFilename + ", TTS: " + event.getTextToSpeech() + " from sender: " + event.getSender());
 		if (sound != null) {
-			String r = soundSystemConnector.play(soundFilename);
-			logger.info("PLAY command sent. CMS-WOW response: " + r);
-            logger.info("All ok".equalsIgnoreCase(r) ? "Response: All ok" : "Response non-all-ok");
-			sent = true;
+			cmsWowResponse = soundSystemConnector.play(soundFilename);
+			logger.info("PLAY command sent. CMS-WOW response: " + cmsWowResponse);
+
 		}
 		if (event.getTextToSpeech() != null && !"".equals(event.getTextToSpeech())) {
-			String r = soundSystemConnector.sayAndListen(event.getTextToSpeech());
-			logger.info("TALK command sent. CMS-WOW response: " + r);
-            logger.info("All ok".equalsIgnoreCase(r) ? "Response: All ok" : "Response non-all-ok");
-			sent = true;
+			cmsWowResponse = soundSystemConnector.sayAndListen(event.getTextToSpeech());
+			logger.info("TALK command sent. CMS-WOW response: " + cmsWowResponse);
 		}
+		cmsWowResponse = cmsWowResponse != null? cmsWowResponse.trim(): cmsWowResponse;
+		logger.info("All ok".equalsIgnoreCase(cmsWowResponse) ? "Response: All ok" : "Response non-all-ok");
 
 	}
 
