@@ -17,7 +17,7 @@ import cern.cms.daq.nm.sound.Sound;
 import cern.cms.daq.nm.sound.SoundSystemConnector;
 
 /**
- * 
+ *
  * @author Maciej Gladki (maciej.szymon.gladki@cern.ch)
  *
  */
@@ -64,8 +64,9 @@ public class SoundSenderTask extends TimerTask {
 				if (current.getEventSenderType() == EventSenderType.External) {
 					try {
 						sendDominant(current);
+						logger.info("Sound command successfully sent to CMS-WOW");
 					} catch (IOException e) {
-						logger.info("Problem sending external message");
+						logger.error("Problem sending external message",e);
 					}
 				} else {
 					toProcessThisRound.add(current);
@@ -102,6 +103,7 @@ public class SoundSenderTask extends TimerTask {
 
 	private void sendDominant(Event event) throws IOException {
 		boolean sent = false;
+		String cmsWowResponse = null;
 		Sound sound = event.getSound();
 		String soundFilename = "";
 		if (sound != null && sound != Sound.OTHER) {
@@ -113,15 +115,16 @@ public class SoundSenderTask extends TimerTask {
 				"Dispatching event with id: " + event.getId() + " to sound system. Sound: " + sound + ", sound file: "
 						+ soundFilename + ", TTS: " + event.getTextToSpeech() + " from sender: " + event.getSender());
 		if (sound != null) {
-			String r = soundSystemConnector.play(soundFilename);
-			logger.debug("Result of sending play command: " + r);
-			sent = true;
+			cmsWowResponse = soundSystemConnector.play(soundFilename);
+			logger.info("PLAY command sent. CMS-WOW response: " + cmsWowResponse);
+
 		}
 		if (event.getTextToSpeech() != null && !"".equals(event.getTextToSpeech())) {
-			String r = soundSystemConnector.sayAndListen(event.getTextToSpeech());
-			logger.debug("Result of sending speak command: " + r);
-			sent = true;
+			cmsWowResponse = soundSystemConnector.sayAndListen(event.getTextToSpeech());
+			logger.info("TALK command sent. CMS-WOW response: " + cmsWowResponse);
 		}
+		cmsWowResponse = cmsWowResponse != null? cmsWowResponse.trim(): cmsWowResponse;
+		logger.info("All ok".equalsIgnoreCase(cmsWowResponse) ? "Successful request to CMS-WOW" : "Unsuccessful request to CMS-WOW");
 
 	}
 

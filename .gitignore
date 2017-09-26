@@ -2,6 +2,8 @@
 .project
 .settings
 .metadata
+.idea
+nm.iml
 
 *.class
 
