@@ -186,10 +186,6 @@ class EventSessionHandlerStub extends EventSessionHandler {
 	public void addEvent(Event event) {
 	}
 
-	@Override
-	public void removeEvent(Event event) {
-	}
-
 }
 
 class EntityManagerFactoryStub implements EntityManagerFactory {

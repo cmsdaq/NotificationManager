@@ -10,6 +10,7 @@ import java.util.Set;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
+import javax.json.JsonArrayBuilder;
 import javax.json.spi.JsonProvider;
 import javax.websocket.Session;
 
@@ -19,112 +20,95 @@ import cern.cms.daq.nm.persistence.Event;
 
 public class EventSessionHandler {
 
-	private static final Logger logger = Logger.getLogger(EventSessionHandler.class);
+    private static final Logger logger = Logger.getLogger(EventSessionHandler.class);
 
-	private final Set<Session> sessions = new HashSet<>();
-	private final List<Event> events = new ArrayList<>();
+    private final Set<Session> sessions = new HashSet<>();
+    private final List<Event> events = new ArrayList<>();
 
-	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private final int maximumNumberOfEventsHandled = 100;
 
-	public EventSessionHandler() {
-		final EventSessionHandler handler = this;
-		/*
-		 * (new Thread() { public void run() { Random generator = new Random();
-		 * for (int i = 0; i < 100; i++) {
-		 * 
-		 * if (events.size() >= 10) { removeEvent(events.iterator().next()); }
-		 * 
-		 * try { int sleepTime = generator.nextInt(5000) + 100;
-		 * Thread.sleep(sleepTime); } catch (InterruptedException e) {
-		 * e.printStackTrace(); } Event event = new Event(); event.setId((long)
-		 * i); event.setTitle("EVENT " + i); event.setDate(new Date());
-		 * event.setMessage("Event " + i); event.setTextToSpeech(
-		 * "EXPERT Event: On"); handler.addEvent(event);
-		 * 
-		 * } } }).start();
-		 */
-	}
+    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-	public void addSession(Session session) {
-		sessions.add(session);
-		for (Event event : events) {
-			JsonObject addMessage = createAddMessage(event);
-			sendToSession(session, addMessage);
-		}
-	}
+    public EventSessionHandler() {
+    }
 
-	public void removeSession(Session session) {
-		sessions.remove(session);
-	}
+    public void addSession(Session session) {
+        sessions.add(session);
+        JsonObject addMessage = createAddMessage(events);
+        sendToSession(session, addMessage);
+    }
 
-	public List<Event> getEvents() {
-		return new ArrayList<>(events);
-	}
+    public void removeSession(Session session) {
+        sessions.remove(session);
+    }
 
-	public void addEvent(Event event) {
+    public List<Event> getEvents() {
+        return new ArrayList<>(events);
+    }
 
-		if (events.size() >= 10) {
-			removeEvent(events.iterator().next());
-		}
-		events.add(event);
-		JsonObject addMessage = createAddMessage(event);
-		sendToAllConnectedSessions(addMessage);
-	}
+    public void addEvent(Event event) {
 
-	public void removeEvent(Event event) {
-		if (event != null) {
-			events.remove(event);
-			JsonProvider provider = JsonProvider.provider();
-			JsonObject removeMessage = provider.createObjectBuilder().add("action", "remove").add("id", event.getId())
-					.build();
-			sendToAllConnectedSessions(removeMessage);
-		}
-	}
+        if (events.size() >= maximumNumberOfEventsHandled) {
+            events.remove(events.iterator().next());
+        }
+        events.add(event);
+        JsonObject addMessage = createAddMessage(event);
+        sendToAllConnectedSessions(addMessage);
+    }
 
-	private JsonObject createAddMessage(Event event) {
-		JsonProvider provider = JsonProvider.provider();
-		logger.debug("is provider null? " + provider == null);
-		logger.debug("Creating message for event: " + event);
-		
-		JsonObjectBuilder objectBuilder = provider.createObjectBuilder();
-		
-		if(event.getTextToSpeech() !=null){
-			//objectBuilder
-		}
-
-		String tts = event.getTextToSpeech() != null ? event.getTextToSpeech() : "";
-		String message = event.getMessage() != null ? event.getMessage() : "";
-		String title = event.getTitle() != null ? event.getTitle() : "";
-
-		String soundPlayed = event.getSound() != null ? event.getSound().getDisplayName() : "";
-		
-		
-		JsonObject object = provider.createObjectBuilder().add("id", event.getId())
-				.add("title", title).add("timestamp", dateFormat.format(event.getDate())).add("tts", tts)
-				.add("sound", soundPlayed).add("description", message).build();
+    private JsonObject createAddMessage(List<Event> events) {
+        JsonProvider provider = JsonProvider.provider();
+        logger.debug("is provider null? " + provider == null);
 
 
-		JsonArray objects = provider.createArrayBuilder().add(object).build();
-		JsonObject addMessage = provider.createObjectBuilder().add("action", "add").add("objects",objects).build();
-				
-				
-		logger.debug("Created message for event: " + addMessage);
-		return addMessage;
-	}
+        JsonArrayBuilder objectsBuilder = provider.createArrayBuilder();
+        for (Event event : events) {
+            logger.debug("Creating message for event: " + event);
+            if (event.getTextToSpeech() != null) {
+                //objectBuilder
+            }
 
-	private void sendToAllConnectedSessions(JsonObject message) {
-		for (Session session : sessions) {
-			sendToSession(session, message);
-		}
-	}
+            String tts = event.getTextToSpeech() != null ? event.getTextToSpeech() : "";
+            String message = event.getMessage() != null ? event.getMessage() : "";
+            String title = event.getTitle() != null ? event.getTitle() : "";
 
-	private void sendToSession(Session session, JsonObject message) {
-		try {
-			session.getBasicRemote().sendText(message.toString());
-		} catch (IOException ex) {
-			ex.printStackTrace();
-			sessions.remove(session);
-			logger.error(ex);
-		}
-	}
+            String soundPlayed = event.getSound() != null ? event.getSound().getDisplayName() : "";
+
+
+            JsonObject object = provider.createObjectBuilder().add("id", event.getId())
+                    .add("title", title).add("timestamp", dateFormat.format(event.getDate())).add("tts", tts)
+                    .add("sound", soundPlayed).add("description", message).build();
+            objectsBuilder.add(object);
+
+        }
+
+
+        JsonObject addMessage = provider.createObjectBuilder().add("action", "add").add("objects", objectsBuilder.build()).build();
+
+
+        logger.debug("Created message for event: " + addMessage);
+        return addMessage;
+    }
+
+    private JsonObject createAddMessage(Event event) {
+        List<Event> events = new ArrayList<>();
+
+        return createAddMessage(events);
+    }
+
+    private void sendToAllConnectedSessions(JsonObject message) {
+        for (Session session : sessions) {
+            sendToSession(session, message);
+        }
+    }
+
+    private void sendToSession(Session session, JsonObject message) {
+        try {
+            session.getBasicRemote().sendText(message.toString());
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            sessions.remove(session);
+            logger.error(ex);
+        }
+    }
 }
