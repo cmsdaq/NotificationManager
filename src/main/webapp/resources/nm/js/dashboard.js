@@ -1,5 +1,5 @@
-var eventsToKeep = 10;
-var conditionsToKeep = 5;
+var eventsToKeep = 100;
+var conditionsToKeep = 50;
 
 var eventsData = [];
 var conditionsData = [];
@@ -15,6 +15,7 @@ var timeToKeepTheLastSuggestion = 20000;
 
 var daqViewUrl;
 var daqSetup;
+var showingVersion = false;
 
 $(document).ready(function () {
     daqViewUrl = $('#daq-view-url').data('url');
@@ -144,39 +145,6 @@ function ConditionElement(condition) {
 }
 
 
-const decreaseEvents = function () {
-    setAndRerender(conditionsToKeep, eventsToKeep - 1)
-};
-const increaseEvents = function () {
-    setAndRerender(conditionsToKeep, eventsToKeep + 1)
-};
-const decreaseConditions = function () {
-    setAndRerender(conditionsToKeep - 1, eventsToKeep)
-};
-const increaseConditions = function () {
-    setAndRerender(conditionsToKeep + 1, eventsToKeep)
-};
-
-function setAndRerender(newConditionsToKeep, newEventsToKeep) {
-    conditionsToKeep = newConditionsToKeep;
-    eventsToKeep = newEventsToKeep;
-    console.log("number of elements to keep: " + conditionsToKeep + " " + eventsToKeep);
-    renderApp();
-}
-
-function ListSizeSelectorPanel(props) {
-
-    const increaseButton = React.createElement('a', {
-        onClick: props.increaseFunction,
-    }, "+");
-    const decreaseButton = React.createElement('a', {
-        onClick: props.decreaseFunction,
-    }, "-");
-
-
-    const currentValue = React.createElement('span', {className: "text-muted"}, " ", props.max, " ");
-    return React.createElement('span', {}, decreaseButton, currentValue, increaseButton);
-}
 
 function ListPanel(props) {
 
@@ -197,9 +165,8 @@ function ListPanel(props) {
         elementsList = React.createElement('div', {className: "alert alert-info"}, props.emptyMessage);
     }
 
-    const sizeSelection = React.createElement('div', {className: "pull-right"}, props.sizeSelector);
 
-    const eventsHeader = React.createElement('small', {className: "text-muted"}, props.header, sizeSelection);
+    const eventsHeader = React.createElement('small', {className: "text-muted"}, props.header);
 
     return React.createElement('ul', {
             className: "list-group"
@@ -210,11 +177,6 @@ function ListPanel(props) {
 
 function ConditionPanel(props) {
 
-    const listSizeSelectorPanel = React.createElement(ListSizeSelectorPanel, {
-        increaseFunction: increaseConditions,
-        decreaseFunction: decreaseConditions,
-        max: conditionsToKeep
-    });
 
     return React.createElement(ListPanel,
         {
@@ -222,7 +184,6 @@ function ConditionPanel(props) {
             childType: ConditionElement,
             header: "Recent problems",
             emptyMessage: "No recent problems at the moment",
-            sizeSelector: listSizeSelectorPanel,
             reverse: true
         });
 
@@ -231,18 +192,11 @@ function ConditionPanel(props) {
 
 function EventPanel(props) {
 
-    const listSizeSelectorPanel = React.createElement(ListSizeSelectorPanel, {
-        increaseFunction: increaseEvents,
-        decreaseFunction: decreaseEvents,
-        max: eventsToKeep
-    });
-
     return React.createElement(ListPanel, {
         elements: props.events,
         childType: EventElement,
         header: "Recent events",
         emptyMessage: "No recent events at the moment",
-        sizeSelector: listSizeSelectorPanel,
         reverse: true
     });
 
@@ -375,25 +329,41 @@ function Dashboard(props) {
 
     var versionMessageElement = null;
     if (currentVersion !== websocketDeclaredVersion) {
+        showingVersion = true;
         const exclamation = React.createElement('span', {className: 'glyphicon glyphicon-exclamation-sign'});
         const versionText = React.createElement('span', {}, "New version available, please hard reload the browser to update the cached scripts. Version available: " + websocketDeclaredVersion + ", currently loaded version: " + currentVersion);
         const versionMessage = React.createElement('p', {}, exclamation, " ", versionText);
-        versionMessageElement = React.createElement('div', {className: 'alert alert-warning'}, versionMessage);
+        versionMessageElement = React.createElement('div', {className: 'alert alert-warning', id: 'message'}, versionMessage);
+    } else{
+        showingVersion = false;
     }
 
+    const autoUpdate = React.createElement('a',{id:'btn-auto-update', className:"btn btn-top btn-lg btn-primary btn-block"}, "Back to auto update mode");
 
+    const icon = React.createElement('span', {className: 'glyphicon glyphicon-chevron-down'});
+
+    const showMoreConditions = React.createElement('a',{id:'btn-show-more-condition', className:"row btn btn-default btn-bottom btn-xs"},icon);
     const currentPanel = React.createElement('div', {className: ""}, React.createElement(CurrentPanel, props));
-    const leftPanel = React.createElement('div', {className: "col-md-8"}, currentPanel, React.createElement(ConditionPanel, props));
-    const rightPanel = React.createElement('div', {className: "col-md-4"}, React.createElement(EventPanel, props));
+    const conditionScrollable = React.createElement('div', {className: "pre-scrollable", id:'condition-scrollable'}, showMoreConditions,currentPanel, React.createElement(ConditionPanel, props));
+    const leftPanel = React.createElement('div', {className: "col-md-8"}, conditionScrollable);
 
 
-    const pageHead = React.createElement('div', {className: 'row'}, versionMessageElement);
-    const pageContent = React.createElement('div', {className: 'row'}, leftPanel, rightPanel);
 
-    return React.createElement('div', {}, pageHead, pageContent);
+
+    const showMoreEvents = React.createElement('a',{id:'btn-show-more-event', className:"row btn btn-default btn-bottom btn-xs"}, icon);
+    const eventsScrollable = React.createElement('div',{className:"pre-scrollable", id:'event-scrollable'},React.createElement(EventPanel, props));
+    const rightPanel = React.createElement('div', {className: "col-md-4"}, showMoreEvents,eventsScrollable);
+
+
+    const pageContent = React.createElement('div', {className: 'row auto-scroll-holder'},autoUpdate, leftPanel, rightPanel);
+
+    return React.createElement('div', {}, versionMessageElement, pageContent);
 
 
 }
+
+
+var previousShovingVersion = false;
 
 function renderApp() {
 
@@ -423,6 +393,12 @@ function renderApp() {
         }),
         document.getElementById('react-list-container')
     );
+
+    if(showingVersion != previousShovingVersion){
+        updateScrollable();
+    }
+    previousShovingVersion = showingVersion;
+
 }
 
 function newEventsDataArrived(event) {

@@ -90,6 +90,10 @@
     <link rel="stylesheet"
 	href="resources/nm/css/dashboard.css"
 	type="text/css" />
+	<link rel="stylesheet"
+		  href="resources/nm/css/scrollable.css"
+		  type="text/css" />
+	<script src="resources/nm/js/scrollable.js"></script>
 
 
 
