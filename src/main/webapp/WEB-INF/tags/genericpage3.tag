@@ -2,6 +2,7 @@
 <%@attribute name="header" fragment="true"%>
 <%@attribute name="footer" fragment="true"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core"%>
+<!DOCTYPE html>
 <html>
 <head>
 
