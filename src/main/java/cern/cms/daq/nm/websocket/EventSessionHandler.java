@@ -92,7 +92,7 @@ public class EventSessionHandler {
 
     private JsonObject createAddMessage(Event event) {
         List<Event> events = new ArrayList<>();
-
+        events.add(event);
         return createAddMessage(events);
     }
 
