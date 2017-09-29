@@ -466,6 +466,7 @@ function newVersionDataArrived(version) {
         //console.log("First connect to websocket, establishing current version as " + version);
         currentVersion = websocketDeclaredVersion;
     }
+    renderApp();
 }
 
 

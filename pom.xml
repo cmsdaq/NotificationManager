@@ -4,7 +4,7 @@
 	<groupId>cern.cms.daq</groupId>
 	<artifactId>nm</artifactId>
 	<packaging>war</packaging>
-	<version>2.4.4.next</version>
+	<version>2.4.4</version>
 	<name>Notification Manager</name>
 	<url>http://maven.apache.org</url>
 
@@ -243,13 +243,22 @@
 					<target>1.7</target>
 				</configuration>
 			</plugin>
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>
 				<configuration>
-					<webXml>src\main\webapp\WEB-INF\web.xml</webXml>
+					<webXml>src/main/webapp/WEB-INF/web.xml</webXml>
+					<archive>
+						<manifest>
+							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+							<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+						</manifest>
+					</archive>
+					<archiveClasses>true</archiveClasses>
 				</configuration>
 			</plugin>
+
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>

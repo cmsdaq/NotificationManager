@@ -36,6 +36,23 @@ public class EventSessionHandler {
         sessions.add(session);
         JsonObject addMessage = createAddMessage(events);
         sendToSession(session, addMessage);
+
+        JsonObject versionMessage = createVersionMessage();
+        sendToSession(session, versionMessage);
+    }
+
+    public JsonObject createVersionMessage() {
+        String version = this.getClass().getPackage().getImplementationVersion();
+        if (version == null) {
+            logger.info("Problem detecting version");
+            version = "unknown";
+        } else {
+            logger.info("Version detected: " + version);
+        }
+        JsonProvider provider = JsonProvider.provider();
+        JsonObject versionMessage = provider.createObjectBuilder().add("action", "version").add("version", version).build();
+
+        return versionMessage;
     }
 
     public void removeSession(Session session) {

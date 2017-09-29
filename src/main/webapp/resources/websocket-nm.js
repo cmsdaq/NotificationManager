@@ -13,6 +13,9 @@ $(document).ready(
 				if (data.action === "add") {
 					//console.log("New events: " + JSON.stringify(data));
 					newEventsDataArrived(data.objects);
+				} else if (data.action === "version"){
+					console.log("version command received: " + JSON.stringify(data));
+					newVersionDataArrived(data.version);
 				}
 
 			}
