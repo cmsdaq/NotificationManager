@@ -11,7 +11,7 @@ var currentVersion = null;
 var websocketDeclaredVersion = null;
 var durationSinceLastOngoingCondition = 0;
 
-var timeToKeepTheLastSuggestion = 20000;
+var timeToKeepTheLastSuggestion = 120000;
 
 var daqViewUrl;
 var daqSetup;
