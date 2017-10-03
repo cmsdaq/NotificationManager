@@ -1,0 +1,99 @@
+@-webkit-keyframes highlight-fade {
+    0% {
+        background: orange;
+    }
+    100% {
+        background: transparent !important;
+    }
+}
+@-moz-keyframes highlight-fade {
+    0% {
+        background: orange;
+    }
+    100% {
+        background: transparent !important;
+    }
+}
+@-ms-keyframes highlight-fade {
+    0% {
+        background: orange;
+    }
+    100% {
+        background: transparent !important;
+    }
+}
+@keyframes highlight-fade {
+    0% {
+        background: orange;
+    }
+    100% {
+        background: transparent !important;
+    }
+}
+
+
+@-webkit-keyframes highlight-info-fade {
+    0% {
+        background: #bbdefb;
+    }
+    100% {
+        background: transparent !important;
+    }
+}
+@-moz-keyframes highlight-info-fade {
+    0% {
+        background: #bbdefb;
+    }
+    100% {
+        background: transparent !important;
+    }
+}
+@-ms-keyframes highlight-info-fade {
+    0% {
+        background: #bbdefb;
+    }
+    100% {
+        background: transparent !important;
+    }
+}
+@keyframes highlight-info-fade {
+    0% {
+        background: #bbdefb;
+    }
+    100% {
+        background: transparent !important;
+    }
+}
+
+
+.highlight {
+    -webkit-animation: highlight-fade 10s ease-out;
+    -moz-animation: highlight-fade 10s ease-out;
+    -o-animation: highlight-fade 10s ease-out;
+    animation: highlight-fade 10s ease-out;
+}
+
+.highlight-info {
+    -webkit-animation: highlight-info-fade 2s ease-out;
+    -moz-animation: highlight-info-fade 2s ease-out;
+    -o-animation: highlight-info-fade 2s ease-out;
+    animation: highlight-info-fade 2s ease-out;
+}
+
+input {
+    margin: 30px;
+}
+
+
+.jumbotron.bg-active {
+    background-color: #ffebee;
+    border: 1px solid;
+    border-radius: 6px;
+    border-color: #F34235
+}
+.jumbotron.bg-finished {
+    background-color: #e8f5e9;
+    border: 1px solid;
+    border-radius: 6px;
+    border-color: #009587
+}

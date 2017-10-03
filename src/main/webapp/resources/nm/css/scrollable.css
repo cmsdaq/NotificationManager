@@ -1,0 +1,25 @@
+.btn-top {
+    display: none;
+    position: fixed;
+    top: 72px;
+    z-index: 1;
+}
+
+.btn-bottom {
+    /*display: none;*/
+    position: absolute;
+    bottom: 5px;
+    right: 40px;
+    z-index: 99;
+}
+
+
+.auto-scroll-holder{
+    position: relative;
+}
+
+.pre-scrollable{
+    overflow-y: hidden;
+    background: rgba(231, 231, 231, 0.15);
+    border-radius: 6px;
+}
