@@ -66,7 +66,10 @@ public enum LogicModuleView {
 
     ContinousSoftError("Continuous soft error", 1010),
     StuckAfterSoftError("Stuck after soft error", 1011),
-    LengthyFixingSoftError("Lengthy fixing sof terror", 1012),;
+    LengthyFixingSoftError("Lengthy fixing sof terror", 1012),
+
+	TTSDeadtime("TTS deadtime", 106),
+	;
 
     private final String displayedName;
 
