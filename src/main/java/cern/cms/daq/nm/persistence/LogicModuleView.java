@@ -69,6 +69,7 @@ public enum LogicModuleView {
     LengthyFixingSoftError("Lengthy fixing sof terror", 1012),
 
 	TTSDeadtime("TTS deadtime", 106),
+    CloudFuNumber("Cloud fu number",1),
 	;
 
     private final String displayedName;
