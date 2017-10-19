@@ -97,6 +97,7 @@ function initLogicModuleSelector() {
 						     {label: 'Rate too high', value: 'RateTooHigh'},
 	                         {label: 'Deadtime', value: 'Deadtime'},
 	                         {label: 'Deadtime during run', value: 'CriticalDeadtime'},
+                             {label: 'TTS Deadtime', value: 'TTSDeadtime'},
 	                         //{label: 'Downtime', value: 'Downtime'},
 	                         
 	                         //{label: 'Rate out of range', value: 'RateOutOfRange'},

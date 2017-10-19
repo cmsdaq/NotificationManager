@@ -64,6 +64,10 @@ public enum LogicModuleView {
 	CorruptedData("Corrupted data received", 10010),
 
 	RateTooHigh("Rate too high", 10501),
+
+	// here 3 lm related to soft errors
+
+	TTSDeadtime("TTS deadtime", 106),
 	;
 
 	private final String displayedName;
