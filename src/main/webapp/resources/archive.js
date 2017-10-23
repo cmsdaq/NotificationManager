@@ -118,6 +118,7 @@ function initLogicModuleSelector() {
             //{label: 'Stable beams', value: 'StableBeams'},
             //{label: 'Beam active', value: 'BeamActive'},
             {label: 'Run ongoing', value: 'RunOngoing'},
+            {label: 'Cloud FU number', value: 'CloudFuNumber'},
             //{label: 'Expected rate', value: 'ExpectedRate'},
             //{label: 'Transition ', value: 'Transition'},
             //{label: 'Long transition', value: 'LongTransition'},
