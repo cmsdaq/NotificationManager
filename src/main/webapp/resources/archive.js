@@ -75,9 +75,18 @@ function initLogicModuleSelector() {
             {label: 'Stuck after soft error', value: 'StuckAfterSoftError'},
             {label: 'Lengthy fixing soft error', value: 'LengthyFixingSoftError'},
 
+
+            {label: 'HLT output bandwidth too high', value: 'HltOutputBandwidthTooHigh'},
+            {label: 'HLT output bandwidth extreme', value: 'HltOutputBandwidthExtreme'},
+            {label: 'TCDS input rate too high', value: 'HighTcdsInputRate'},
+            {label: 'TCDS input rate extreme', value: 'VeryHighTcdsInputRate'},
+            {label: 'Deadtime from ReTri', value: 'DeadtimeFromReTri'},
+
             {label: 'Out of sequence data received (legacy)', value: 'FlowchartCase1'},
             {label: 'Corrupted data received (legacy)', value: 'FlowchartCase2'},
             {label: 'Backpressure detected (legacy)', value: 'FlowchartCase6'},
+
+
 
         ]
         },
