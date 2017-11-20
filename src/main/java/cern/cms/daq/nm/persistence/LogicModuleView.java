@@ -70,6 +70,15 @@ public enum LogicModuleView {
 
 	TTSDeadtime("TTS deadtime", 106),
     CloudFuNumber("Cloud fu number",1),
+
+
+    HltOutputBandwidthTooHigh ("HLT output bandwidth too high",2000),
+    HltOutputBandwidthExtreme ("HLT output bandwidth too Extreme",2001),
+
+    HighTcdsInputRate         ("Hight TCDS input rate", 3000),
+    VeryHighTcdsInputRate     ("Very high TCDS input rate",3001),
+
+    DeadtimeFromReTri("Deadtime from ReTri")
 	;
 
     private final String displayedName;
