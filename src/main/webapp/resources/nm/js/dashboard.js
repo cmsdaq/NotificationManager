@@ -17,6 +17,8 @@ var daqViewUrl;
 var daqSetup;
 var showingVersion = false;
 
+var currentRecovery = null;
+
 $(document).ready(function () {
     daqViewUrl = $('#daq-view-url').data('url');
     daqSetup = $('#daq-view-url').data('setup');
@@ -267,7 +269,7 @@ function generateConditionActionIds(condition) {
 function CurrentPanel(props) {
 
     //console.log("Updating current");
-    var title, description, dateElement, statusElement, rightCornerInfo, stateIndicator, action;
+    var title, description, dateElement, statusElement, rightCornerInfo, stateIndicator, automatedRecovery, action;
     var key = 'empty';
     var highlight = '';
     var background = '';
@@ -296,6 +298,10 @@ function CurrentPanel(props) {
         //console.log("has action: " + JSON.stringify(props.current));
 
 
+        if(props.recovery){
+            automatedRecovery = React.createElement(AutomatedRecovery, props );
+        }
+
         action = React.createElement(ListPanel,
             {
                 elements: generateConditionActionIds(props.current),
@@ -314,7 +320,7 @@ function CurrentPanel(props) {
 
 
     const headElement = React.createElement('div', {className: "row"}, React.createElement('div', {className: "col-xs-12"}, stateIndicator, rightCornerInfo));
-    const bottomElement = React.createElement('div', {className: "row"}, React.createElement('div', {className: "col-xs-12"}, title, description, action));
+    const bottomElement = React.createElement('div', {className: "row"}, React.createElement('div', {className: "col-xs-12"}, title, description, automatedRecovery ,action));
 
     return React.createElement('div', {
             className: ("jumbotron " + highlight + " " + background), key: key,
@@ -324,6 +330,42 @@ function CurrentPanel(props) {
 
 }
 
+
+function AutomatedRecovery(props){
+    var content = null;
+
+    if(props.recovery.status == 'new'){
+
+        const message = React.createElement('span', {}, "Automatic recovery available! ");
+        const buttonGroup = React.createElement('div', {});
+        const acceptButton = React.createElement('button',{onClick: function () {
+            confirm(props.recovery.id);
+        } ,id:'accept-recovery', className:"btn btn-success btn-xs", type:"button"}, "Approve");
+        const rejectButton = React.createElement('button',{onClick: function () {
+            reject(props.recovery.id);
+
+        }, id:'reject-recovery', className:"btn btn-danger btn-xs"}, "Reject");
+        content = React.createElement('span', {}, message, acceptButton, rejectButton);
+
+    } else if(props.recovery.status == 'timeout'){
+        const timeoutMessage = React.createElement('span', {}, "No decision in time. Automatic recovery dismissed.");
+        content = React.createElement('span', {},timeoutMessage);
+
+    } else if(props.recovery.status == 'approved'){
+        const approvedMessage = React.createElement('span', {}, "Automatic recovery approved");
+        content = React.createElement('span', {},approvedMessage);
+
+    } else if(props.recovery.status == 'rejected'){
+        const rejectedMessage = React.createElement('span', {}, "Automatic recovery rejected");
+        content = React.createElement('span', {},rejectedMessage);
+
+    } else {
+
+    }
+
+    const icon = React.createElement('span', {className:"glyphicon glyphicon-exclamation-sign"});
+    return React.createElement('div', {className:"alert alert-info", role:"alert"}, icon, content);
+}
 
 function Dashboard(props) {
 
@@ -368,6 +410,7 @@ var previousShovingVersion = false;
 function renderApp() {
 
     var current = null;
+    var recovery = null;
     var dataToShow = [];
 
     var idToUse = currentConditionId;
@@ -385,11 +428,21 @@ function renderApp() {
         }
     });
 
+    if(currentRecovery){
+        if(currentRecovery.problemId == idToUse){
+            recovery = currentRecovery;
+        } else {
+            //console.log("Recovery doesn't match");
+            recovery = null;
+        }
+    }
+
 
     ReactDOM.render(React.createElement(Dashboard, {
             "events": eventsData,
             "conditions": dataToShow,
-            "current": current
+            "current": current,
+            "recovery": recovery
         }),
         document.getElementById('react-list-container')
     );
@@ -415,6 +468,30 @@ function newConditionsDataArrived(condition) {
     conditionsData = conditionsData.splice(-conditionsToKeep, conditionsToKeep);
     renderApp();
 
+}
+
+function newRecoveryDataArrived(newRecovery){
+    console.log("Current recovery: " +  JSON.stringify(newRecovery));
+    currentRecovery = newRecovery;
+    renderApp();
+}
+
+function recoveryDecision(id, approved){
+    if(currentRecovery.id == id){
+        if(approved){
+            currentRecovery.status = "approved";
+        }else{
+            currentRecovery.status = "rejected";
+        }
+        renderApp();
+    }
+}
+
+function recoveryTimeout(id){
+    if(currentRecovery.id == id){
+        currentRecovery.status = "timeout";
+        renderApp();
+    }
 }
 
 /**
