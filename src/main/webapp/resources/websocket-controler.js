@@ -16,12 +16,20 @@ var stompFailureCallback = function (error) {
 
 var stompSuccessCallback = function (frame) {
     console.log('STOMP: Connection successful');
-    stompClient.subscribe('/topic/greetings', function (message) {
-        onNewRecovery(JSON.parse(message.body));
+    stompClient.subscribe('/topic/approveRequests', function (message) {
+        console.log("Approve request: " + JSON.stringify(message.body));
+        const found = newApprovalRequest(JSON.parse(message.body));
+        if(!found){
+            console.log("Approve request was not processed successfully, will retry in 1 second");
+            setTimeout(function(){
+                newApprovalRequest(JSON.parse(message.body));
+            }, 1000);
+        }
     });
 
-    stompClient.subscribe('/topic/timeout', function (message) {
-        onRecoveryTimeout(JSON.parse(message.body));
+    stompClient.subscribe('/topic/recovery-status', function (message) {
+        console.log("Recoveyr data: " + JSON.stringify(message.body));
+        newRecoveryDataArrived(JSON.parse(message.body));
     });
 };
 
@@ -34,31 +42,26 @@ function stompConnect() {
 }
 
 
+/**
+ * Confirm whole recovery
+ */
 function confirm(idToConfirm){
     console.log("Confirmed: " + idToConfirm);
     stompClient.send("/app/approve", {}, JSON.stringify({"id":idToConfirm, "approved":true}));
     recoveryDecision(idToConfirm, true);
 }
 
+/**
+ * Confirm single step of the recovery
+ */
+function confirmStep(procedureId, stepId){
+    console.log("Confired step " + stepId + " of recovery "+ procedureId);
+    stompClient.send("/app/approve", {}, JSON.stringify({"recoveryId":procedureId, "step": stepId, "approved":true}));
+
+}
+
 function reject(idToConfirm){
     console.log("Rejected: " + idToConfirm);
-    stompClient.send("/app/approve", {}, JSON.stringify({"id":idToConfirm, "approved":false}));
+    stompClient.send("/app/approve", {}, JSON.stringify({"recoveryId":idToConfirm, "approved":false}));
     recoveryDecision(idToConfirm, false);
-}
-
-function onNewRecovery(message) {
-
-    var recid = message.id;
-    console.log("Recovery id: " + recid + " for problem id: " + message.problemId);
-
-    var recoveryData = message;
-    recoveryData.status = "new";
-    newRecoveryDataArrived(recoveryData);
-
-}
-
-function onRecoveryTimeout(id){
-  console.log("Recovery timeout, id: " + id);
-  recoveryTimeout(id);
-
 }
