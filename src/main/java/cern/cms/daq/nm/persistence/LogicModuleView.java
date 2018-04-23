@@ -78,7 +78,19 @@ public enum LogicModuleView {
     HighTcdsInputRate         ("Hight TCDS input rate", 3000),
     VeryHighTcdsInputRate     ("Very high TCDS input rate",3001),
 
-    DeadtimeFromReTri("Deadtime from ReTri")
+    DeadtimeFromReTri("Deadtime from ReTri",3002),
+
+    BackpressureFromFerol("Backpressure from FRL/Ferol",2000),
+    BackpressureFromEventBuilding("Backpressure from Event Building",2001),
+    BackpressureFromHlt("Backpressure from HLT",2002),
+
+
+    FedGeneratesDeadtime("FED generates deadtime",2002),
+    FedDeadtimeDueToDaq("FED deadtime due to DAQ",2002),
+    CmsswCrashes("CMSSW crashes",2012),
+    TmpUpgradedFedProblem("Upgraded FED backpressured",102),
+    HltCpuLoad("High HTL CPU load",2013),
+
 	;
 
     private final String displayedName;

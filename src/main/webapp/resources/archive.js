@@ -51,7 +51,7 @@ function initLogicModuleSelector() {
 
     var optgroups = [
         {
-            label: 'Identified downtime', children: [
+            label: 'Downtime analysis', children: [
             {label: 'Partition problem', value: 'FlowchartCase3'},
             {label: 'Fed stuck', value: 'FlowchartCase5'},
             {label: 'PI disconnected', value: 'PiDisconnected'},
@@ -59,7 +59,6 @@ function initLogicModuleSelector() {
             {label: 'FED disconnected', value: 'FEDDisconnected'},
             {label: 'FMM problem', value: 'FMMProblem'},
             {label: 'Ferol FIFO stuck', value: 'FEROLFifoStuck'},
-
 
             {label: 'Link problem', value: 'LinkProblem'},
             {label: 'RU stuck waiting', value: 'RuStuckWaiting'},
@@ -75,13 +74,6 @@ function initLogicModuleSelector() {
             {label: 'Stuck after soft error', value: 'StuckAfterSoftError'},
             {label: 'Lengthy fixing soft error', value: 'LengthyFixingSoftError'},
 
-
-            {label: 'HLT output bandwidth too high', value: 'HltOutputBandwidthTooHigh'},
-            {label: 'HLT output bandwidth extreme', value: 'HltOutputBandwidthExtreme'},
-            {label: 'TCDS input rate too high', value: 'HighTcdsInputRate'},
-            {label: 'TCDS input rate extreme', value: 'VeryHighTcdsInputRate'},
-            {label: 'Deadtime from ReTri', value: 'DeadtimeFromReTri'},
-
             {label: 'Out of sequence data received (legacy)', value: 'FlowchartCase1'},
             {label: 'Corrupted data received (legacy)', value: 'FlowchartCase2'},
             {label: 'Backpressure detected (legacy)', value: 'FlowchartCase6'},
@@ -91,8 +83,32 @@ function initLogicModuleSelector() {
         ]
         },
         {
+            label: 'Deadtime analysis', children: [
+            {label: 'Backpressure from FRL/Ferol', value: 'BackpressureFromFerol'},
+            {label: 'Backpressure from Event Building', value: 'BackpressureFromEventBuilding'},
+            {label: 'Backpressure from HLT', value: 'BackpressureFromHlt'},
+            {label: 'FED generates deadtime', value: 'FedGeneratesDeadtime'},
+            {label: 'FED deadtime due to DAQ', value: 'FedDeadtimeDueToDaq'},
+            {label: 'Deadtime from ReTri', value: 'DeadtimeFromReTri'},
+            {label: 'Deadtime', value: 'CriticalDeadtime'},
+            {label: 'TTS Deadtime', value: 'TTSDeadtime'},
+            ]
+        },
+        {
             label: 'Missed downtime', children: [
             {label: 'Unidentified failure', value: 'UnidentifiedFailure'}]
+        },
+        {
+            label: 'Range checks', children: [
+            {label: 'Cloud FU number', value: 'CloudFuNumber'},
+            {label: 'CMSSW crashes', value: 'CmsswCrashes'},
+            {label: 'High HLT CPU load', value: 'HltCpuLoad'},
+            {label: 'HLT output bandwidth too high', value: 'HltOutputBandwidthTooHigh'},
+            {label: 'HLT output bandwidth extreme', value: 'HltOutputBandwidthExtreme'},
+            {label: 'TCDS input rate too high', value: 'HighTcdsInputRate'},
+            {label: 'TCDS input rate extreme', value: 'VeryHighTcdsInputRate'},
+            {label: 'Rate too high', value: 'RateTooHigh'},
+            ]
         },
         {
             label: 'All Transitions', children: [
@@ -107,30 +123,15 @@ function initLogicModuleSelector() {
         },
         {
             label: 'Other Conditions', children: [
-            {label: 'Rate too high', value: 'RateTooHigh'},
-            {label: 'Deadtime', value: 'Deadtime'},
-            {label: 'Deadtime during run', value: 'CriticalDeadtime'},
-            {label: 'TTS Deadtime', value: 'TTSDeadtime'},
-            //{label: 'Downtime', value: 'Downtime'},
 
-            //{label: 'Rate out of range', value: 'RateOutOfRange'},
-            {label: 'No rate when expected', value: 'NoRateWhenExpected'},
-            //{label: 'No rate', value: 'NoRate'},
-
+            {label: 'Dataflow stuck', value: 'NoRateWhenExpected'},
             {label: 'Warning in sub system', value: 'WarningInSubsystem'},
             {label: 'Subsys running degraded', value: 'SubsystemRunningDegraded'},
             {label: 'Subsystem error', value: 'SubsystemError'},
             {label: 'Subsystem soft error', value: 'SubsystemSoftError'},
             {label: 'Fed deadtime', value: 'FEDDeadtime'},
             {label: 'Partition deadtime', value: 'PartitionDeadtime'},
-
-            //{label: 'Stable beams', value: 'StableBeams'},
-            //{label: 'Beam active', value: 'BeamActive'},
-            {label: 'Run ongoing', value: 'RunOngoing'},
-            {label: 'Cloud FU number', value: 'CloudFuNumber'},
-            //{label: 'Expected rate', value: 'ExpectedRate'},
-            //{label: 'Transition ', value: 'Transition'},
-            //{label: 'Long transition', value: 'LongTransition'},
+            {label: 'Run ongoing', value: 'RunOngoing'}
         ]
         }
     ];
