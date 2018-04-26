@@ -20,6 +20,7 @@ public enum Setting {
 
 	WEBSOCKET_NM("websocket.nm.url"),
 	WEBSOCKET_EXPERT("websocket.expert.url"),
+	WEBSOCKET_CONTROLLER("websocket.controller.url"),
 	;
 
 	private final String code;
