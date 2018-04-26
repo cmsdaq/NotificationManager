@@ -79,6 +79,8 @@
                  url="<%out.println(Application.get().getProp().getProperty(Setting.WEBSOCKET_NM.getCode()));%>"></div>
             <div style="display: none;" id="expert-socket-address"
                  url="<%out.println(Application.get().getProp().getProperty(Setting.WEBSOCKET_EXPERT.getCode()));%>"></div>
+            <div style="display: none;" id="controller-socket-address"
+                 url="<%out.println(Application.get().getProp().getProperty(Setting.WEBSOCKET_CONTROLLER.getCode()));%>"></div>
 
             <div style="display: none;" id="daq-view-url"
                  data-url="<%out.println(Application.get().getProp().getProperty(Setting.DAQVIEW_LINK.getCode()));%>"

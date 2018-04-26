@@ -1,14 +1,18 @@
 var socket = null;
 var stompClient;
-
+var controllerSocketAddress;
 
 $( document ).ready(function() {
+    controllerSocketAddress = document.getElementById(
+        "controller-socket-address").getAttribute("url");
+
     stompConnect();
     $("#approve" ).click(confirm);
     $("#reject" ).click(reject);
 });
 
 var stompFailureCallback = function (error) {
+    handleControllerDisconnected();
     console.log('STOMP: ' + error);
     setTimeout(stompConnect, 10000);
     console.log('STOMP: Reconecting in 10 seconds');
@@ -36,7 +40,7 @@ var stompSuccessCallback = function (frame) {
 function stompConnect() {
     console.log('STOMP: Attempting connection');
     // recreate the stompClient to use a new WebSocket
-    socket = new SockJS('http://localhost:8082/recovery');
+    socket = new SockJS(controllerSocketAddress);
     stompClient = Stomp.over(socket);
     stompClient.connect({}, stompSuccessCallback, stompFailureCallback);
 }

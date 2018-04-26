@@ -4,16 +4,25 @@ var conditionsToKeep = 50;
 /** Holds all data about events */
 var eventsData = [];
 
-/** Holds all data about conditions */
-var conditionsData = [];
-
-var currentConditionId = null;
-var lastDominatingConditionId = null;
 
 var currentVersion = null;
 var websocketDeclaredVersion = null;
 
+
+
+/** Holds all conditions data */
+var conditionsData = [];
+
+/** Id of condition which exists in conditionData that currently dominating */
+var currentConditionId = null;
+
+/** Id of condition which exists in conditionData that was dominating recently (in order to keep for some time after) */
+var lastDominatingConditionId = null;
+
+/** Duration since last ongoing condition (in order to keep for some time after)*/
 var durationSinceLastOngoingCondition = 0;
+
+
 var timeToKeepTheLastSuggestion = 120000;
 
 var daqViewUrl;
@@ -23,11 +32,13 @@ var showingVersion = false;
 
 /**
  * Represents recovery that is currently ongoing
- * Fields:
- *  * status - represents status of each field
- *  * approveRequest - never comes with new/update/finished request of request but from individual approve request
  */
 var currentRecovery = null;
+
+/** Last recovery, finished already */
+var lastRecovery = null;
+
+var durationSinceLastRecovery = 0;
 
 
 $(document).ready(function () {
@@ -46,11 +57,15 @@ function modeSelect(){
         if(currentConditionId && currentConditionId != 0){
             return "condition"; // if no recovery but exists non 0 condition than condition mode
         } else{
-            if(lastDominatingConditionId && lastDominatingConditionId != 0){
-                return "condition";
-            }
-            else{
-                return "empty";
+            if(lastRecovery){
+                return "recovery";
+            } else {
+                if(lastDominatingConditionId && lastDominatingConditionId != 0){
+                    return "condition";
+                }
+                else{
+                    return "empty";
+                }
             }
         }
     }
@@ -120,16 +135,23 @@ function CurrentPanel(props) {
 
         switch(props.mode){
             case "recovery":
-                background = recoveringBackground ;
+
+                if(props.recovery.disabled){
+                    background = finishedBackground ;
+                } else{
+                    background = recoveringBackground ;
+                }
 
                 // show differend state depending on recovery
 
                 stateIndicator = React.createElement('span', {className: ('label label-danger')}, "RECOVERING" );
+                statusElement = React.createElement(Duration, props.recovery);
 
                 break;
             case "condition":
                 background = (active(props.current) ? problemBackground : finishedBackground);
                 stateIndicator = React.createElement('span', {className: ('label ' + (active(props.current) ? " label-danger " : " label-success"))}, ((active(props.current) ? ongoingSymbol : finishedSymbol )), " ", (active(props.current) ? "CURRENT PROBLEM" : "FINISHED" ));
+                statusElement = React.createElement(Duration, props.current);
 
                 break;
 
@@ -143,7 +165,6 @@ function CurrentPanel(props) {
         title = React.createElement('h1', {className: 'display-5'}, props.current.title);
         description = React.createElement(UpdatedMessage, {element: props.current});
 
-        statusElement = React.createElement(Duration, props.current);
 
         dateElement = React.createElement(FormattedDate, {date: props.current.timestamp});
         rightCornerInfo = React.createElement('span', {className: "pull-right"}, dateElement, " ", statusElement);
@@ -327,7 +348,9 @@ function ActionElement(action) {
         stepIcon = React.createElement('span', {className: 'glyphicon glyphicon-cog'});
         var stepControlerMode;
 
-        if(recoveryStepStatus == "recovering"){
+        if(action.recovery.disabled){
+            stepControlerMode = "disabled";
+        } else if(recoveryStepStatus == "recovering"){
             executionDetails = React.createElement(RecoveryExecutionDetails,{currentStep:currentStep });
             stepControlerMode = "progress";
         } else{
@@ -339,7 +362,7 @@ function ActionElement(action) {
             }
         }
 
-        stepControlers = React.createElement(ActionElementControl,{mode: stepControlerMode, stepIndex: actionId, recoveryId: action.recovery.id });
+        stepControlers = React.createElement(ActionElementControl,{mode: stepControlerMode, stepIndex: actionId, recoveryId: action.recovery.id, timesExecuted:currentStep.timesExecuted });
 
     }
 
@@ -393,7 +416,11 @@ function ActionElementControl(props){
     const progressIcon = React.createElement('span', {className:"glyphicon glyphicon-refresh glyphicon-refresh-animate"});
     const playIcon = React.createElement('span', {className:"glyphicon glyphicon-play-circle"});
     const buttonText = " Execute step";
+    var executionCounter;
 
+    if(props.timesExecuted && props.timesExecuted > 0){
+        executionCounter = React.createElement('span',{className: "text-muted"}, "Executed ", React.createElement('span', {className:"badge badge-light"}, props.timesExecuted));
+    }
     var button;
 
     //console.log("Preparing controll button from properties " + JSON.stringify(props));
@@ -418,7 +445,7 @@ function ActionElementControl(props){
         button = React.createElement('button',{className:"btn btn-warning btn-xs disabled", type:"button"}, playIcon, buttonText);
     }
 
-    return React.createElement('span', {className:"pull-right"}, button);
+    return React.createElement('span', {className:"pull-right"}, executionCounter, " ", button);
 }
 
 
@@ -538,18 +565,45 @@ function Duration(props) {
 
     if (props.duration && props.duration >= 0) {
         var durationVal = props.duration;
-        if (durationVal < 1000) {
-            duration = durationVal + " ms";
-        } else if (durationVal >= 1000 && durationVal < 60000) {
-            duration = (durationVal / 1000).toPrecision(2) + " s";
+
+        var md = moment.duration(durationVal);
+        var hours = md.get('hours');
+        var minutes = md.get('minutes');
+        var seconds = md.get('seconds');
+        var millisecods = md.get('milliseconds');
+
+        if(hours > 0){
+            duration = hours + " h " + minutes + " min " + seconds + " s";
+        } else if (minutes > 0){
+            duration = minutes + " min " + seconds + " s";
+        } else if (seconds >= 10){
+            duration = seconds + " s";
+        } else if (seconds > 0){
+            duration = seconds + "." + Math.floor(millisecods/100) +  " s";
         } else {
-            duration = Math.floor(durationVal / 1000 / 60) + " min";
+            duration = millisecods + " ms";
         }
+
+        //
+        // if (durationVal < 1000) {
+        //     duration = durationVal + " ms";
+        // } else if (durationVal >= 1000 && durationVal < 60000) {
+        //     duration = (durationVal / 1000).toPrecision(2) + " s";
+        // } else if (durationVal >= 60000 && durationVal < 3600000){
+        //     var minutes = Math.floor(durationVal / 1000 / 60);
+        //     var seconds = Math.floor((durationVal - minutes*1000*60)/1000);
+        //     duration =  minutes + " min " + seconds + " s";
+        // } else if (durationVal >= 60000 && durationVal < 3600000){
+        //     var minutes = Math.floor(durationVal / 1000 / 60);
+        //     var seconds = Math.floor((durationVal - minutes*1000*60)/1000);
+        //     duration =  minutes + " min " + seconds + " s";
+        // }
     }
 
     const icon = React.createElement('span', {className: 'glyphicon glyphicon-time'});
     return React.createElement('span', {className: "label " + statusLabel}, icon, " ", duration);
 }
+
 
 
 function generateConditionActionIds(condition) {
@@ -621,9 +675,15 @@ function renderApp() {
             break;
         case "recovery":
 
+            if(currentRecovery) {
+                recoveryToGenerate = currentRecovery;
+            } else {
+                recoveryToGenerate = lastRecovery;
+                recoveryToGenerate.disabled = true;
+            }
+
             //take the latest conditionId from current recovery
-            idToUse = currentRecovery.conditionIds[currentRecovery.conditionIds.length-1];
-            recoveryToGenerate = currentRecovery;
+            idToUse = recoveryToGenerate.conditionIds[recoveryToGenerate.conditionIds.length-1];
             break;
         case "condition":
             idToUse = currentConditionId;
@@ -686,8 +746,12 @@ function newRecoveryDataArrived(newRecovery){
     currentRecovery = newRecovery;
 
     if(currentRecovery.status && currentRecovery.status == "finished"){
+        lastRecovery = currentRecovery;
         currentRecovery = null;
+    } else{
+        durationSinceLastRecovery = 0;
     }
+    updateDuration(); // called to avoid glitches when new data arrives and duration is not calculated
     renderApp();
 }
 
@@ -782,15 +846,36 @@ setInterval(function () {
 
 
 
+/** Updates durations of conditions and recoveries */
 function updateDuration() {
 
-    conditionsData.forEach(function (item) {
+    const now = moment();
 
+    updateConditionsDurations(now);
+
+    if(currentRecovery) {
+        updateRecoveryDuration(now, currentRecovery);
+    }
+
+    if(lastRecovery){
+        updateRecoveryDuration(now, lastRecovery);
+    }
+}
+
+function handleControllerDisconnected() {
+    currentRecovery = null;
+}
+
+/**
+ * Update durations of all conditions
+ */
+function updateConditionsDurations(now){
+
+    conditionsData.forEach(function (item) {
 
         if (item.status !== "finished") {
             //console.log("There is a current suggestion");
             var currentStart = moment(item.timestamp);
-            var now = moment();
 
             //console.log("Start date is " + currentStart);
             var duration = moment.duration(now.diff(currentStart)).valueOf();
@@ -800,36 +885,48 @@ function updateDuration() {
             renderApp();
         }
     });
+}
 
-    if(currentRecovery && currentRecovery.automatedSteps){
+/**
+ * Update duration of recovery
+ * @param recovery
+ */
+function updateRecoveryDuration(now, recovery){
+    if (recovery.startDate && !recovery.endDate) {
+        const duration = moment.duration(now.diff(recovery.startDate)).valueOf();
+        recovery.duration = duration;
+    } else if (recovery.startDate && recovery.endDate){
+        const duration = moment.duration(moment(recovery.endDate).diff(recovery.startDate)).valueOf();
+        //console.log("Calculating duration " + duration + " based on " + recovery.startDate + " and " + recovery.endDate);
+        recovery.duration = duration;
+    }
+
+    if (recovery.automatedSteps) {
         //console.log("There is recovery");
-        for(var i = 0; i< currentRecovery.automatedSteps.length; i++){
+        for (var i = 0; i < recovery.automatedSteps.length; i++) {
 
             var calculate = false;
             var start, end;
-            var o=currentRecovery.automatedSteps[i];
+            var o = recovery.automatedSteps[i];
             //console.log("Checking steps");
-            if(o.started && !o.finished )  {
+            if (o.started && !o.finished) {
                 start = moment(o.started);
                 end = moment();
                 calculate = true;
-            } else if(o.finished && !o.duration){
+            } else if (o.finished && !o.duration) {
                 start = moment(o.started);
                 end = moment(o.finished);
                 calculate = true;
             }
 
-            if(calculate){
+            if (calculate) {
                 var duration = moment.duration(end.diff(start)).valueOf();
                 o.duration = duration;
                 renderApp();
             }
         }
     }
-
-
 }
-
 
 
 function updateSelected(id) {
@@ -844,16 +941,29 @@ function updateSelected(id) {
     renderApp();
 }
 
+/** Removes last condition/recovery after specific period of time */
 setInterval(function () {
     if (currentConditionId == null || currentConditionId == 0) {
         durationSinceLastOngoingCondition += 1000;
         //console.log("Nothing happening for " + durationSinceLastOngoingCondition + " ms");
 
         if (lastDominatingConditionId != 0 && durationSinceLastOngoingCondition > timeToKeepTheLastSuggestion) {
-            //console.log("Last condition is no longer needed");
+            console.log(durationSinceLastOngoingCondition + " ms passed since last condition, removing it from main panel");
             lastDominatingConditionId = 0;
             renderApp();
         }
+    }
+
+    if(!currentRecovery){
+
+        durationSinceLastRecovery += 1000;
+
+        if(lastRecovery && durationSinceLastRecovery > timeToKeepTheLastSuggestion){
+            console.log(durationSinceLastRecovery + " ms passed since last recovery, removing it from main panel");
+            lastRecovery = null;
+            renderApp();
+        }
+
     }
 
 }, 1000);
