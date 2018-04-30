@@ -138,13 +138,14 @@ function CurrentPanel(props) {
 
                 if(props.recovery.disabled){
                     background = finishedBackground ;
+                    stateIndicator = React.createElement('span', {className: ('label label-success')}, "RECOVERY FINISHED" );
                 } else{
                     background = recoveringBackground ;
+                    stateIndicator = React.createElement('span', {className: ('label label-danger')}, "RECOVERING" );
                 }
 
                 // show differend state depending on recovery
 
-                stateIndicator = React.createElement('span', {className: ('label label-danger')}, "RECOVERING" );
                 statusElement = React.createElement(Duration, props.recovery);
 
                 break;
