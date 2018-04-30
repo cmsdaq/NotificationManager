@@ -39,8 +39,12 @@
 
     <script src="resources/nm/js/dashboard.js"></script>
 
+    <script src="resources/external/sockjs.min.js"></script>
+    <script src="resources/external/stomp.min.js"></script>
+
     <script src="resources/websocket-nm.js"></script>
     <script src="resources/websocket-expert.js"></script>
+    <script src="resources/websocket-controler.js"></script>
     <script src="resources/external/reconnecting-websocket.min.js"></script>
 
     <link rel="stylesheet" href="resources/nm/css/dashboard.css" type="text/css"/>
@@ -75,6 +79,8 @@
                  url="<%out.println(Application.get().getProp().getProperty(Setting.WEBSOCKET_NM.getCode()));%>"></div>
             <div style="display: none;" id="expert-socket-address"
                  url="<%out.println(Application.get().getProp().getProperty(Setting.WEBSOCKET_EXPERT.getCode()));%>"></div>
+            <div style="display: none;" id="controller-socket-address"
+                 url="<%out.println(Application.get().getProp().getProperty(Setting.WEBSOCKET_CONTROLLER.getCode()));%>"></div>
 
             <div style="display: none;" id="daq-view-url"
                  data-url="<%out.println(Application.get().getProp().getProperty(Setting.DAQVIEW_LINK.getCode()));%>"
