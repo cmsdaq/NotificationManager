@@ -77,6 +77,7 @@ function initLogicModuleSelector() {
             {label: 'Out of sequence data received (legacy)', value: 'FlowchartCase1'},
             {label: 'Corrupted data received (legacy)', value: 'FlowchartCase2'},
             {label: 'Backpressure detected (legacy)', value: 'FlowchartCase6'},
+            {label: 'FED stuck due to DAQ', value: 'FedStuckDueToDaq'},
 
 
 
