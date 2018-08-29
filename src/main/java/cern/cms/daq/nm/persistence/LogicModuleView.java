@@ -90,6 +90,7 @@ public enum LogicModuleView {
     CmsswCrashes("CMSSW crashes",2012),
     TmpUpgradedFedProblem("Upgraded FED backpressured",102),
     HltCpuLoad("High HTL CPU load",2013),
+    FedStuckDueToDaq("FED stuck due to DAQ", 2003),
 
 	;
 
