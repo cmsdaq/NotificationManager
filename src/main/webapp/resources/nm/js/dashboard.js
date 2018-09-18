@@ -193,9 +193,12 @@ function CurrentPanel(props) {
         title = React.createElement('h1', {className: 'display-5'}, "All ok");
         description = React.createElement('p', {className: 'lead'}, "DAQExpert has no suggestion at the moment");
         key = 'empty';
-        action = React.createElement('button',
+
+        var highlight = highlightCheck();
+
+        const button = React.createElement('button',
              {
-                 className:"btn btn-default btn-sm",
+                 className:"pull-right btn btn-sm " + (highlight?"btn-danger":"btn-default"),
                  type:"button",
                  onClick: function () {
                      console.log("Firing audio alarm");
@@ -203,11 +206,20 @@ function CurrentPanel(props) {
                  },
              },  React.createElement('span', {className:"glyphicon glyphicon-volume-up"}), "Issue test audio alarm");
 
+
+        if(highlight){
+            const icon = React.createElement('span', {className:"glyphicon glyphicon-exclamation-sign"});
+            action = React.createElement('div', {className: "row alert alert-warning"}, icon,"Please check the sound system at the start of your shift", button) ;
+        } else{
+            action = button;
+        }
+
+
     }
 
 
     const headElement = React.createElement('div', {className: "row"}, React.createElement('div', {className: "col-xs-12"}, stateIndicator, rightCornerInfo));
-    const bottomElement = React.createElement('div', {className: "row"}, React.createElement('div', {className: "col-xs-12"}, title, description, automatedRecovery ,action));
+    const bottomElement = React.createElement('div', {className: "row"}, React.createElement('div', {className: "col-xs-12"}, title, description, automatedRecovery,action));
 
     return React.createElement('div', {
             className: ("jumbotron " + highlight + " " + background), key: key,
