@@ -1,3 +1,18 @@
+
+var nextCheck;
+
+function highlightCheck(){
+
+    var now = moment();
+
+    if(nextCheck == null || now > nextCheck){
+        return true;
+    } else{
+        return false;
+    }
+
+}
+
 function issueTestAlarm(){
 
     console.log("Sending post request for test alarm");
@@ -19,4 +34,24 @@ function issueTestAlarm(){
         'dataType': 'json'
         });
 
+    nextCheck = getNextShiftStartTime(moment());
+    console.log("Next sound system check scheduled for " + nextCheck.toISOString(true));
+}
+
+function getNextShiftStartTime(time){
+
+	if(0 <= time.hours() && time.hours() < 7){
+    	//night shift
+        return time.hours(7).minutes(0).seconds(0).milliseconds(0);
+    }
+    else if(7 <= time.hours() && time.hours() < 15){
+        // morning shift
+        return time.hours(15).minutes(0).seconds(0);
+    } else if (15 <= time.hours() && time.hours() < 23){
+        // evening shift
+        return time.hours(23).minutes(0).seconds(0).milliseconds(0);
+    } else{
+        // night shift
+        return time.add(1, 'day').hours(7).minutes(0).seconds(0).milliseconds(0);
+    }
 }
