@@ -45,6 +45,7 @@
     <script src="resources/websocket-nm.js"></script>
     <script src="resources/websocket-expert.js"></script>
     <script src="resources/websocket-controler.js"></script>
+    <script src="resources/test-sound.js"></script>
     <script src="resources/external/reconnecting-websocket.min.js"></script>
 
     <link rel="stylesheet" href="resources/nm/css/dashboard.css" type="text/css"/>
