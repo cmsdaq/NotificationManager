@@ -182,4 +182,14 @@ public class EventResource {
 		this.priority = priority;
 	}
 
+	@Override
+	public String toString() {
+		return "EventResource{" +
+				"message='" + message + '\'' +
+				", title='" + title + '\'' +
+				", sender='" + sender + '\'' +
+				", textToSpeech='" + textToSpeech + '\'' +
+				", sound='" + sound + '\'' +
+				'}';
+	}
 }
