@@ -5,6 +5,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import org.apache.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,6 +21,8 @@ import cern.cms.daq.nm.task.TaskManager;
 @RequestMapping("/events")
 public class EventAPIController {
 
+	Logger logger = Logger.getLogger(EventAPIController.class);
+
 	@RequestMapping(method = RequestMethod.GET)
 	public @ResponseBody String get(HttpServletResponse res) {
 		return "n/i";
@@ -32,6 +35,9 @@ public class EventAPIController {
 	@RequestMapping(method = RequestMethod.POST)
 	@ResponseStatus(HttpStatus.CREATED)
 	public @ResponseBody void post(@Valid @RequestBody final List<EventResource> eventResources) {
+
+		logger.info("Received with POST request: " + eventResources);
+
 		for (EventResource eventResource : eventResources) {
 			TaskManager.get().getEventResourceBuffer().add(eventResource);
 		}
