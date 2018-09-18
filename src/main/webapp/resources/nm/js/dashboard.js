@@ -193,6 +193,15 @@ function CurrentPanel(props) {
         title = React.createElement('h1', {className: 'display-5'}, "All ok");
         description = React.createElement('p', {className: 'lead'}, "DAQExpert has no suggestion at the moment");
         key = 'empty';
+        action = React.createElement('button',
+             {
+                 className:"btn btn-default btn-sm",
+                 type:"button",
+                 onClick: function () {
+                     console.log("Firing audio alarm");
+                     issueTestAlarm();
+                 },
+             },  React.createElement('span', {className:"glyphicon glyphicon-volume-up"}), "Issue test audio alarm");
 
     }
 
