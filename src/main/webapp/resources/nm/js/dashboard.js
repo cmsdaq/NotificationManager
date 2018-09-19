@@ -97,8 +97,9 @@ function Dashboard(props) {
 
 
     const showMoreEvents = React.createElement('a',{id:'btn-show-more-event', className:"row btn btn-default btn-bottom btn-xs"}, icon);
-    const eventsScrollable = React.createElement('div',{className:"pre-scrollable", id:'event-scrollable'},React.createElement(EventPanel, props));
-    const rightPanel = React.createElement('div', {className: "col-md-4"}, showMoreEvents,eventsScrollable);
+    const testSoundSystemPanel = React.createElement(TestSoundSystemPanel, {});
+    const eventsScrollable = React.createElement('div',{className:"pre-scrollable", id:'event-scrollable'},testSoundSystemPanel,React.createElement(EventPanel, props));
+    const rightPanel = React.createElement('div', {className: "col-md-4"}, showMoreEvents, eventsScrollable);
 
 
     const pageContent = React.createElement('div', {className: 'row auto-scroll-holder'},autoUpdate, leftPanel, rightPanel);
@@ -106,6 +107,31 @@ function Dashboard(props) {
     return React.createElement('div', {}, versionMessageElement, pageContent);
 
 
+}
+
+function TestSoundSystemPanel(props){
+    var highlight = highlightCheck();
+    var testSoundSystemPanel;
+    const button = React.createElement('button',
+         {
+             className:"pull-right btn btn-sm " + (highlight?"btn-danger":"btn-default"),
+             type:"button",
+             onClick: function () {
+                 console.log("Firing audio alarm");
+                 issueTestAlarm();
+             },
+         },  React.createElement('span', {className:"glyphicon glyphicon-volume-up"}), "Issue test audio alarm");
+
+
+    if(highlight){
+        const icon = React.createElement('span', {className:"glyphicon glyphicon-exclamation-sign"});
+        testSoundSystemPanel = React.createElement('div', {className: "alert alert-warning clearfix"}, icon, "Please check the sound system at the start of your shift", button ) ;
+    } else{
+
+
+        testSoundSystemPanel =  React.createElement('div', {className: "clearfix"}, button );
+    }
+    return testSoundSystemPanel;
 }
 
 
@@ -193,27 +219,6 @@ function CurrentPanel(props) {
         title = React.createElement('h1', {className: 'display-5'}, "All ok");
         description = React.createElement('p', {className: 'lead'}, "DAQExpert has no suggestion at the moment");
         key = 'empty';
-
-        var highlight = highlightCheck();
-
-        const button = React.createElement('button',
-             {
-                 className:"pull-right btn btn-sm " + (highlight?"btn-danger":"btn-default"),
-                 type:"button",
-                 onClick: function () {
-                     console.log("Firing audio alarm");
-                     issueTestAlarm();
-                 },
-             },  React.createElement('span', {className:"glyphicon glyphicon-volume-up"}), "Issue test audio alarm");
-
-
-        if(highlight){
-            const icon = React.createElement('span', {className:"glyphicon glyphicon-exclamation-sign"});
-            action = React.createElement('div', {className: "row alert alert-warning"}, icon,"Please check the sound system at the start of your shift", button) ;
-        } else{
-            action = button;
-        }
-
 
     }
 
