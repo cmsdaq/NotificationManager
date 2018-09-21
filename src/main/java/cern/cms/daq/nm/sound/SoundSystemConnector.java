@@ -26,7 +26,7 @@ public class SoundSystemConnector {
 		this.port = port;
 	}
 
-	public String sayAndListen(String statement) throws IOException {
+	public String sayAndListen(String statement) throws IOException{
 
 		logger.info("Speak statement: " + statement);
 		setUpConnection(url, port);
@@ -34,7 +34,7 @@ public class SoundSystemConnector {
 		return listen();
 	}
 
-	public String play(String soundFilename) throws IOException {
+	public String play(String soundFilename) throws IOException{
 		setUpConnection(url, port);
 		say("<play file=\"" + soundFilename + "\"/>");
 		return listen();
@@ -53,13 +53,10 @@ public class SoundSystemConnector {
 		return new String(buffer, 0, count);
 	}
 
-	private void setUpConnection(String urlString, int port) {
-		try {
-			URL theURL = new URL(urlString);
-			connection = new Socket(theURL.getHost(), port);
-		} catch (IOException e) {
-			logger.error("Request to CMS-WOW failed: ", e);
-		}
+	private void setUpConnection(String urlString, int port) throws IOException {
+		URL theURL = new URL(urlString);
+		connection = new Socket(theURL.getHost(), port);
+
 	}
 
 	public static SoundSystemConnector buildSoundSystemConnector() {
