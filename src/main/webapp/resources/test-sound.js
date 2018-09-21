@@ -24,7 +24,7 @@ function issueTestAlarm(){
     data.sender = "Dashboard client";
     data.textToSpeech = "Sound system check";
     data.sound = "U2Bell.wav";
-    data.date = moment();
+    data.date = moment().local().format();
 
     $.ajax({
         'type': 'POST',
