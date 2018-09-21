@@ -40,11 +40,11 @@ function issueTestAlarm(){
 
 function getNextShiftStartTime(time){
 
-	if(0 <= time.hours() && time.hours() < 7){
+	if(0 <= time.hours() && time.hours() <= 7 &&  time.minutes() < 45){
     	//night shift
-        return time.hours(7).minutes(0).seconds(0).milliseconds(0);
+        return time.hours(7).minutes(45).seconds(0).milliseconds(0);
     }
-    else if(7 <= time.hours() && time.hours() < 15){
+    else if(7 <= time.hours() && 45 <= time.minutes() && time.hours() < 15){
         // morning shift
         return time.hours(15).minutes(0).seconds(0);
     } else if (15 <= time.hours() && time.hours() < 23){
@@ -52,6 +52,8 @@ function getNextShiftStartTime(time){
         return time.hours(23).minutes(0).seconds(0).milliseconds(0);
     } else{
         // night shift
-        return time.add(1, 'day').hours(7).minutes(0).seconds(0).milliseconds(0);
+        return time.add(1, 'day').hours(7).minutes(45).seconds(0).milliseconds(0);
     }
 }
+
+
