@@ -62,7 +62,20 @@ function modeSelect(){
     if(currentRecovery){
         return "recovery"; //if exist any recovery request than we operate in recovery mode, hands down
     } else{
-        if(currentConditionId && currentConditionId != 0){
+
+        // and last recovery is not related
+
+        if(
+            currentConditionId && currentConditionId != 0 &&
+            (
+                lastRecovery == null ||
+                (
+                    lastRecovery != null &&
+                    !lastRecovery.conditionIds.includes(currentConditionId)
+                )
+
+            )
+        ){
             //console.log("condition mode, current id: " + currentConditionId);
             return "condition"; // if no recovery but exists non 0 condition than condition mode
         } else{
@@ -205,7 +218,9 @@ function newRecoveryDataArrived(newRecovery){
     //console.log("Current recovery: " +  JSON.stringify(newRecovery));
     currentRecovery = newRecovery;
 
-    if(currentRecovery.endDate != null){
+    if(
+        currentRecovery.endDate != null
+    ){
         lastRecovery = currentRecovery;
         currentRecovery = null;
     } else{

@@ -84,7 +84,19 @@ function CurrentPanel(props) {
                     props.recovery.endDate
                 ){
                     background = finishedBackground ;
-                    stateIndicator = React.createElement('span', {className: ('label label-success')}, props.recovery.status );
+
+                    //TODO: quick fix requested in last minute: dont display completed -> show Successful
+                    var finalRecoveryStatus = props.recovery.status;
+                    var labelClass = "";
+                    if(finalRecoveryStatus == "Completed"){
+                        finalRecoveryStatus = "Successful";
+                        labelClass = 'label-success';
+                    } else{
+                        finalRecoveryStatus = "Unsuccessful: " + finalRecoveryStatus;
+                        labelClass = 'label-danger';
+                    }
+
+                    stateIndicator = React.createElement('span', {className: ('label ' + labelClass)}, finalRecoveryStatus );
                     dashboardStatus = 'finished';
                 } else{
                     background = recoveringBackground ;
