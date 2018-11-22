@@ -37,7 +37,11 @@
     <script crossorigin src="resources/external/react/react.min.js"></script>
     <script crossorigin src="resources/external/react/react-dom.min.js"></script>
 
+    <script src="resources/nm/js/recovery-elements.js"></script>
     <script src="resources/nm/js/dashboard.js"></script>
+    <script src="resources/nm/js/common-elements.js"></script>
+    <script src="resources/nm/js/event-elements.js"></script>
+    <script src="resources/nm/js/condition-elements.js"></script>
 
     <script src="resources/external/sockjs.min.js"></script>
     <script src="resources/external/stomp.min.js"></script>
@@ -47,6 +51,7 @@
     <script src="resources/websocket-controler.js"></script>
     <script src="resources/test-sound.js"></script>
     <script src="resources/external/reconnecting-websocket.min.js"></script>
+    <script src="resources/external/plain-overlay.min.js"></script>
 
     <link rel="stylesheet" href="resources/nm/css/dashboard.css" type="text/css"/>
     <link rel="stylesheet" href="resources/nm/css/scrollable.css" type="text/css"/>

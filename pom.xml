@@ -310,7 +310,7 @@
 					<uriEncoding>UTF-8</uriEncoding>
 					<path>/nm</path>
 					<update>true</update>
-					<port>8081</port>
+					<port>8087</port>
 				</configuration>
 			</plugin>
 		</plugins>
