@@ -60,7 +60,14 @@ function CurrentPanel(props) {
     if (props.mode == "condition" || props.mode == "recovery") {
 
 
-        if(!props.current)
+        var testRecovery = false;
+        if(props.recovery && props.recovery.isProbe){
+            testRecovery = true;
+            console.log("Probe recovery");
+        }
+
+        console.log("Is probe: " + JSON.stringify(props.recovery));
+        if(!props.current && !testRecovery)
             return null;
 
         var dashboardStatus;
@@ -119,8 +126,28 @@ function CurrentPanel(props) {
 
         }
 
-        props.current.announced = true;
-        key = props.current.id;
+        if(!testRecovery){
+            props.current.announced = true;
+            key = props.current.id;
+
+            title = React.createElement('h1', {className: 'display-5 ' + dashboardStatus == 'finished' ? 'text-muted' : ''}, props.current.title);
+            description = React.createElement(UpdatedMessage, {element: props.current});
+            dateElement = React.createElement(FormattedDate, {date: props.current.timestamp});
+
+            action = React.createElement(
+                ListPanel,
+                {
+                    elements: generateConditionActionIds(props.current),
+                    childType: RecoveryStepElement,
+                    header: "Steps to recover",
+                    emptyMessage: "No recovery suggestion",
+                    recovery: props.recovery,
+                    controllerStatus: props.controllerStatus,
+                }
+            );
+        } else{
+            title = React.createElement('h1', {className: 'display-5 ' + dashboardStatus == 'finished' ? 'text-muted' : ''}, "Probe recovery");
+        }
 
 
         var progressIndicator = null;
@@ -138,11 +165,8 @@ function CurrentPanel(props) {
             progressIndicator = React.createElement(ProgressIndicator, {});
         }
 
-        title = React.createElement('h1', {className: 'display-5 ' + dashboardStatus == 'finished' ? 'text-muted' : ''}, props.current.title);
-        description = React.createElement(UpdatedMessage, {element: props.current});
 
 
-        dateElement = React.createElement(FormattedDate, {date: props.current.timestamp});
         rightCornerInfo = React.createElement('span', {className: "pull-right"}, dateElement, " ", statusElement);
 
         //console.log("has action: " + JSON.stringify(props.current));
@@ -166,17 +190,7 @@ function CurrentPanel(props) {
 
 
 
-        action = React.createElement(
-            ListPanel,
-            {
-                elements: generateConditionActionIds(props.current),
-                childType: RecoveryStepElement,
-                header: "Steps to recover",
-                emptyMessage: "No recovery suggestion",
-                recovery: props.recovery,
-                controllerStatus: props.controllerStatus,
-            }
-        );
+
 
 
     } else {
