@@ -95,7 +95,8 @@ input {
     background-color: #e8f5e9;
     border: 1px solid;
     border-radius: 6px;
-    border-color: #009587
+    border-color: #009587;
+    color: #777;
 }
 .jumbotron.bg-recovery {
     background-color: #ffbb33;
@@ -104,7 +105,11 @@ input {
     border-color: #c99044
 }
 
-.glyphicon-refresh-animate {
+.list-group-item-compact {
+    padding: 3px 10px
+}
+
+.glyphicon-spin {
     -animation: spin .7s infinite linear;
     -webkit-animation: spin2 .7s infinite linear;
 }
@@ -117,4 +122,91 @@ input {
 @keyframes spin {
     from { transform: scale(1) rotate(0deg);}
     to { transform: scale(1) rotate(360deg);}
+}
+
+
+
+.spinner {
+  width: 63px;
+  height: 63px;
+
+  position: relative;
+}
+
+.double-bounce1, .double-bounce2 {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background-color: #333;
+  opacity: 0.6;
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  -webkit-animation: sk-bounce 2.0s infinite ease-in-out;
+  animation: sk-bounce 2.0s infinite ease-in-out;
+}
+
+.double-bounce2 {
+  -webkit-animation-delay: -1.0s;
+  animation-delay: -1.0s;
+}
+
+@-webkit-keyframes sk-bounce {
+  0%, 100% { -webkit-transform: scale(0.0) }
+  50% { -webkit-transform: scale(1.0) }
+}
+
+@keyframes sk-bounce {
+  0%, 100% {
+    transform: scale(0.0);
+    -webkit-transform: scale(0.0);
+  } 50% {
+    transform: scale(1.0);
+    -webkit-transform: scale(1.0);
+  }
+}
+
+.vcenter {
+   display: inline-block;
+   vertical-align: middle;
+   float: none;
+}
+
+.pulse {
+  display: block;
+  animation: pulse 2s infinite;
+}
+.pulse:hover {
+  animation: none;
+}
+
+@-webkit-keyframes pulse {
+  0% {
+    -webkit-box-shadow: 0 0 0 0 rgba(7,7,7, 0.8);
+    z-index: 100;
+  }
+  70% {
+      -webkit-box-shadow: 0 0 0 10px rgba(7,7,7, 0);
+  }
+  100% {
+      -webkit-box-shadow: 0 0 0 0 rgba(7,7,7, 0);
+    z-index: 0;
+  }
+}
+@keyframes pulse {
+  0% {
+    -moz-box-shadow: 0 0 0 0 rgba(7,7,7, 0.8);
+    box-shadow: 0 0 0 0 rgba(7,7,7, 0.4);
+    z-index: 100;
+  }
+  70% {
+      -moz-box-shadow: 0 0 0 10px rgba(7,7,7, 0);
+      box-shadow: 0 0 0 10px rgba(7,7,7, 0);
+  }
+  100% {
+      -moz-box-shadow: 0 0 0 0 rgba(7,7,7, 0);
+      box-shadow: 0 0 0 0 rgba(7,7,7, 0);
+      z-index: 0;
+  }
 }

@@ -12,6 +12,7 @@ $( document ).ready(function() {
 });
 
 var stompFailureCallback = function (error) {
+    newControllerStatusArrived(null);
     handleControllerDisconnected();
     console.log('STOMP: ' + error);
     setTimeout(stompConnect, 10000);
@@ -32,9 +33,21 @@ var stompSuccessCallback = function (frame) {
     });
 
     stompClient.subscribe('/topic/recovery-status', function (message) {
-        console.log("Recoveyr data: " + JSON.stringify(message.body));
-        newRecoveryDataArrived(JSON.parse(message.body));
+        //console.log("Recovery data: " + JSON.stringify(message.body));
+
+        var jsonBody = JSON.parse(message.body);
+        var recoveryProcedure = jsonBody.lastProcedureStatus;
+        var executorState = jsonBody.executorState;
+
+        //console.log("Recovery procedure data: " + JSON.stringify(recoveryProcedure));
+        //console.log("Service status: " + JSON.stringify(executorState));
+        if(executorState)
+            newControllerStatusArrived(executorState);
+        if(recoveryProcedure)
+            newRecoveryDataArrived(recoveryProcedure);
     });
+
+    stompClient.send("/app/status", {});
 };
 
 function stompConnect() {
@@ -45,22 +58,34 @@ function stompConnect() {
     stompClient.connect({}, stompSuccessCallback, stompFailureCallback);
 }
 
+function interrupt(){
+    console.log("Sending interrupt request");
+    stompClient.send("/app/interrupt", {});
+}
+
 
 /**
  * Confirm whole recovery
  */
 function confirm(idToConfirm){
-    console.log("Confirmed: " + idToConfirm);
-    stompClient.send("/app/approve", {}, JSON.stringify({"id":idToConfirm, "approved":true}));
-    recoveryDecision(idToConfirm, true);
+    console.log("Confirm recovery procedure: " + idToConfirm);
+    stompClient.send("/app/approve", {}, JSON.stringify(
+        {"recoveryProcedureId":idToConfirm, "procedureContext":true, "approved":true}));
 }
 
 /**
  * Confirm single step of the recovery
  */
 function confirmStep(procedureId, stepId){
-    console.log("Confired step " + stepId + " of recovery "+ procedureId);
-    stompClient.send("/app/approve", {}, JSON.stringify({"recoveryId":procedureId, "step": stepId, "approved":true}));
+    console.log("Confirm recovery job, step " + stepId + " of procedure "+ procedureId);
+    stompClient.send("/app/approve", {}, JSON.stringify(
+        {"recoveryProcedureId":procedureId, "step": stepId, "approved":true}));
+
+}
+
+function playFromStep(procedureId, stepId){
+    console.log("Recovery will continue automatically from step " + stepId + " of procedure "+ procedureId);
+    //stompClient.send("/app/approve", {}, JSON.stringify({"recoveryId":procedureId, "step": stepId, "approved":true}));
 
 }
 
