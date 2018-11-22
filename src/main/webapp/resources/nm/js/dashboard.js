@@ -37,13 +37,14 @@ var showingVersion = false;
  */
 var currentRecovery = null;
 
+/** Last recovery, finished already */
+var lastRecovery = null;
+
 /**
  * Controller status
  */
 var controllerStatus = null;
 
-/** Last recovery, finished already */
-var lastRecovery = null;
 
 var durationSinceLastRecovery = 0;
 
@@ -204,7 +205,7 @@ function newRecoveryDataArrived(newRecovery){
     //console.log("Current recovery: " +  JSON.stringify(newRecovery));
     currentRecovery = newRecovery;
 
-    if(currentRecovery.status && currentRecovery.status == "finished"){
+    if(currentRecovery.endDate != null){
         lastRecovery = currentRecovery;
         currentRecovery = null;
     } else{

@@ -46,10 +46,6 @@ function Dashboard(props) {
 
 function CurrentPanel(props) {
 
-
-    if(!props.current)
-        return null;
-
     var title, description, dateElement, statusElement, rightCornerInfo, stateIndicator, automatedRecovery, action, recoverySummary;
     var key = 'empty';
     var highlight = '';
@@ -62,6 +58,10 @@ function CurrentPanel(props) {
 
 
     if (props.mode == "condition" || props.mode == "recovery") {
+
+
+        if(!props.current)
+            return null;
 
         var dashboardStatus;
 
