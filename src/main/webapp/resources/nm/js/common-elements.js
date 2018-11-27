@@ -4,7 +4,7 @@ function Dashboard(props) {
     if (currentVersion !== websocketDeclaredVersion) {
         showingVersion = true;
         const exclamation = React.createElement('span', {className: 'glyphicon glyphicon-exclamation-sign'});
-        const versionText = React.createElement('span', {}, "New version available, please hard reload the browser to update the cached scripts. Version available: " + websocketDeclaredVersion + ", currently loaded version: " + currentVersion);
+        const versionText = React.createElement('span', {}, "New version available, please hard reload the browser (Ctrl + Shift + R) to update the cached scripts. Version available: " + websocketDeclaredVersion + ", currently loaded version: " + currentVersion);
         const versionMessage = React.createElement('p', {}, exclamation, " ", versionText);
         versionMessageElement = React.createElement('div', {className: 'alert alert-warning', id: 'message'}, versionMessage);
     } else{
@@ -63,7 +63,7 @@ function CurrentPanel(props) {
         var testRecovery = false;
         if(props.recovery && props.recovery.isProbe){
             testRecovery = true;
-            console.log("Probe recovery");
+            //console.log("Probe recovery");
         }
 
         //console.log("Is probe: " + JSON.stringify(props.recovery));
@@ -186,7 +186,13 @@ function CurrentPanel(props) {
                                   "final state is " + props.recovery.status;
 
                 // if related condition is not finished, indicate manual steps needed
-                if(props.current.status !== "finished" && props.recovery.conditionIds.includes(key)){
+                if(
+                    props.current &&
+                    props.current.status !== "finished" &&
+                    props.recovery.conditionIds &&
+                    props.recovery.conditionIds.includes(key)
+
+                    ){
                     messageText = messageText + " . Please continue the recovery manually";
                     background = problemBackground;
                 } else{
