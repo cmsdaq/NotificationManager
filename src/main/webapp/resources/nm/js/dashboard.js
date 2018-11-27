@@ -374,9 +374,11 @@ function updateConditionsDurations(now){
  * @param recovery
  */
 function updateRecoveryDuration(now, recovery){
+    var recalculated = false;
     if (recovery.startDate && !recovery.endDate) {
         const duration = moment.duration(now.diff(recovery.startDate)).valueOf();
         recovery.duration = duration;
+        recalculated = true;
     } else if (recovery.startDate && recovery.endDate){
         const duration = moment.duration(moment(recovery.endDate).diff(recovery.startDate)).valueOf();
         //console.log("Calculating duration " + duration + " based on " + recovery.startDate + " and " + recovery.endDate);
@@ -404,9 +406,13 @@ function updateRecoveryDuration(now, recovery){
             if (calculate) {
                 var duration = moment.duration(end.diff(start)).valueOf();
                 o.duration = duration;
-                renderApp();
+                recalculated = true;
             }
         }
+    }
+
+    if(recalculated){
+        renderApp();
     }
 }
 
