@@ -66,7 +66,7 @@ function CurrentPanel(props) {
             console.log("Probe recovery");
         }
 
-        console.log("Is probe: " + JSON.stringify(props.recovery));
+        //console.log("Is probe: " + JSON.stringify(props.recovery));
         if(!props.current && !testRecovery)
             return null;
 
@@ -99,8 +99,10 @@ function CurrentPanel(props) {
                         finalRecoveryStatus = "Successful";
                         labelClass = 'label-success';
                     } else{
+
                         finalRecoveryStatus = "Unsuccessful: " + finalRecoveryStatus;
                         labelClass = 'label-danger';
+                        background = problemBackground;
                     }
 
                     stateIndicator = React.createElement('span', {className: ('label ' + labelClass)}, finalRecoveryStatus );
@@ -178,7 +180,20 @@ function CurrentPanel(props) {
                 props.controllerStatus.toLowerCase() == "Idle".toLowerCase()
             ){
 
-                automatedRecovery = React.createElement(RecoverySummary, props.recovery);
+                var durationValue =  moment.duration(moment(props.recovery.endDate).diff(moment(props.recovery.startDate))).valueOf();
+                var messageText = "Automatic recovery #"+props.recovery.id+" has finished in "+
+                                  getDurationPrintable(durationValue) + ", " +
+                                  "final state is " + props.recovery.status;
+
+                // if related condition is not finished, indicate manual steps needed
+                if(props.current.status !== "finished" && props.recovery.conditionIds.includes(key)){
+                    messageText = messageText + " . Please continue the recovery manually";
+                    background = problemBackground;
+                } else{
+                    background = finishedBackground;
+                }
+                const recoverySummary = React.createElement(RecoverySummary, Object.assign({}, props.recovery, {"message": messageText }) );
+                automatedRecovery = React.createElement('div',{}, recoverySummary)
             }
             else if(
                 props.controllerStatus &&

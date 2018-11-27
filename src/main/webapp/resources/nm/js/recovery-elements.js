@@ -33,8 +33,6 @@ function ControllerStatusPanel(props){
  * General information about recovery that is displayed inside CurrentPanel
  */
 function AutomatedRecovery(props){
-    var content;
-
 
     const message = React.createElement('span', {}, "Automatic recovery available! #" + props.recovery.id + ". Execute all steps or each step separately. ");
     const buttonGroup = React.createElement('div', {});
@@ -45,7 +43,7 @@ function AutomatedRecovery(props){
         reject(props.recovery.id);
 
     }, id:'reject-recovery', className:"btn btn-danger btn-xs"}, "Reject");
-    content = React.createElement('span', {}, message, acceptButton);
+    const content = React.createElement('span', {}, message, acceptButton);
 
 
     const icon = React.createElement('span', {className:"glyphicon glyphicon-exclamation-sign"});
@@ -55,13 +53,10 @@ function AutomatedRecovery(props){
 function RecoverySummary(props){
     var content;
 
-    var durationValue =  moment.duration(moment(props.endDate).diff(moment(props.startDate))).valueOf();
     const message = React.createElement(
         'span',
         {},
-        "Automatic recovery #"+props.id+" has finished in "+
-        getDurationPrintable(durationValue) + ", " +
-        "final state is " + props.status
+        props.message
     );
     const summaryWrapper = React.createElement('div',{});
 
